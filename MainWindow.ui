@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>628</width>
+    <height>402</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>EcoManager 2013</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="Resources.qrc">
+    <normaloff>:/Resources/Icons/GoogleMaps.png</normaloff>:/Resources/Icons/GoogleMaps.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QWidget" name="verticalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>40</y>
+      <width>151</width>
+      <height>271</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="raceVerticalLayout">
+     <item>
+      <widget class="QLabel" name="raceLabel">
+       <property name="text">
+        <string>Course(s)</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTreeView" name="raceView">
+       <property name="animated">
+        <bool>true</bool>
+       </property>
+       <property name="headerHidden">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>628</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>&amp;Fichier</string>
+    </property>
+    <widget class="QMenu" name="menuExport">
+     <property name="title">
+      <string>Exporter</string>
+     </property>
+     <property name="icon">
+      <iconset resource="Resources.qrc">
+       <normaloff>:/Resources/Icons/upload.png</normaloff>:/Resources/Icons/upload.png</iconset>
+     </property>
+     <addaction name="actionExportConfigurationModule"/>
+     <addaction name="actionExportData"/>
+    </widget>
+    <addaction name="actionImport"/>
+    <addaction name="menuExport"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>À &amp;propos</string>
+    </property>
+    <addaction name="actionAboutEcoManager2013"/>
+    <addaction name="separator"/>
+    <addaction name="actionAboutQt"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuAbout"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <property name="maximumSize">
+    <size>
+     <width>16777215</width>
+     <height>35</height>
+    </size>
+   </property>
+   <property name="allowedAreas">
+    <set>Qt::BottomToolBarArea|Qt::TopToolBarArea</set>
+   </property>
+   <property name="floatable">
+    <bool>false</bool>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionDelimitingSectors"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionImport">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Resources/Icons/download.png</normaloff>:/Resources/Icons/download.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Importer</string>
+   </property>
+   <property name="toolTip">
+    <string>Importer les données d'une course</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Resources/Icons/close.png</normaloff>:/Resources/Icons/close.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Quitter</string>
+   </property>
+   <property name="toolTip">
+    <string>Quitter l'application EcoManager 2013</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionExportConfigurationModule">
+   <property name="text">
+    <string>Configuration module</string>
+   </property>
+  </action>
+  <action name="actionExportData">
+   <property name="text">
+    <string>Données</string>
+   </property>
+  </action>
+  <action name="actionAboutEcoManager2013">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Resources/Icons/info.png</normaloff>:/Resources/Icons/info.png</iconset>
+   </property>
+   <property name="text">
+    <string>À propos de l'&amp;EcoManager 2013</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Informations relative au projet&lt;span style=&quot; font-weight:600;&quot;&gt; EcoManager 2013&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="shortcut">
+    <string>F1</string>
+   </property>
+  </action>
+  <action name="actionAboutQt">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Resources/Icons/qt-logo.png</normaloff>:/Resources/Icons/qt-logo.png</iconset>
+   </property>
+   <property name="text">
+    <string>À propos de Qt</string>
+   </property>
+   <property name="toolTip">
+    <string>Informations relative à Qt</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+?</string>
+   </property>
+  </action>
+  <action name="actionDelimitingSectors">
+   <property name="text">
+    <string>&amp;Secteur(s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Selection du secteur de délimitation</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="Resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>
