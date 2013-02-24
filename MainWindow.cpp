@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+    delete this->ui;
 }
 
 void MainWindow::on_actionAboutQt_triggered(void)

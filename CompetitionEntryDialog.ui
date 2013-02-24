@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CompetitionEntryDialog</class>
+ <widget class="QDialog" name="CompetitionEntryDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>322</width>
+    <height>412</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Ajout d'une nouvelle compétition</string>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="competitionLabel">
+     <property name="text">
+      <string>Nom de la compétition :</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="competitionComboBox"/>
+   </item>
+   <item>
+    <widget class="QFrame" name="competitionEntryFrame">
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QVBoxLayout" name="competitionEntryVerticalLayout">
+      <item>
+       <widget class="QLabel" name="detailsLabel">
+        <property name="text">
+         <string>Entrez les détails de cette nouvelle compétition :</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QFormLayout" name="newRaceFormLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="placeLabel">
+          <property name="text">
+           <string>Localisation :</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="placeLineEdit"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="wheelLabel">
+          <property name="text">
+           <string>tour de la roue :</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QDoubleSpinBox" name="wheelDoubleSpinBox">
+          <property name="accelerated">
+           <bool>true</bool>
+          </property>
+          <property name="suffix">
+           <string> cm</string>
+          </property>
+          <property name="maximum">
+           <double>10000.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="dateLabel">
+     <property name="text">
+      <string>Date de la course :</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCalendarWidget" name="calendarWidget">
+     <property name="firstDayOfWeek">
+      <enum>Qt::Monday</enum>
+     </property>
+     <property name="gridVisible">
+      <bool>false</bool>
+     </property>
+     <property name="verticalHeaderFormat">
+      <enum>QCalendarWidget::NoVerticalHeader</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+  <zorder>competitionLabel</zorder>
+  <zorder>competitionComboBox</zorder>
+  <zorder>competitionEntryFrame</zorder>
+  <zorder>detailsLabel</zorder>
+  <zorder>dateLabel</zorder>
+  <zorder>calendarWidget</zorder>
+  <zorder>buttonBox</zorder>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -14,12 +14,15 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         MainWindow.cpp \
-    ResourceInstaller.cpp
+    ResourceInstaller.cpp \
+    CompetitionEntryDialog.cpp
 
 HEADERS  += MainWindow.hpp \
-    ResourceInstaller.hpp
+    ResourceInstaller.hpp \
+    CompetitionEntryDialog.hpp
 
-FORMS    += MainWindow.ui
+FORMS    += MainWindow.ui \
+    CompetitionEntryDialog.ui
 
 RESOURCES += \
     Resources.qrc
