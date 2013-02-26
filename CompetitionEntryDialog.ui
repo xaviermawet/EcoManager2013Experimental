@@ -105,13 +105,6 @@
     </widget>
    </item>
   </layout>
-  <zorder>competitionLabel</zorder>
-  <zorder>competitionComboBox</zorder>
-  <zorder>competitionEntryFrame</zorder>
-  <zorder>detailsLabel</zorder>
-  <zorder>dateLabel</zorder>
-  <zorder>calendarWidget</zorder>
-  <zorder>buttonBox</zorder>
  </widget>
  <resources/>
  <connections/>

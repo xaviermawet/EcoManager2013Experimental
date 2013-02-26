@@ -1,3 +1,9 @@
+/*
+ * Pour les menus contextuels --> Créer les actions dans le designer et suivre
+ * la démarche proposée sur le site :
+ * http://www.developpez.net/forums/d719698/c-cpp/bibliotheques/qt/qtreeview-menu-contextuel/
+ */
+
 #ifndef __MAINWINDOW_HPP__
 #define __MAINWINDOW_HPP__
 

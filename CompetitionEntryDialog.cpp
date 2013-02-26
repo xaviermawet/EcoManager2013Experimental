@@ -19,14 +19,9 @@ CompetitionEntryDialog::~CompetitionEntryDialog()
     delete this->ui;
 }
 
-QString CompetitionEntryDialog::competitionName(void) const
+QDate CompetitionEntryDialog::date(void) const
 {
-    return this->ui->competitionComboBox->currentText();
-}
-
-float CompetitionEntryDialog::wheelRadius(void) const
-{
-    return this->ui->wheelDoubleSpinBox->value();
+    return this->ui->calendarWidget->selectedDate();
 }
 
 QString CompetitionEntryDialog::place(void) const
@@ -34,14 +29,19 @@ QString CompetitionEntryDialog::place(void) const
     return this->ui->placeLineEdit->text();
 }
 
-QDate CompetitionEntryDialog::date(void) const
+float CompetitionEntryDialog::wheelRadius(void) const
 {
-    return this->ui->calendarWidget->selectedDate();
+    return this->ui->wheelDoubleSpinBox->value();
 }
 
 bool CompetitionEntryDialog::isNewlyCreated(void) const
 {
     return this->competitionCreated;
+}
+
+QString CompetitionEntryDialog::competitionName(void) const
+{
+    return this->ui->competitionComboBox->currentText();
 }
 
 void CompetitionEntryDialog::on_buttonBox_accepted(void)
@@ -54,7 +54,7 @@ void CompetitionEntryDialog::on_buttonBox_accepted(void)
     }
 
     // If is a new competition
-    if (this->ui->competitionEntry->isVisible())
+    if (this->ui->competitionEntryFrame->isVisible())
     {
         if (this->ui->placeLineEdit->text().isEmpty())
         {
@@ -84,8 +84,8 @@ void CompetitionEntryDialog::on_competitionComboBox_activated(int index)
 {
     Q_UNUSED(index);
 
-    this->_competitionCreated = false;
-    this->ui->competitionEntry->setVisible(this->_competitionCreated);
+    this->competitionCreated = false;
+    this->ui->competitionEntryFrame->setVisible(this->competitionCreated);
 }
 
 // competitionEditing
@@ -105,8 +105,8 @@ void CompetitionEntryDialog::on_competitionComboBox_editTextChanged(const QStrin
     */
 
     // Display form if the competition doesn't exist
-    this->_competitionCreated = !this->_initialCompetitions.contains(text);
-    this->ui->competitionEntry->setVisible(this->_competitionCreated);
+    this->competitionCreated = !this->initialCompetitions.contains(text);
+    this->ui->competitionEntryFrame->setVisible(this->competitionCreated);
 }
 
 void CompetitionEntryDialog::fillCompetitionBox(void)

@@ -18,11 +18,11 @@ class CompetitionEntryDialog : public QDialog
         ~CompetitionEntryDialog();
 
         // Getter
-        QString competitionName(void) const;
-        float wheelRadius(void) const;
-        QString place(void) const;
         QDate date(void) const;
+        QString place(void) const;
+        float wheelRadius(void) const;
         bool isNewlyCreated(void) const;
+        QString competitionName(void) const;
 
     private slots:
 
@@ -32,7 +32,7 @@ class CompetitionEntryDialog : public QDialog
         void on_competitionComboBox_activated(int index);
         void on_competitionComboBox_editTextChanged(const QString& text);
 
-private:
+    private:
 
         void fillCompetitionBox(void);
 
