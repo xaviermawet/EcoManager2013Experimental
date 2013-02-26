@@ -2,6 +2,8 @@
 #define __SAMPLELAPVIEWER_HPP__
 
 #include "MapView.hpp"
+#include "MapScene.hpp"
+#include "../DBModule/GeoCoordinate.hpp"
 #include <QtGui>
 #include <QtSql>
 
@@ -15,7 +17,8 @@ class SampleLapViewer : public QDialog
     
     public:
 
-        explicit SampleLapViewer(QWidget* parent = 0);
+        explicit SampleLapViewer(const QString& referencedCompetition,
+                                 QWidget* parent = 0);
         ~SampleLapViewer();
 
         virtual QSize sizeHint(void);
@@ -41,9 +44,9 @@ class SampleLapViewer : public QDialog
 
         Ui::SampleLapViewer* ui;
 
-        int zoomLevel;
-        QString refCompetition;
-        QList< QPair<int, int> > lapIds;
+        int _zoomLevel;
+        QString _refCompetition;
+        QList< QPair<int, int> > _lapIds;
 };
 
 #endif /* __SAMPLELAPVIEWER_HPP__ */

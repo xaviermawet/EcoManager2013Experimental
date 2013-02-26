@@ -23,7 +23,13 @@ SOURCES += main.cpp\
     Map/SectorItem.cpp \
     Map/CurvePathBuilder.cpp \
     Map/AnimateSectorItem.cpp \
-    Map/TrackItem.cpp
+    Map/TrackItem.cpp \
+    Map/TickItem.cpp \
+    Map/PathBuilder.cpp \
+    Map/MapScene.cpp \
+    Common/ColorPicker.cpp \
+    DBModule/GeoCoordinate.cpp \
+    Map/MapFrame.cpp
 
 HEADERS  += MainWindow.hpp \
     ResourceInstaller.hpp \
@@ -35,11 +41,18 @@ HEADERS  += MainWindow.hpp \
     Map/SectorItem.hpp \
     Map/CurvePathBuilder.hpp \
     Map/AnimateSectorItem.hpp \
-    Map/TrackItem.hpp
+    Map/TrackItem.hpp \
+    Map/TickItem.hpp \
+    Map/PathBuilder.hpp \
+    Map/MapScene.hpp \
+    Common/ColorPicker.hpp \
+    DBModule/GeoCoordinate.hpp \
+    Map/MapFrame.hpp
 
 FORMS    += MainWindow.ui \
     CompetitionEntryDialog.ui \
-    Map/SampleLapViewer.ui
+    Map/SampleLapViewer.ui \
+    Map/MapFrame.ui
 
 RESOURCES += \
     Resources.qrc

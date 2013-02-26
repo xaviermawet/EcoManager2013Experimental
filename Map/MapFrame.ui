@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MapFrame</class>
+ <widget class="QFrame" name="MapFrame">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>732</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Frame</string>
+  </property>
+  <layout class="QVBoxLayout" name="mainVerticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="headerHorizontalLayout" stretch="0,0,0,0,0">
+     <item>
+      <widget class="QToolButton" name="selectPointZoneButton">
+       <property name="toolTip">
+        <string>Sélectionner point ou zone</string>
+       </property>
+       <property name="text">
+        <string>Sélectionner point ou zone</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../Resources.qrc">
+         <normaloff>:/Resources/Icons/selection-icon.png</normaloff>:/Resources/Icons/selection-icon.png</iconset>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">toolButtonsGroup</string>
+       </attribute>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="cutSectorButton">
+       <property name="toolTip">
+        <string>Délimiter un nouveau secteur</string>
+       </property>
+       <property name="text">
+        <string>Délimiter un nouveau secteur</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../Resources.qrc">
+         <normaloff>:/Resources/Icons/cursor-icon.png</normaloff>:/Resources/Icons/cursor-icon.png</iconset>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">toolButtonsGroup</string>
+       </attribute>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="dragButton">
+       <property name="toolTip">
+        <string>Se déplacer dans la vue</string>
+       </property>
+       <property name="text">
+        <string>Se déplacer dans la vue</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../Resources.qrc">
+         <normaloff>:/Resources/Icons/cursor_hand.png</normaloff>:/Resources/Icons/cursor_hand.png</iconset>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">toolButtonsGroup</string>
+       </attribute>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="clearButton">
+       <property name="toolTip">
+        <string>Effacer toutes les données dans les différentes vues</string>
+       </property>
+       <property name="text">
+        <string>Effacer</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="headerHorizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="viewHorizontalLayout">
+     <item>
+      <widget class="QSlider" name="zoomSlider">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="value">
+        <number>50</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../Resources.qrc"/>
+ </resources>
+ <connections/>
+ <buttongroups>
+  <buttongroup name="toolButtonsGroup"/>
+ </buttongroups>
+</ui>

@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="mainVLayout">
    <item>
-    <layout class="QHBoxLayout" name="viewerHLayout">
+    <layout class="QHBoxLayout" name="viewerHLayout" stretch="0,1,0">
      <item>
       <widget class="QPushButton" name="previousLapButton">
        <property name="cursor">

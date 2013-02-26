@@ -8,5 +8,8 @@
         <file>Resources/Icons/directional_right.png</file>
         <file>Resources/Icons/qt-logo.png</file>
         <file>Resources/Icons/GoogleMaps.png</file>
+        <file>Resources/Icons/selection-icon.png</file>
+        <file>Resources/Icons/cursor-icon.png</file>
+        <file>Resources/Icons/cursor_hand.png</file>
     </qresource>
 </RCC>
