@@ -11,5 +11,8 @@
         <file>Resources/Icons/selection-icon.png</file>
         <file>Resources/Icons/cursor-icon.png</file>
         <file>Resources/Icons/cursor_hand.png</file>
+        <file alias="chartline.png">Resources/Icons/chartline.png</file>
+        <file alias="scatter.png">Resources/Icons/chartscatter.png</file>
+        <file alias="zoomout.png">Resources/Icons/Actions-zoom-out-icon.png</file>
     </qresource>
 </RCC>

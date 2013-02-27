@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>628</width>
-    <height>402</height>
+    <width>757</width>
+    <height>374</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,45 +18,96 @@
     <normaloff>:/Resources/Icons/GoogleMaps.png</normaloff>:/Resources/Icons/GoogleMaps.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="verticalLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>40</y>
-      <width>151</width>
-      <height>271</height>
-     </rect>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <property name="margin">
+     <number>0</number>
     </property>
-    <layout class="QVBoxLayout" name="raceVerticalLayout">
-     <item>
-      <widget class="QLabel" name="raceLabel">
-       <property name="text">
-        <string>Course(s)</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
+    <item>
+     <widget class="QSplitter" name="mainVerticalSplitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QWidget" name="verticalLayoutWidget">
+       <layout class="QVBoxLayout" name="raceVerticalLayout">
+        <item>
+         <widget class="QLabel" name="raceLabel">
+          <property name="text">
+           <string>Course(s)</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTreeView" name="raceView">
+          <property name="contextMenuPolicy">
+           <enum>Qt::CustomContextMenu</enum>
+          </property>
+          <property name="animated">
+           <bool>true</bool>
+          </property>
+          <property name="headerHidden">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
-     </item>
-     <item>
-      <widget class="QTreeView" name="raceView">
-       <property name="animated">
-        <bool>true</bool>
+      <widget class="QSplitter" name="MapPlotSplitter">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
        </property>
-       <property name="headerHidden">
-        <bool>true</bool>
-       </property>
+       <widget class="QSplitter" name="mapSplitter">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <widget class="QTableView" name="sectorView">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QTabWidget" name="plotsTabWidget">
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="tabDistance">
+         <attribute name="title">
+          <string>Distance</string>
+         </attribute>
+        </widget>
+        <widget class="QWidget" name="tabTime">
+         <attribute name="title">
+          <string>Temps</string>
+         </attribute>
+        </widget>
+        <widget class="QWidget" name="tabMegaSquirt">
+         <attribute name="title">
+          <string>MegaSquirt</string>
+         </attribute>
+        </widget>
+       </widget>
       </widget>
-     </item>
-    </layout>
-   </widget>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>628</width>
+     <width>757</width>
      <height>20</height>
     </rect>
    </property>
@@ -188,7 +239,22 @@
     <string>&amp;Secteur(s)</string>
    </property>
    <property name="toolTip">
-    <string>Selection du secteur de délimitation</string>
+    <string>Choix du secteur de délimitation</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionExportTrackDataInCSV">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Resources/Icons/upload.png</normaloff>:/Resources/Icons/upload.png</iconset>
+   </property>
+   <property name="text">
+    <string>Exporter dans un fichier CSV</string>
+   </property>
+   <property name="toolTip">
+    <string>Exporter les données du tour dans un fichier CSV</string>
    </property>
   </action>
  </widget>

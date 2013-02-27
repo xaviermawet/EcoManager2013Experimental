@@ -186,18 +186,18 @@ void PlotFrame::createView()
 void PlotFrame::createToolBar()
 {
    _toolbar = new QToolBar;
-   QAction* shCurveAction = new QAction(QIcon(":/icon/chartline.png"), tr("Afficher les courbes"), this);
+   QAction* shCurveAction = new QAction(QIcon(":/chartline.png"), tr("Afficher les courbes"), this);
    shCurveAction->setCheckable(true);
    shCurveAction->setChecked(true);
 
-   QAction* shPointsAction = new QAction(QIcon(":/icon/scatter.png"), tr("Afficher les points"), this);
+   QAction* shPointsAction = new QAction(QIcon(":/scatter.png"), tr("Afficher les points"), this);
    shPointsAction->setCheckable(true);
    shPointsAction->setChecked(true);
 
-   QAction* measureAction = new QAction(QIcon(":/icon/measure.png"), tr("Effectuer une mesure"), this);
-   measureAction->setCheckable(true);
+   //QAction* measureAction = new QAction(QIcon(":/icon/measure.png"), tr("Effectuer une mesure"), this);
+   //measureAction->setCheckable(true);
 
-   QAction* zoomOutAction = new QAction(QIcon(":/icon/zoomout.png"), tr("Zoom out"), this);
+   QAction* zoomOutAction = new QAction(QIcon(":/zoomout.png"), tr("Zoom out"), this);
 
    _toolbar->addAction(shCurveAction);
    _toolbar->addAction(shPointsAction);

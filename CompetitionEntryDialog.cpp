@@ -2,7 +2,8 @@
 #include "ui_CompetitionEntryDialog.h"
 
 CompetitionEntryDialog::CompetitionEntryDialog(QWidget *parent) :
-    QDialog(parent), ui(new Ui::CompetitionEntryDialog)
+    QDialog(parent), ui(new Ui::CompetitionEntryDialog),
+    competitionCreated(false)
 {
     // GUI Configuration
     this->ui->setupUi(this);
