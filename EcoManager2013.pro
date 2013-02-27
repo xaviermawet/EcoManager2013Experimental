@@ -29,7 +29,30 @@ SOURCES += main.cpp\
     Map/MapScene.cpp \
     Common/ColorPicker.cpp \
     DBModule/GeoCoordinate.cpp \
-    Map/MapFrame.cpp
+    Map/MapFrame.cpp \
+    DBModule/DataPoint.cpp \
+    DBModule/ExportModule.cpp \
+    DBModule/Zone.cpp \
+    DBModule/Race.cpp \
+    DBModule/LapDetector.cpp \
+    ExtensibleEllipseItem.cpp \
+    RaceViewer.cpp \
+    DBModule/ImportModule.cpp \
+    Common/ColorizerProxyModel.cpp \
+    Common/TreeItem.cpp \
+    Common/HierarchicalProxyModel.cpp \
+    Common/GroupProxyModel.cpp \
+    Common/GroupingTreeModel.cpp \
+    Utils/CSVParser.cpp \
+    Utils/CSVParser2.cpp \
+    Utils/Exception.cpp \
+    CompetitionProxyModel.cpp \
+    Plot/Scale.cpp \
+    Plot/HorizontalScale.cpp \
+    Plot/VerticalScale.cpp \
+    Plot/PlotView.cpp \
+    Plot/PlotCurve.cpp \
+    Plot/PlotFrame.cpp
 
 HEADERS  += MainWindow.hpp \
     ResourceInstaller.hpp \
@@ -47,7 +70,30 @@ HEADERS  += MainWindow.hpp \
     Map/MapScene.hpp \
     Common/ColorPicker.hpp \
     DBModule/GeoCoordinate.hpp \
-    Map/MapFrame.hpp
+    Map/MapFrame.hpp \
+    DBModule/DataPoint.hpp \
+    DBModule/ExportModule.hpp \
+    DBModule/Zone.hpp \
+    DBModule/Race.hpp \
+    DBModule/LapDetector.hpp \
+    ExtensibleEllipseItem.hpp \
+    RaceViewer.hpp \
+    DBModule/ImportModule.hpp \
+    Common/ColorizerProxyModel.hpp \
+    Common/TreeItem.hpp \
+    Common/HierarchicalProxyModel.hpp \
+    Common/GroupProxyModel.hpp \
+    Common/GroupingTreeModel.hpp \
+    Utils/CSVParser.hpp \
+    Utils/CSVParser2.hpp \
+    Utils/Exception.hpp \
+    CompetitionProxyModel.hpp \
+    Plot/Scale.hpp \
+    Plot/HorizontalScale.hpp \
+    Plot/VerticalScale.hpp \
+    Plot/PlotView.hpp \
+    Plot/PlotCurve.hpp \
+    Plot/PlotFrame.hpp
 
 FORMS    += MainWindow.ui \
     CompetitionEntryDialog.ui \
