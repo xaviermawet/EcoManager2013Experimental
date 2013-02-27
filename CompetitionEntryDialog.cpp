@@ -47,7 +47,7 @@ QString CompetitionEntryDialog::competitionName(void) const
 
 void CompetitionEntryDialog::on_buttonBox_accepted(void)
 {
-    if (this->ui->placeLineEdit->text().isEmpty())
+    if (this->ui->competitionComboBox->currentText().isEmpty())
     {
         QMessageBox::warning(this, tr("Erreur de formulaire"),
                              tr("Merci de fournir le nom de la compétition"));
