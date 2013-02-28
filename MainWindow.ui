@@ -63,48 +63,124 @@
         </item>
        </layout>
       </widget>
-      <widget class="QSplitter" name="MapPlotSplitter">
+      <widget class="QSplitter" name="MapPlotAndRaceSplitter">
        <property name="orientation">
-        <enum>Qt::Vertical</enum>
+        <enum>Qt::Horizontal</enum>
        </property>
-       <widget class="QSplitter" name="mapSplitter">
+       <widget class="QSplitter" name="MapPlotSplitter">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Vertical</enum>
         </property>
-        <widget class="QTableView" name="sectorView">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+        <widget class="QSplitter" name="mapSplitter">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
          </property>
-         <property name="selectionMode">
-          <enum>QAbstractItemView::SingleSelection</enum>
+         <widget class="QTableView" name="sectorView">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SingleSelection</enum>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QTabWidget" name="plotsTabWidget">
+         <property name="currentIndex">
+          <number>0</number>
          </property>
-         <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
-         </property>
+         <widget class="QWidget" name="tabDistance">
+          <attribute name="title">
+           <string>Distance</string>
+          </attribute>
+         </widget>
+         <widget class="QWidget" name="tabTime">
+          <attribute name="title">
+           <string>Temps</string>
+          </attribute>
+         </widget>
+         <widget class="QWidget" name="tabMegaSquirt">
+          <attribute name="title">
+           <string>MegaSquirt</string>
+          </attribute>
+          <layout class="QHBoxLayout" name="megaSquirtHorizontalLayout">
+           <property name="margin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QSplitter" name="megaSquirtSplitter">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <widget class="QGroupBox" name="megaSquirtGroupBox">
+              <property name="title">
+               <string>Paramètres</string>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout">
+               <property name="margin">
+                <number>0</number>
+               </property>
+               <item>
+                <spacer name="verticalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QComboBox" name="megaSquirtComboBox1"/>
+               </item>
+               <item>
+                <widget class="QComboBox" name="megaSquirtComboBox2"/>
+               </item>
+               <item>
+                <widget class="QComboBox" name="megaSquirtComboBox3"/>
+               </item>
+               <item>
+                <widget class="QComboBox" name="megaSquirtComboBox4"/>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </widget>
-       <widget class="QTabWidget" name="plotsTabWidget">
-        <property name="currentIndex">
-         <number>0</number>
+       <widget class="QTreeView" name="raceTable">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
-        <widget class="QWidget" name="tabDistance">
-         <attribute name="title">
-          <string>Distance</string>
-         </attribute>
-        </widget>
-        <widget class="QWidget" name="tabTime">
-         <attribute name="title">
-          <string>Temps</string>
-         </attribute>
-        </widget>
-        <widget class="QWidget" name="tabMegaSquirt">
-         <attribute name="title">
-          <string>MegaSquirt</string>
-         </attribute>
-        </widget>
        </widget>
       </widget>
      </widget>
@@ -148,7 +224,31 @@
     <addaction name="separator"/>
     <addaction name="actionAboutQt"/>
    </widget>
+   <widget class="QMenu" name="menuDisplay">
+    <property name="title">
+     <string>Affichage</string>
+    </property>
+    <widget class="QMenu" name="menuDisplayRaceTable">
+     <property name="title">
+      <string>Tableau de données</string>
+     </property>
+     <addaction name="actionDisplayRaceTableData"/>
+     <addaction name="actionDisplayRaceTableAbove"/>
+     <addaction name="actionDisplayRaceTableUnder"/>
+     <addaction name="actionDisplayRaceTableOnRight"/>
+     <addaction name="actionDisplayRaceTableOnLeft"/>
+    </widget>
+    <widget class="QMenu" name="menuDisplayRaceView">
+     <property name="title">
+      <string>Liste des courses</string>
+     </property>
+     <addaction name="actionDisplayRaceView"/>
+    </widget>
+    <addaction name="menuDisplayRaceTable"/>
+    <addaction name="menuDisplayRaceView"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuDisplay"/>
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -264,6 +364,48 @@
    </property>
    <property name="toolTip">
     <string>Exporter les données du tour dans un fichier CSV</string>
+   </property>
+  </action>
+  <action name="actionDisplayRaceTableData">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Afficher</string>
+   </property>
+  </action>
+  <action name="actionDisplayRaceTableUnder">
+   <property name="text">
+    <string>Positionner en dessous</string>
+   </property>
+  </action>
+  <action name="actionDisplayRaceTableAbove">
+   <property name="text">
+    <string>Positionner au dessus</string>
+   </property>
+  </action>
+  <action name="actionDisplayRaceTableOnRight">
+   <property name="text">
+    <string>Positionner à droite</string>
+   </property>
+  </action>
+  <action name="actionDisplayRaceTableOnLeft">
+   <property name="text">
+    <string>Positionner à gauche</string>
+   </property>
+  </action>
+  <action name="actionDisplayRaceView">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Afficher</string>
    </property>
   </action>
  </widget>

@@ -45,14 +45,14 @@ QModelIndex GroupingTreeModel::parent(const QModelIndex &child) const
         return createIndex(parentItem->row(), 0, parentItem);
 }
 
-int GroupingTreeModel::rowCount(const QModelIndex &parent) const
+int GroupingTreeModel::rowCount(const QModelIndex& parent) const
 {
     if (parent.column() > 0)
         return 0;
 
     TreeItem* parentItem;
 
-    if (! parent.isValid())
+    if (!parent.isValid())
         parentItem = rootItem;
     else
         parentItem = static_cast<TreeItem*>(parent.internalPointer());

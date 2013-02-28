@@ -14,8 +14,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Building of the parts of the MainWindow
     this->createRaceView();
+    this->createRaceTable();
     this->createMapZone();
     this->createPlotZone();
+    this->createMegaSquirtZone();
     this->createToolsBar();
 
     // Connect all the signals
@@ -290,18 +292,55 @@ void MainWindow::on_actionExportTrackDataInCSV_triggered(void)
               "tour correctement récupéré --> Exportation dans un fichier CSV");
 }
 
+void MainWindow::on_actionDisplayRaceTableData_triggered(bool checked)
+{
+    this->ui->raceTable->setVisible(checked);
+}
+
+void MainWindow::on_actionDisplayRaceTableUnder_triggered()
+{
+    this->ui->MapPlotAndRaceSplitter->setOrientation(Qt::Vertical);
+    this->ui->MapPlotAndRaceSplitter->insertWidget(1, this->ui->raceTable);
+}
+
+void MainWindow::on_actionDisplayRaceTableAbove_triggered()
+{
+    this->ui->MapPlotAndRaceSplitter->setOrientation(Qt::Vertical);
+    this->ui->MapPlotAndRaceSplitter->insertWidget(0, this->ui->raceTable);
+}
+
+void MainWindow::on_actionDisplayRaceTableOnRight_triggered()
+{
+    this->ui->MapPlotAndRaceSplitter->setOrientation(Qt::Horizontal);
+    this->ui->MapPlotAndRaceSplitter->insertWidget(1, this->ui->raceTable);
+}
+
+void MainWindow::on_actionDisplayRaceTableOnLeft_triggered()
+{
+    this->ui->MapPlotAndRaceSplitter->setOrientation(Qt::Horizontal);
+    this->ui->MapPlotAndRaceSplitter->insertWidget(0, this->ui->raceTable);
+}
+
+void MainWindow::on_actionDisplayRaceView_triggered(bool checked)
+{
+    this->ui->raceFrame->setVisible(checked);
+}
+
 void MainWindow::loadCompetition(int index)
 {
     this->currentCompetition = competitionNameModel->record(index).value(0).toString();
 
-    this->mapScene->clear();
+    this->clearAllData(); // Clear all tracks information of each view
+    this->mapScene->clearSectors(); // clear sectors
 
+    // clear the sector view
     if (this->sectorModel)
     {
         this->sectorModel->clear();
         this->ui->sectorView->update();
     }
 
+    // Load races information
     this->reloadRaceView();
 }
 
@@ -519,6 +558,77 @@ void MainWindow::createPlotZone(void)
     timePlotLayout->addWidget(this->timePlotFrame);
 }
 
+void MainWindow::createMegaSquirtZone(void)
+{
+    // Create MegaSquirt plot frame
+    this->megaSquirtPlotFrame = new PlotFrame;
+    HorizontalScale* timeAxis = new HorizontalScale(Scale::Bottom);
+    timeAxis->setResolution(5);
+    timeAxis->setUnitLabel("t(s)");
+    this->megaSquirtPlotFrame->addHorizontalAxis(timeAxis);
+
+    // Add the plot frame to the megaSquirt splitter
+    this->ui->megaSquirtSplitter->addWidget(this->megaSquirtPlotFrame);
+
+    // Build model (model) for the comboBoxes (view/controler)
+    QStringList megaSquirtParamList;
+    megaSquirtParamList << "RPM" << "Batt V" << "PW" << "Gammae" << "Gair";
+    QStringListModel* megaSquirtParamModel = new QStringListModel(megaSquirtParamList);
+
+    // Apply the model to each comboBox
+    this->ui->megaSquirtComboBox1->setModel(megaSquirtParamModel);
+    this->ui->megaSquirtComboBox2->setModel(megaSquirtParamModel);
+    this->ui->megaSquirtComboBox3->setModel(megaSquirtParamModel);
+    this->ui->megaSquirtComboBox4->setModel(megaSquirtParamModel);
+}
+
+void MainWindow::createRaceTable(void)
+{
+    // Add column header names
+    //this->ui->raceTable->header()
+
+
+
+// _________________________________________________________________________________________
+
+    /*
+    QStandardItemModel* raceTableModel = new QStandardItemModel(5, 3);
+    raceTableModel->setItem(3, 1,new QStandardItem("Hello World"));
+    this->ui->raceTable->setModel(raceTableModel);
+    this->ui->raceTable->resizeColumnsToContents();
+    */
+
+
+    /*
+    this->raceInformationTableModel = new QStandardItemModel(0, 4);
+    this->raceInformationTableModel->setHeaderData(0, Qt::Horizontal, "Tps(s)", Qt::DisplayRole);
+    this->raceInformationTableModel->setHeaderData(1, Qt::Horizontal, "Dist(m)", Qt::DisplayRole);
+    this->raceInformationTableModel->setHeaderData(2, Qt::Horizontal, "V(km\\h)", Qt::DisplayRole);
+    this->raceInformationTableModel->setHeaderData(3, Qt::Horizontal, "Acc (m/s2)", Qt::DisplayRole);
+    this->ui->raceTable->setModel(this->raceInformationTableModel);
+    //this->ui->raceTable->resizeColumnsToContents();
+    */
+
+/*
+    QStandardItem* item = new QStandardItem("Hello World");
+
+    QList<QStandardItem*> colonnes;
+    colonnes.append(new QStandardItem("colonne 2"));
+    colonnes.append(new QStandardItem("colonne 3"));
+    item->appendColumn(colonnes);
+
+    QStandardItem* parent = new QStandardItem("parent");
+    QStandardItem* enfant = new QStandardItem("enfant");
+    parent->appendRow(enfant);
+    item->appendRow(parent);
+
+    QStandardItemModel* raceTableModel = new QStandardItemModel;
+    raceTableModel->appendRow(item);
+
+    this->ui->raceView->setModel(raceTableModel);
+    */
+}
+
 void MainWindow::displayDataLap(void)
 {
     QModelIndex curIndex = this->ui->raceView->selectionModel()->currentIndex();
@@ -546,7 +656,7 @@ void MainWindow::displayDataLap(void)
             this->currentTracksDisplayed.append(trackIdentifier);
         }
 
-        // Populate Scene
+        // Populate map scene
         QSqlQuery posQuery("select longitude, latitude, timestamp from POSITION where ref_lap_race = ? and ref_lap_num = ? order by timestamp");
         posQuery.addBindValue(ref_race);
         posQuery.addBindValue(ref_lap);
@@ -576,6 +686,7 @@ void MainWindow::displayDataLap(void)
         if (!this->mapScene->hasSectors())
             this->loadSectors(this->currentCompetition);
 
+        // Populate plot frames (play the plot scene role)
         QSqlQuery speedQuery;
         speedQuery.prepare("select timestamp, value from SPEED where ref_lap_race = ? and ref_lap_num = ? order by timestamp");
         speedQuery.addBindValue(ref_race);
@@ -583,10 +694,10 @@ void MainWindow::displayDataLap(void)
 
         if (speedQuery.exec())
         {
-            QList<IndexedPosition> distSpeedPoints;
-            QList<IndexedPosition> timeSpeedPoints;
-            QList<IndexedPosition> dAccPoints;
-            QList<IndexedPosition> tAccPoints;
+            QList<IndexedPosition> distSpeedPoints; // liste des points de la vitesse par rapport à la distance
+            QList<IndexedPosition> timeSpeedPoints; // Liste des points de la vitesse par rapport au temps
+            QList<IndexedPosition> dAccPoints;      // Liste des points de l'accélération par rapport à la distance
+            QList<IndexedPosition> tAccPoints;      // Liste des points de l'accélération par rapport au temps
             QPointF lastSpeed;
             QPointF lastValidSpeed;
             int count = 0;

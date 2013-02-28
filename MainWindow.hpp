@@ -52,6 +52,12 @@ class MainWindow : public QMainWindow
         void on_actionDelimitingSectors_triggered(void);
         void on_raceView_customContextMenuRequested(const QPoint &pos);
         void on_actionExportTrackDataInCSV_triggered(void);
+        void on_actionDisplayRaceTableData_triggered(bool checked);
+        void on_actionDisplayRaceTableUnder_triggered();
+        void on_actionDisplayRaceTableAbove_triggered();
+        void on_actionDisplayRaceTableOnRight_triggered();
+        void on_actionDisplayRaceTableOnLeft_triggered();
+        void on_actionDisplayRaceView_triggered(bool checked);
 
         // Personal slots
         void loadCompetition(int index);
@@ -67,10 +73,12 @@ class MainWindow : public QMainWindow
         void createToolsBar(void);
         void createMapZone(void);
         void createPlotZone(void);
+        void createMegaSquirtZone(void);
+        void createRaceTable(void);
         void displayDataLap(void);
         void connectSignals(void);
         void reloadRaceView(void);
-        void loadSectors(const QString& competitionName); // TODO
+        void loadSectors(const QString& competitionName);
 
     protected:
 
@@ -88,10 +96,14 @@ class MainWindow : public QMainWindow
         // Plot
         PlotFrame* distancePlotFrame;
         PlotFrame* timePlotFrame;
+        PlotFrame* megaSquirtPlotFrame;
 
         // Models
         QSqlTableModel* sectorModel;
         QSqlTableModel* competitionNameModel;
+
+        // ----------------------------------------
+        QStandardItemModel* raceInformationTableModel;
 };
 
 #endif /* __MAINWINDOW_HPP__ */
