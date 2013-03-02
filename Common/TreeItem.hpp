@@ -1,3 +1,14 @@
+/*
+ * Un TreeItem contient :
+ *      - QList<QVariant>  values   --> Valeurs pour chaque colonne
+ *      - QList<TreeItem*> children --> Liste des tous ses enfants
+ *
+ * Si un TreeItem est le rootItem, il contient la liste des tous les noeds
+ * principaux dans "children" et ne possède aucune valeur dans "values".
+ * On utilise donc la liste des valeurs pour y sauver le nom de toutes
+ * les colonnes
+ */
+
 #ifndef __TREEITEM_HPP__
 #define __TREEITEM_HPP__
 
@@ -31,8 +42,8 @@ class TreeItem
 
         TreeItem* parentItem;
         QList<TreeItem*> children;
-        QList<QVariant> values;
-        int count;
+        QList<QVariant> values; // Liste des valeurs pour les différentes colonnes. Si c'est le rootItem sa QList<QVariant> values doit être nule
+        int count; // Nombre de colonnes. Si un enfant à un plus grand nombre de colonnes que l'élément courant, cette variable vaudra le nombre de colonnes de sont enfant qui en a le plus
         QList<int> mappedRows;
         bool alterable;
 };

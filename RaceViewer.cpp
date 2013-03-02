@@ -67,10 +67,10 @@ RaceViewer::RaceViewer(const QList<GeoCoordinate> &racePoints, QWidget *parent)
     marker->setZValue(100);
     scene->addItem(marker);
 
-    QPushButton* okButton = new QPushButton("Ok");
+    QPushButton* okButton = new QPushButton(tr("Ok"));
     connect(okButton, SIGNAL(clicked()), this, SLOT(accept()));
 
-    QPushButton* cancelButton = new QPushButton("Cancel");
+    QPushButton* cancelButton = new QPushButton(tr("Annuler"));
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 
     QHBoxLayout* viewerLayout = new QHBoxLayout;

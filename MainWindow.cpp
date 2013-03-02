@@ -82,45 +82,44 @@ void MainWindow::on_actionQuit_triggered(void)
 // importData
 void MainWindow::on_actionImport_triggered(void)
 {
-    QFileDialog dirChooser(this);
-    dirChooser.setFileMode(QFileDialog::Directory);
-
-    if (dirChooser.exec() == QFileDialog::Accepted)
+    // Select the directory that content race data and enter race information
+    CompetitionEntryDialog dial;
+    QString raceDirectoryPath = QFileDialog::getExistingDirectory(this);
+    if (raceDirectoryPath.isEmpty() || dial.exec() != QDialog::Accepted)
     {
-        QStringList dirPaths = dirChooser.selectedFiles();
-        QDir selectedDir(dirPaths.at(0));
-        QString nameCompet;
-
-        ImportModule importer;
-        CompetitionEntryDialog dial;
-
-        if (dial.exec() == QDialog::Accepted)
-        {
-            nameCompet = dial.competitionName();
-
-            if (dial.isNewlyCreated())
-            {
-                importer.createCompetition(nameCompet, dial.wheelRadius() / 100.0, dial.place());
-                competitionNameModel->select();
-            }
-        }
-        else
-            return;
-
-        Race newRace(nameCompet);
-        newRace.setDate(dial.date());
-        importer.addRace(newRace, selectedDir);
-
-        if (!importer.importSuceed())
-        {
-            qWarning() << importer.getErrorString();
-        }
-        else
-        {
-            this->reloadRaceView();
-        }
-
+        QMessageBox::information(this, tr("Importation annulée"),
+                                 tr("L'importation des données de la course"
+                                    " a été <strong>annulée</strong>"));
+        return;
     }
+
+    ImportModule raceInformationImporter;
+
+    if (dial.isNewlyCreated())
+    {
+        // Create new entry for the competition in the database
+        raceInformationImporter.createCompetition(dial.competitionName(),
+                                                  dial.wheelRadius()/ 100.0,
+                                                  dial.place());
+
+        // Update combobox taht contains the list of competition names
+        this->competitionNameModel->select();
+    }
+
+    Race newRace(dial.competitionName());
+    newRace.setDate(dial.date());
+
+    raceInformationImporter.addRace(newRace, raceDirectoryPath);
+    if (!raceInformationImporter.importSuceed())
+    {
+        QMessageBox::warning(this, tr("Erreur d'importation"),
+                             raceInformationImporter.getErrorString());
+    }
+    else
+    {
+        this->reloadRaceView();
+    }
+
 }
 
 void MainWindow::on_actionAboutEcoManager2013_triggered(void)
@@ -656,7 +655,9 @@ void MainWindow::displayDataLap(void)
             this->currentTracksDisplayed.append(trackIdentifier);
         }
 
-        // Populate map scene
+        /* ------------------------------------------------------------------ *
+         *                         Populate map scene                         *
+         * ------------------------------------------------------------------ */
         QSqlQuery posQuery("select longitude, latitude, timestamp from POSITION where ref_lap_race = ? and ref_lap_num = ? order by timestamp");
         posQuery.addBindValue(ref_race);
         posQuery.addBindValue(ref_lap);
@@ -686,7 +687,9 @@ void MainWindow::displayDataLap(void)
         if (!this->mapScene->hasSectors())
             this->loadSectors(this->currentCompetition);
 
-        // Populate plot frames (play the plot scene role)
+        /* ------------------------------------------------------------------ *
+         *         Populate plot frames (play the role of plot scene )        *
+         * ------------------------------------------------------------------ */
         QSqlQuery speedQuery;
         speedQuery.prepare("select timestamp, value from SPEED where ref_lap_race = ? and ref_lap_num = ? order by timestamp");
         speedQuery.addBindValue(ref_race);
@@ -864,7 +867,7 @@ void MainWindow::reloadRaceView(void)
 
     this->competitionModel = new GroupingTreeModel(this);
     QList<int> cols;
-    cols << 0 << 1;
+    cols << 0 << 1; // ce par quoi on va grouper les élément dans la vue (première colonne)
     this->competitionModel->setSourceModel(model, cols);
 
     CompetitionProxyModel* wrapper = new CompetitionProxyModel(this);
@@ -879,8 +882,8 @@ void MainWindow::reloadRaceView(void)
     this->ui->raceView->resizeColumnToContents(0);
 
     /* Do not show race.id or lap.num through view*/
-    this->ui->raceView->setColumnHidden(1, true);
-    this->ui->raceView->setColumnHidden(2, true);
+    //this->ui->raceView->setColumnHidden(1, true);
+    //this->ui->raceView->setColumnHidden(2, true);
 
 //    connect(this->ui->raceView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), this, SLOT(competitionSelection(QItemSelection,QItemSelection)));
 }

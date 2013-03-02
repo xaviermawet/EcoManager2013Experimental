@@ -16,17 +16,21 @@ QModelIndex GroupingTreeModel::index(int row, int column, const QModelIndex &par
     if (!hasIndex(row, column, parent))
         return QModelIndex();
 
-    TreeItem* parentItem;
+//    TreeItem* parentItem;
 
-    if (!parent.isValid())
-        parentItem = rootItem;
-    else
-        parentItem = static_cast<TreeItem*>(parent.internalPointer());
+//    // correspond à la méthode nodeFromIndex de la page 253 du livre Qt 4 ------
+//    if (!parent.isValid())
+//        parentItem = rootItem;
+//    else
+//        parentItem = static_cast<TreeItem*>(parent.internalPointer());
+//    // -------------------------------------------------------------------------
 
-    TreeItem* childItem = parentItem->child(row);
+    TreeItem* parentItem = this->nodeFromIndex(parent);
+
+    TreeItem* childItem = parentItem->child(row); // peut être NULL
 
     if (childItem)
-        return createIndex(row, column, childItem);
+        return createIndex(row, column, childItem); // Méthode de QAbstractItemModel
     else
         return QModelIndex();
 }
@@ -34,7 +38,7 @@ QModelIndex GroupingTreeModel::index(int row, int column, const QModelIndex &par
 QModelIndex GroupingTreeModel::parent(const QModelIndex &child) const
 {
     if (!child.isValid())
-        return QModelIndex();
+        return QModelIndex(); // un index de modèle invalide représente la racine dans un modèle
 
     TreeItem* childItem = static_cast<TreeItem*>(child.internalPointer());
     TreeItem* parentItem = childItem->parent();
@@ -50,13 +54,19 @@ int GroupingTreeModel::rowCount(const QModelIndex& parent) const
     if (parent.column() > 0)
         return 0;
 
-    TreeItem* parentItem;
+//    TreeItem* parentItem;
 
-    if (!parent.isValid())
-        parentItem = rootItem;
-    else
-        parentItem = static_cast<TreeItem*>(parent.internalPointer());
+//    if (!parent.isValid())
+//        parentItem = rootItem;
+//    else
+//        parentItem = static_cast<TreeItem*>(parent.internalPointer());
 
+    TreeItem* parentItem = this->nodeFromIndex(parent);
+    if (!parentItem)
+        return 0;
+
+    /* Le nombre de ligne d'un élément particulier correspond simplement
+     * au nombre d'enfants qu'il possède */
     return parentItem->childrenCount();
 }
 
@@ -164,30 +174,39 @@ void GroupingTreeModel::setSourceModel(QAbstractTableModel* model, const QList<i
    QList<QVariant> fields;
    int count(model->columnCount());
 
+   qDebug() << "setSourceModel >> Il y a " << QString::number(count) << " colonnes";
+
    foreach (int i, grCols)
+   {
+       qDebug() << QString::number(i);
        fields << model->headerData(i, Qt::Horizontal, Qt::DisplayRole);
+   }
 
    for (int i(0); i < count; i++)
    {
-       if (! grCols.contains(i))
+       if (!grCols.contains(i))
+       {
+           qDebug() << QString::number(i);
            fields << model->headerData(i, Qt::Horizontal, Qt::DisplayRole);
+       }
    }
 
    Group root;
    Group* curGroup = &root;
-   rootItem = new TreeItem(fields);
+   rootItem = new TreeItem(fields); // La QList<QVariant> values contiendra les noms de tous les headers
    rootItem->setAlterable(defaultPolicy);
    root.item = rootItem;
    int rowCount(model->rowCount());
 
-   for (int i(0); i < rowCount; i++)
+   for (int i(0); i < rowCount; i++) // pour toutes les lignes
    {
-       for (int j(0); j < grCols.size(); j++)
+       // 0 et 1 --> size = 2 --> pq ne pas avoir fait un foreach au lieu d'une boucle for :o ?
+       for (int j(0); j < grCols.size(); j++) // gr cols = les colonnes que l'on veut regrouper
        {
-           int gri = grCols[j];
-           TreeItem* grItem;
-           QModelIndex grIndex = model->index(i, gri);
-           QString groupValue = model->data(grIndex).toString();
+           int gri = grCols[j]; // gri (groupe index) est le véritable index pour la colonne dans le model passé en paramètre
+           TreeItem* grItem; // gr = groupItem
+           QModelIndex grIndex = model->index(i, gri); // Index de l'élément dans le model passé en paramètre
+           QString groupValue = model->data(grIndex).toString(); // récupére la valeur de l'élément à la position (x,y) = (i, gri) --> valeur utilisée pour grouper les éléments du model "tableau" passé en paramètre
 
            if (curGroup->children.contains(groupValue))
            {
@@ -236,4 +255,11 @@ void GroupingTreeModel::setSourceModel(QAbstractTableModel* model, const QList<i
        if (! grCols.contains(i))
            orderedCols << i;
    }
+}
+
+TreeItem* GroupingTreeModel::nodeFromIndex(const QModelIndex &index) const
+{
+    if (!index.isValid())
+        return this->rootItem;
+    return  static_cast<TreeItem*>(index.internalPointer());
 }

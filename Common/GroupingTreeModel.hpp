@@ -33,6 +33,8 @@ class GroupingTreeModel : public QAbstractItemModel
 
     protected:
 
+        TreeItem* nodeFromIndex(const QModelIndex& index) const;
+
         TreeItem* rootItem;
         QAbstractTableModel* sourceModel;
         QList<int> orderedCols;

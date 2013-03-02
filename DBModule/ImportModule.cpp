@@ -318,7 +318,7 @@ bool ImportModule::loadGPSData(const QString &path, Race &race)
             laps = viewer.laps();
         else
         {
-            QMessageBox::information(0, QString("Annulation"), QString("Chargement de la course annul�e"), QMessageBox::Ok);
+            QMessageBox::information(0, QString("Annulation"), QString("Chargement de la course annulée"), QMessageBox::Ok);
             deleteRace(race);
             return false;
         }
