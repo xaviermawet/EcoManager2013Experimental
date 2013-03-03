@@ -827,7 +827,7 @@ void MainWindow::displayDataLap(void)
 //                timePlotFrame->scene()->addPath(builder.exBound());
 //            }
 
-
+            /*
             QList<QVariant> raceInformation;
             for (int i(0); i < tAccPoints.count(); i++)
             {
@@ -845,6 +845,28 @@ void MainWindow::displayDataLap(void)
 
                 this->raceInformationTableModel->addRaceInformation(raceInformation);
             }
+            */
+
+
+            QList<QVariant> raceInformation;
+            for (int i(0); i < tAccPoints.count(); i++)
+            {
+                raceInformation.clear();
+
+                // ajout des informations
+                raceInformation.append(QVariant());
+                raceInformation.append(timeSpeedPoints.at(i).index()); // tps 1
+                raceInformation.append(timeSpeedPoints.at(i).index()); // tps 2
+                raceInformation.append(distSpeedPoints.at(i).x()); // distance
+                raceInformation.append(timeSpeedPoints.at(i).y()); // vitesse
+                raceInformation.append(tAccPoints.at(i).y()); // Acceleration
+                raceInformation.append("RPM"); // RPM
+                raceInformation.append("PW"); // PW
+
+                this->raceInformationTableModel->addRaceInformation(
+                            ref_race, ref_lap, raceInformation);
+            }
+
         }
 
     }
@@ -928,8 +950,8 @@ void MainWindow::reloadRaceView(void)
     this->ui->raceView->resizeColumnToContents(0);
 
     /* Do not show race.id or lap.num through view*/
-    //this->ui->raceView->setColumnHidden(1, true);
-    //this->ui->raceView->setColumnHidden(2, true);
+    this->ui->raceView->setColumnHidden(1, true);
+    this->ui->raceView->setColumnHidden(2, true);
 
 //    connect(this->ui->raceView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), this, SLOT(competitionSelection(QItemSelection,QItemSelection)));
 }

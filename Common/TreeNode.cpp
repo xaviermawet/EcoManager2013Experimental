@@ -1,14 +1,21 @@
 #include "TreeNode.hpp"
 
+TreeNode::TreeNode(const QVariant &data, TreeNode *parent) :
+    parentItem(parent), count(1)
+{
+    this->itemData << data;
+}
+
 TreeNode::TreeNode(const QList<QVariant>& data, TreeNode* parent) :
-    parentItem(parent)
+    itemData(data), parentItem(parent), count(data.count())
  {
-     this->itemData = data;
+     //this->itemData = data;
  }
 
  TreeNode::~TreeNode(void)
  {
      qDeleteAll(this->childItems);
+     this->childItems.clear();
  }
 
  TreeNode* TreeNode::parent(void)
@@ -29,6 +36,9 @@ TreeNode::TreeNode(const QList<QVariant>& data, TreeNode* parent) :
  void TreeNode::appendChild(TreeNode* item)
  {
      this->childItems.append(item);
+
+     if (item->columnCount() > this->count)
+         this->count = item->columnCount();
  }
 
  int TreeNode::childCount(void) const
@@ -38,7 +48,8 @@ TreeNode::TreeNode(const QList<QVariant>& data, TreeNode* parent) :
 
  int TreeNode::columnCount(void) const
  {
-     return itemData.count();
+     //return itemData.count();
+     return this->count;
  }
 
  int TreeNode::row(void) const

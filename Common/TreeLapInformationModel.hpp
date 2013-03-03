@@ -24,7 +24,10 @@ class TreeLapInformationModel : public QAbstractItemModel
         virtual QVariant headerData(int section, Qt::Orientation orientation,
                                     int role) const;
 
-        void addRaceInformation(const QList<QVariant>& data);
+        void addRaceInformation(int refRace, int refLap,
+                                const QList<QVariant>& data);
+        void addMultipleRaceInformation(int refRace, int refLap,
+                                        const QList< QList<QVariant> >& data);
 
     private:
 

@@ -5,6 +5,7 @@ TreeLapInformationModel::TreeLapInformationModel(const QList<QVariant>& headers,
     QAbstractItemModel(parent)
 {
     this->rootItem = new TreeNode(headers);
+    this->reset();
 }
 
 TreeLapInformationModel::~TreeLapInformationModel(void)
@@ -103,11 +104,107 @@ QVariant TreeLapInformationModel::headerData(int section,
     return QVariant();
 }
 
-void TreeLapInformationModel::addRaceInformation(const QList<QVariant> &data)
+void TreeLapInformationModel::addRaceInformation(int refRace, int refLap,
+                                                 const QList<QVariant> &data)
 {
-    // Add simply a new tree node to the root item
-    TreeNode* newNode = new TreeNode(data, this->rootItem);
-    this->rootItem->appendChild(newNode);
+    TreeNode* refRaceNode = NULL; bool refRaceFound(false);
+    TreeNode* refLapNode  = NULL; bool refLapFound(false);
+
+    // Check if an entry for the race already exists
+    for (int i(0); i < this->rootItem->childCount(); i++)
+    {
+        refRaceNode = this->rootItem->child(i);
+
+        if (refRaceNode->data(0).toInt() == refRace)
+        {
+            refRaceFound = true;
+            break;
+        }
+    }
+
+    // Create entry for the race if it dosen't exists
+    if (!refRaceFound)
+    {
+        qDebug() << "Création d'une entree pour la course";
+        refRaceNode = new TreeNode(refRace, this->rootItem);
+        this->rootItem->appendChild(refRaceNode);
+    }
+    else
+    {
+        /* Entry for the race exists, check if an entry for the lap ref exist
+         * in the race reference entry */
+        for (int i(0); i < refRaceNode->childCount(); i++)
+        {
+            refLapNode = refRaceNode->child(i);
+
+            if (refLapNode->data(0).toInt() == refLap)
+            {
+                refLapFound = true;
+                break;
+            }
+        }
+    }
+
+    if (!refLapFound)
+    {
+        qDebug() << "Creation d'une entree pour le tour";
+        refLapNode = new TreeNode(refLap, refRaceNode);
+        refRaceNode->appendChild(refLapNode);
+    }
+
+    // Append row with lap information
+    TreeNode* newLapInfoNode = new TreeNode(data, refLapNode);
+    refLapNode->appendChild(newLapInfoNode);
+
+    this->reset();
+}
+
+void TreeLapInformationModel::addMultipleRaceInformation(
+        int refRace, int refLap, const QList<QList<QVariant> > &data)
+{
+    TreeNode* refRaceNode = NULL;
+    TreeNode* refLapNode  = NULL;
+
+    // Check if an entry for the race already exists
+    for (int i(0); i < this->rootItem->childCount(); i++)
+    {
+        refRaceNode = this->rootItem->child(i);
+
+        if (refRaceNode->data(0).toInt() == refRace)
+            break;
+    }
+
+    // Create entry for the race if it dosen't exists
+    if (!refRaceNode)
+    {
+        refRaceNode = new TreeNode(refRace, this->rootItem);
+        this->rootItem->appendChild(refRaceNode);
+    }
+    else
+    {
+        /* Entry for the race exists, check if an entry for the lap ref exist
+         * in the race reference entry */
+        for (int i(0); i < refRaceNode->childCount(); i++)
+        {
+            refLapNode = refRaceNode->child(i);
+
+            if (refLapNode->data(0).toInt() == refLap)
+                break;
+        }
+    }
+
+    if (!refLapNode)
+    {
+        refLapNode = new TreeNode(refLap, refRaceNode);
+        refRaceNode->appendChild(refLapNode);
+    }
+
+    // Append rows with lap information
+    for (int i(0); i < data.count(); i++)
+    {
+        TreeNode* newLapInfoNode = new TreeNode(data.at(i), refLapNode);
+        refLapNode->appendChild(newLapInfoNode);
+    }
 
     this->reset();
 }

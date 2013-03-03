@@ -7,6 +7,7 @@ class TreeNode
 {
     public:
 
+        TreeNode(const QVariant& data, TreeNode* parent = 0);
         TreeNode(const QList<QVariant>& data, TreeNode* parent = 0);
         ~TreeNode(void);
 
@@ -24,6 +25,8 @@ class TreeNode
         QList<TreeNode*> childItems;
         QList<QVariant> itemData;
         TreeNode *parentItem;
+
+        int count;
 };
 
 #endif // TREENODE_HPP
