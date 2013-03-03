@@ -52,7 +52,10 @@ SOURCES += main.cpp\
     Plot/VerticalScale.cpp \
     Plot/PlotView.cpp \
     Plot/PlotCurve.cpp \
-    Plot/PlotFrame.cpp
+    Plot/PlotFrame.cpp \
+    Common/TreeLapInformationModel.cpp \
+    Common/TreeNode.cpp \
+    LapInformationProxyModel.cpp
 
 HEADERS  += MainWindow.hpp \
     ResourceInstaller.hpp \
@@ -93,7 +96,10 @@ HEADERS  += MainWindow.hpp \
     Plot/VerticalScale.hpp \
     Plot/PlotView.hpp \
     Plot/PlotCurve.hpp \
-    Plot/PlotFrame.hpp
+    Plot/PlotFrame.hpp \
+    Common/TreeLapInformationModel.hpp \
+    Common/TreeNode.hpp \
+    LapInformationProxyModel.hpp
 
 FORMS    += MainWindow.ui \
     CompetitionEntryDialog.ui \

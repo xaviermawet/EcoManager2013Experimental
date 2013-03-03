@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>892</width>
-    <height>445</height>
+    <width>1200</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,16 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="mainVerticalLayout">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
      <number>0</number>
     </property>
     <item>
@@ -35,7 +44,16 @@
         </size>
        </property>
        <layout class="QVBoxLayout" name="raceVerticalLayout_2">
-        <property name="margin">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
          <number>0</number>
         </property>
         <item>
@@ -109,7 +127,16 @@
            <string>MegaSquirt</string>
           </attribute>
           <layout class="QHBoxLayout" name="megaSquirtHorizontalLayout">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -125,7 +152,16 @@
                <bool>false</bool>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout">
-               <property name="margin">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
                 <number>0</number>
                </property>
                <item>
@@ -192,8 +228,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>892</width>
-     <height>20</height>
+     <width>1200</width>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

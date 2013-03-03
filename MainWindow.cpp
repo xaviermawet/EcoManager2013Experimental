@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->createPlotZone();
     this->createMegaSquirtZone();
     this->createToolsBar();
+    this->reziseSplitters();
 
     // Connect all the signals
     this->connectSignals();
@@ -626,6 +627,32 @@ void MainWindow::createRaceTable(void)
 
     this->ui->raceView->setModel(raceTableModel);
     */
+
+    QList<QVariant> headers;
+    headers << "Course" << "Tps(s)" << "Tps(s)" << "Dist(m)" << "v(km\\h)"
+            << "Acc(m/s2)" << "RPM" << "PW";
+    this->raceInformationTableModel = new TreeLapInformationModel(headers);
+
+    // Use a proxy model to manage background color of each row
+    LapInformationProxyModel* wrapper = new LapInformationProxyModel(this);
+    wrapper->setSourceModel(this->raceInformationTableModel);
+
+    this->ui->raceTable->setModel(wrapper);
+}
+
+void MainWindow::reziseSplitters(void)
+{
+    QList<int> sizeList;
+
+    // The map zone and the plot zone have the same size
+    sizeList << this->ui->MapPlotSplitter->height() / 2  /* Map zone size */
+             << this->ui->MapPlotSplitter->height() / 2; /* Plots zone size */
+    this->ui->MapPlotSplitter->setSizes(sizeList);
+
+    // Hide the table of lap information
+    sizeList.clear();
+    sizeList << this->ui->MapPlotAndRaceSplitter->width() << 0;
+    this->ui->MapPlotAndRaceSplitter->setSizes(sizeList);
 }
 
 void MainWindow::displayDataLap(void)
@@ -799,6 +826,25 @@ void MainWindow::displayDataLap(void)
 //                    builder.append(tAccPoints.at(i));
 //                timePlotFrame->scene()->addPath(builder.exBound());
 //            }
+
+
+            QList<QVariant> raceInformation;
+            for (int i(0); i < tAccPoints.count(); i++)
+            {
+                raceInformation.clear();
+
+                // ajout des informations
+                raceInformation.append("Course " + QString::number(ref_race) + " tour " + QString::number(ref_lap)); // course
+                raceInformation.append(timeSpeedPoints.at(i).index()); // tps 1
+                raceInformation.append(timeSpeedPoints.at(i).index()); // tps 2
+                raceInformation.append(distSpeedPoints.at(i).x()); // distance
+                raceInformation.append(timeSpeedPoints.at(i).y()); // vitesse
+                raceInformation.append(tAccPoints.at(i).y()); // Acceleration
+                raceInformation.append("RPM"); // RPM
+                raceInformation.append("PW"); // PW
+
+                this->raceInformationTableModel->addRaceInformation(raceInformation);
+            }
         }
 
     }
@@ -867,7 +913,7 @@ void MainWindow::reloadRaceView(void)
 
     this->competitionModel = new GroupingTreeModel(this);
     QList<int> cols;
-    cols << 0 << 1; // ce par quoi on va grouper les élément dans la vue (première colonne)
+    cols << 0 << 1; // ce par quoi on va grouper les éléments dans la vue (première colonne)
     this->competitionModel->setSourceModel(model, cols);
 
     CompetitionProxyModel* wrapper = new CompetitionProxyModel(this);

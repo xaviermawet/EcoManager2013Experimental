@@ -17,9 +17,11 @@
 #include "CompetitionEntryDialog.hpp"
 #include "CompetitionProxyModel.hpp"
 #include "Common/GroupingTreeModel.hpp"
+#include "Common/TreeLapInformationModel.hpp"
 #include "DBModule/ExportModule.hpp"
 #include "Common/ColorizerProxyModel.hpp"
 #include "Map/SampleLapViewer.hpp"
+#include "LapInformationProxyModel.hpp"
 
 #include <QtGui>
 #include <QtSql>
@@ -75,6 +77,7 @@ class MainWindow : public QMainWindow
         void createPlotZone(void);
         void createMegaSquirtZone(void);
         void createRaceTable(void);
+        void reziseSplitters(void);
         void displayDataLap(void);
         void connectSignals(void);
         void reloadRaceView(void);
@@ -86,7 +89,6 @@ class MainWindow : public QMainWindow
 
         QComboBox* competitionBox;
         QString currentCompetition;
-        GroupingTreeModel* competitionModel;
         QList< QMap<QString, QVariant> > currentTracksDisplayed;
 
         // Mapping
@@ -102,8 +104,9 @@ class MainWindow : public QMainWindow
         QSqlTableModel* sectorModel;
         QSqlTableModel* competitionNameModel;
 
-        // ----------------------------------------
-        QStandardItemModel* raceInformationTableModel;
+        // Personal Models
+        GroupingTreeModel* competitionModel;
+        TreeLapInformationModel* raceInformationTableModel;
 };
 
 #endif /* __MAINWINDOW_HPP__ */

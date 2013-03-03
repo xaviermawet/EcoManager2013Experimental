@@ -5,7 +5,7 @@ CompetitionProxyModel::CompetitionProxyModel(QObject* parent) :
 {
 }
 
-CompetitionProxyModel::~CompetitionProxyModel()
+CompetitionProxyModel::~CompetitionProxyModel(void)
 {
 }
 

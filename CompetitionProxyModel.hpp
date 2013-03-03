@@ -8,7 +8,7 @@ class CompetitionProxyModel : public QIdentityProxyModel
     public:
 
         CompetitionProxyModel(QObject* parent = 0);
-        virtual ~CompetitionProxyModel();
+        virtual ~CompetitionProxyModel(void);
 
         virtual QVariant data(const QModelIndex &proxyIndex, int role) const;
 };
