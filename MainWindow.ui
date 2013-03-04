@@ -473,7 +473,7 @@
   <action name="actionConfiguredLayout1">
    <property name="icon">
     <iconset resource="Resources.qrc">
-     <normaloff>:/Resources/Icons/windowOne.png</normaloff>:/Resources/Icons/windowOne.png</iconset>
+     <normaloff>:/Resources/Icons/Layout1.png</normaloff>:/Resources/Icons/Layout1.png</iconset>
    </property>
    <property name="text">
     <string>Disposition 1</string>
@@ -488,7 +488,7 @@
   <action name="actionConfiguredLayout2">
    <property name="icon">
     <iconset resource="Resources.qrc">
-     <normaloff>:/Resources/Icons/windowOne.png</normaloff>:/Resources/Icons/windowOne.png</iconset>
+     <normaloff>:/Resources/Icons/Layout2.png</normaloff>:/Resources/Icons/Layout2.png</iconset>
    </property>
    <property name="text">
     <string>Disposition 2</string>
@@ -503,7 +503,7 @@
   <action name="actionConfiguredLayout3">
    <property name="icon">
     <iconset resource="Resources.qrc">
-     <normaloff>:/Resources/Icons/windowOne.png</normaloff>:/Resources/Icons/windowOne.png</iconset>
+     <normaloff>:/Resources/Icons/Layout3.png</normaloff>:/Resources/Icons/Layout3.png</iconset>
    </property>
    <property name="text">
     <string>Disposition 3</string>
@@ -518,7 +518,7 @@
   <action name="actionConfiguredLayout4">
    <property name="icon">
     <iconset resource="Resources.qrc">
-     <normaloff>:/Resources/Icons/windowOne.png</normaloff>:/Resources/Icons/windowOne.png</iconset>
+     <normaloff>:/Resources/Icons/Layout4.png</normaloff>:/Resources/Icons/Layout4.png</iconset>
    </property>
    <property name="text">
     <string>Disposition 4</string>

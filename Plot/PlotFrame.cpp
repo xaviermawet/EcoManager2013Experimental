@@ -194,6 +194,10 @@ void PlotFrame::createToolBar()
    shPointsAction->setCheckable(true);
    shPointsAction->setChecked(true);
 
+   QAction* shVLineAction = new QAction(QIcon(":/Line.png"), tr("Afficher ligne verticale"), this);
+   shVLineAction->setCheckable(true);
+   shVLineAction->setChecked(false);
+
    //QAction* measureAction = new QAction(QIcon(":/icon/measure.png"), tr("Effectuer une mesure"), this);
    //measureAction->setCheckable(true);
 
@@ -201,6 +205,7 @@ void PlotFrame::createToolBar()
 
    _toolbar->addAction(shCurveAction);
    _toolbar->addAction(shPointsAction);
+   _toolbar->addAction(shVLineAction);
 //   toolbar->addAction(measureAction);
    _toolbar->addAction(zoomOutAction);
    //toolbar->addAction(tr("Effacer"), this, SLOT(clearCurves()));

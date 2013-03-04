@@ -36,15 +36,13 @@ class PlotView : public QGraphicsView
        virtual void resizeEvent(QResizeEvent*);
        //virtual void wheelEvent(QWheelEvent*);
 
-       bool clicked;
-       bool delimiting;
-       QStack<QRectF> sceneStack;
-
-    private:
-
        void init(void);
        QRectF globalRect(void) const;
 
+       bool clicked;
+       bool delimiting;
+       QStack<QRectF> sceneStack;
+       QLine rubberLine;
        QLabel* posLabel;
 };
 

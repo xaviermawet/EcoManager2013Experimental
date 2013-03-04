@@ -14,6 +14,10 @@
         <file alias="chartline.png">Resources/Icons/chartline.png</file>
         <file alias="scatter.png">Resources/Icons/chartscatter.png</file>
         <file alias="zoomout.png">Resources/Icons/Actions-zoom-out-icon.png</file>
-        <file>Resources/Icons/windowOne.png</file>
+        <file>Resources/Icons/Layout1.png</file>
+        <file>Resources/Icons/Layout2.png</file>
+        <file>Resources/Icons/Layout3.png</file>
+        <file>Resources/Icons/Layout4.png</file>
+        <file alias="Line.png">Resources/Icons/Line.png</file>
     </qresource>
 </RCC>

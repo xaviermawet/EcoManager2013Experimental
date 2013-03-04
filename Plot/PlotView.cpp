@@ -1,13 +1,13 @@
 #include "PlotView.hpp"
 
 PlotView::PlotView(QWidget* parent) :
-    QGraphicsView(parent), posLabel(NULL)
+    QGraphicsView(parent), rubberLine(), posLabel(NULL)
 {
     this->init();
 }
 
 PlotView::PlotView(QGraphicsScene* scene, QWidget* parent) :
-    QGraphicsView(parent), posLabel(NULL)
+    QGraphicsView(parent), rubberLine(), posLabel(NULL)
 {
     this->init();
     this->setScene(scene);
@@ -56,16 +56,27 @@ void PlotView::toggleSelectionMode(void)
 
 void PlotView::drawForeground(QPainter *painter, const QRectF &rect)
 {
-    if (this->delimiting)
+    switch (this->dragMode())
     {
-        QPainterPath path;
-        path.addRect(rect);
-        path.addPath(scene()->selectionArea());
+        // Mode de sélection d'une zone
+        case QGraphicsView::RubberBandDrag:
+            if (this->delimiting)
+            {
+                QPainterPath path;
+                path.addRect(rect);
+                path.addPath(scene()->selectionArea());
 
-        QColor bckcolor = this->foregroundBrush().color();
-        bckcolor.setAlpha(175);
-        painter->setBrush(bckcolor);
-        painter->drawPath(path);
+                QColor bckcolor = this->foregroundBrush().color();
+                bckcolor.setAlpha(175);
+                painter->setBrush(bckcolor);
+                painter->drawPath(path);
+            }
+            break;
+        // Mode de déplacement de la ligne verticale
+        case QGraphicsView::NoDrag:
+            break;
+        default:
+            break;
     }
 }
 
@@ -83,6 +94,7 @@ void PlotView::mouseMoveEvent(QMouseEvent *event)
             break;
         // Mode de déplacement de la ligne verticale
         case QGraphicsView::NoDrag:
+        qDebug() << "On bouge la ligne verticale";
             break;
         default:
             break;
