@@ -19,7 +19,6 @@ MainWindow::MainWindow(QWidget *parent) :
     this->createPlotZone();
     this->createMegaSquirtZone();
     this->createToolsBar();
-    this->readSettings();
 
     // Connect all the signals
     this->connectSignals();
@@ -27,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // Display Configuration
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
     QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
+    this->readSettings("MainWindow");
     this->centerOnScreen();
 }
 
@@ -78,7 +78,7 @@ void MainWindow::on_actionAboutQt_triggered(void)
 void MainWindow::on_actionQuit_triggered(void)
 {
     // Save the state of the mainWindow and its widgets
-    this->writeSettings();
+    this->writeSettings("MainWindow");
 
     qApp->quit();
 }
@@ -327,6 +327,59 @@ void MainWindow::on_actionDisplayRaceTableOnLeft_triggered()
 void MainWindow::on_actionDisplayRaceView_triggered(bool checked)
 {
     this->ui->raceFrame->setVisible(checked);
+}
+
+void MainWindow::on_actionSaveCurrentLayout_triggered(void)
+{
+    bool ok(false);
+
+    QStringList listSavedLayouts;
+    listSavedLayouts << this->ui->actionConfiguredLayout1->text()
+                     << this->ui->actionConfiguredLayout2->text()
+                     << this->ui->actionConfiguredLayout3->text()
+                     << this->ui->actionConfiguredLayout4->text();
+
+    QString layoutSelected = QInputDialog::getItem(
+                this, tr("Sauvegarde de la disposition courante"),
+                tr("Choisissez l'emplacement où sauver la disposition courante"),
+                listSavedLayouts, 0, false, &ok);
+
+    if (!ok)
+    {
+        QMessageBox::warning(this, tr("Action annulée"),
+                             tr("La sauvegarde de la disposition courante à été annulée"));
+        return;
+    }
+
+    // Sauvegarde des paramètres d'affichage
+    this->writeSettings(layoutSelected);
+    QMessageBox::information(this, tr("Sauvegarde de la disposition courante"),
+                             tr("La disposition courante a correctement été "
+                                "sauvée dans ") + layoutSelected);
+}
+
+void MainWindow::on_actionConfiguredLayout1_triggered(void)
+{
+    this->readSettings(this->ui->actionConfiguredLayout1->text());
+    //QMessageBox::information(this, "Choix d'une disposition", "Disposition 1 utilisée");
+}
+
+void MainWindow::on_actionConfiguredLayout2_triggered(void)
+{
+    this->readSettings(this->ui->actionConfiguredLayout2->text());
+    //QMessageBox::information(this, "Choix d'une disposition", "Disposition 2 utilisée");
+}
+
+void MainWindow::on_actionConfiguredLayout3_triggered(void)
+{
+    this->readSettings(this->ui->actionConfiguredLayout3->text());
+    //QMessageBox::information(this, "Choix d'une disposition", "Disposition 3 utilisée");
+}
+
+void MainWindow::on_actionConfiguredLayout4_triggered(void)
+{
+    this->readSettings(this->ui->actionConfiguredLayout4->text());
+    //QMessageBox::information(this, "Choix d'une disposition", "Disposition 4 utilisée");
 }
 
 void MainWindow::loadCompetition(int index)
@@ -602,7 +655,7 @@ void MainWindow::createRaceTable(void)
     this->ui->raceTable->setSelectionMode(QAbstractItemView::MultiSelection);
 }
 
-void MainWindow::readSettings(void)
+void MainWindow::readSettings(const QString& settingsGroup)
 {
 //    QList<int> sizeList;
 
@@ -618,7 +671,7 @@ void MainWindow::readSettings(void)
 
     QSettings settings;
 
-    settings.beginGroup("MainWindow");
+    settings.beginGroup(settingsGroup);
     this->restoreGeometry(settings.value("geometry").toByteArray());
     this->ui->mainSplitter->restoreState(
                 settings.value("mainSplitter").toByteArray());
@@ -629,11 +682,11 @@ void MainWindow::readSettings(void)
     settings.endGroup();
 }
 
-void MainWindow::writeSettings(void) const
+void MainWindow::writeSettings(const QString& settingsGroup) const
 {
     QSettings settings;
 
-    settings.beginGroup("MainWindow");
+    settings.beginGroup(settingsGroup);
     settings.setValue("geometry", this->saveGeometry());
     settings.setValue("mainSplitter", this->ui->mainSplitter->saveState());
     settings.setValue("MapPlotAndRaceSplitter", this->ui->MapPlotAndRaceSplitter->saveState());
@@ -1000,7 +1053,7 @@ void MainWindow::loadSectors(const QString &competitionName)
 void MainWindow::closeEvent(QCloseEvent* event)
 {
     // Save the state of the mainWindow and its widgets
-    this->writeSettings();
+    this->writeSettings("MainWindow");
 
     QMainWindow::closeEvent(event);
 }

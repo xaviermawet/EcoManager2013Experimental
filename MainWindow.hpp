@@ -60,6 +60,11 @@ class MainWindow : public QMainWindow
         void on_actionDisplayRaceTableOnRight_triggered();
         void on_actionDisplayRaceTableOnLeft_triggered();
         void on_actionDisplayRaceView_triggered(bool checked);
+        void on_actionSaveCurrentLayout_triggered(void);
+        void on_actionConfiguredLayout1_triggered(void);
+        void on_actionConfiguredLayout2_triggered(void);
+        void on_actionConfiguredLayout3_triggered(void);
+        void on_actionConfiguredLayout4_triggered(void);
 
         // Personal slots
         void loadCompetition(int index);
@@ -77,8 +82,8 @@ class MainWindow : public QMainWindow
         void createPlotZone(void);
         void createMegaSquirtZone(void);
         void createRaceTable(void);
-        void readSettings(void);
-        void writeSettings(void) const;
+        void readSettings(const QString& settingsGroup);
+        void writeSettings(const QString& settingsGroup) const;
         void displayDataLap(void);
         void connectSignals(void);
         void reloadRaceView(void);

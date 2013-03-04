@@ -283,8 +283,19 @@
      </property>
      <addaction name="actionDisplayRaceView"/>
     </widget>
+    <widget class="QMenu" name="menuLayout">
+     <property name="title">
+      <string>Disposition</string>
+     </property>
+     <addaction name="actionConfiguredLayout1"/>
+     <addaction name="actionConfiguredLayout2"/>
+     <addaction name="actionConfiguredLayout3"/>
+     <addaction name="actionConfiguredLayout4"/>
+     <addaction name="actionSaveCurrentLayout"/>
+    </widget>
     <addaction name="menuDisplayRaceTable"/>
     <addaction name="menuDisplayRaceView"/>
+    <addaction name="menuLayout"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuDisplay"/>
@@ -310,6 +321,10 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionDelimitingSectors"/>
+   <addaction name="actionConfiguredLayout1"/>
+   <addaction name="actionConfiguredLayout2"/>
+   <addaction name="actionConfiguredLayout3"/>
+   <addaction name="actionConfiguredLayout4"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionImport">
@@ -445,6 +460,74 @@
    </property>
    <property name="text">
     <string>Afficher</string>
+   </property>
+  </action>
+  <action name="actionSaveCurrentLayout">
+   <property name="text">
+    <string>Sauver la disposition courante</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionConfiguredLayout1">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Resources/Icons/windowOne.png</normaloff>:/Resources/Icons/windowOne.png</iconset>
+   </property>
+   <property name="text">
+    <string>Disposition 1</string>
+   </property>
+   <property name="toolTip">
+    <string>Utiliser la disposition 1</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+1</string>
+   </property>
+  </action>
+  <action name="actionConfiguredLayout2">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Resources/Icons/windowOne.png</normaloff>:/Resources/Icons/windowOne.png</iconset>
+   </property>
+   <property name="text">
+    <string>Disposition 2</string>
+   </property>
+   <property name="toolTip">
+    <string>Utiliser la disposition 2</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+2</string>
+   </property>
+  </action>
+  <action name="actionConfiguredLayout3">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Resources/Icons/windowOne.png</normaloff>:/Resources/Icons/windowOne.png</iconset>
+   </property>
+   <property name="text">
+    <string>Disposition 3</string>
+   </property>
+   <property name="toolTip">
+    <string>Utiliser la disposition 3</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+3</string>
+   </property>
+  </action>
+  <action name="actionConfiguredLayout4">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Resources/Icons/windowOne.png</normaloff>:/Resources/Icons/windowOne.png</iconset>
+   </property>
+   <property name="text">
+    <string>Disposition 4</string>
+   </property>
+   <property name="toolTip">
+    <string>Utiliser la disposition 4</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+4</string>
    </property>
   </action>
  </widget>
