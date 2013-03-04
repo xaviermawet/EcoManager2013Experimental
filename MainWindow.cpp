@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->createPlotZone();
     this->createMegaSquirtZone();
     this->createToolsBar();
-    this->reziseSplitters();
+    this->readSettings();
 
     // Connect all the signals
     this->connectSignals();
@@ -77,6 +77,9 @@ void MainWindow::on_actionAboutQt_triggered(void)
 
 void MainWindow::on_actionQuit_triggered(void)
 {
+    // Save the state of the mainWindow and its widgets
+    this->writeSettings();
+
     qApp->quit();
 }
 
@@ -599,19 +602,43 @@ void MainWindow::createRaceTable(void)
     this->ui->raceTable->setSelectionMode(QAbstractItemView::MultiSelection);
 }
 
-void MainWindow::reziseSplitters(void)
+void MainWindow::readSettings(void)
 {
-    QList<int> sizeList;
+//    QList<int> sizeList;
 
-    // The map zone and the plot zone have the same size
-    sizeList << this->ui->MapPlotSplitter->height() / 2  /* Map zone size */
-             << this->ui->MapPlotSplitter->height() / 2; /* Plots zone size */
-    this->ui->MapPlotSplitter->setSizes(sizeList);
+//    // The map zone and the plot zone have the same size
+//    sizeList << this->ui->MapPlotSplitter->height() / 2  /* Map zone size */
+//             << this->ui->MapPlotSplitter->height() / 2; /* Plots zone size */
+//    this->ui->MapPlotSplitter->setSizes(sizeList);
 
-    // Hide the table of lap information
-    sizeList.clear();
-    sizeList << this->ui->MapPlotAndRaceSplitter->width() << 0;
-    this->ui->MapPlotAndRaceSplitter->setSizes(sizeList);
+//    // Hide the table of lap information
+//    sizeList.clear();
+//    sizeList << this->ui->MapPlotAndRaceSplitter->width() << 0;
+//    this->ui->MapPlotAndRaceSplitter->setSizes(sizeList);
+
+    QSettings settings;
+
+    settings.beginGroup("MainWindow");
+    this->restoreGeometry(settings.value("geometry").toByteArray());
+    this->ui->mainSplitter->restoreState(
+                settings.value("mainSplitter").toByteArray());
+    this->ui->MapPlotAndRaceSplitter->restoreState(
+                settings.value("MapPlotAndRaceSplitter").toByteArray());
+    this->ui->MapPlotSplitter->restoreState(
+                settings.value("MapPlotSplitter").toByteArray());
+    settings.endGroup();
+}
+
+void MainWindow::writeSettings(void) const
+{
+    QSettings settings;
+
+    settings.beginGroup("MainWindow");
+    settings.setValue("geometry", this->saveGeometry());
+    settings.setValue("mainSplitter", this->ui->mainSplitter->saveState());
+    settings.setValue("MapPlotAndRaceSplitter", this->ui->MapPlotAndRaceSplitter->saveState());
+    settings.setValue("MapPlotSplitter", this->ui->MapPlotSplitter->saveState());
+    settings.endGroup();
 }
 
 void MainWindow::displayDataLap(void)
@@ -968,4 +995,12 @@ void MainWindow::loadSectors(const QString &competitionName)
     }
 
     this->ui->sectorView->setVisible(mapScene->hasSectors());
+}
+
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    // Save the state of the mainWindow and its widgets
+    this->writeSettings();
+
+    QMainWindow::closeEvent(event);
 }

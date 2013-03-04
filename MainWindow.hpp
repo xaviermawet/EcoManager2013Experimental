@@ -77,13 +77,16 @@ class MainWindow : public QMainWindow
         void createPlotZone(void);
         void createMegaSquirtZone(void);
         void createRaceTable(void);
-        void reziseSplitters(void);
+        void readSettings(void);
+        void writeSettings(void) const;
         void displayDataLap(void);
         void connectSignals(void);
         void reloadRaceView(void);
         void loadSectors(const QString& competitionName);
 
     protected:
+
+        virtual void closeEvent(QCloseEvent* event);
 
         Ui::MainWindow* ui;
 
