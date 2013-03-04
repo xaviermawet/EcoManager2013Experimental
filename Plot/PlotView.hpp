@@ -29,17 +29,16 @@ class PlotView : public QGraphicsView
 
     protected:
 
-       bool clicked;
-       bool delimiting;
-       bool moving;
-       QStack<QRectF> sceneStack;
-
        virtual void drawForeground(QPainter *painter, const QRectF &rect);
        virtual void mouseMoveEvent(QMouseEvent*);
        virtual void mousePressEvent(QMouseEvent*);
        virtual void mouseReleaseEvent(QMouseEvent*);
        virtual void resizeEvent(QResizeEvent*);
        //virtual void wheelEvent(QWheelEvent*);
+
+       bool clicked;
+       bool delimiting;
+       QStack<QRectF> sceneStack;
 
     private:
 

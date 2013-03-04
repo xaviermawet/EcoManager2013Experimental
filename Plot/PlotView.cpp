@@ -7,7 +7,7 @@ PlotView::PlotView(QWidget* parent) :
 }
 
 PlotView::PlotView(QGraphicsScene* scene, QWidget* parent) :
-    QGraphicsView(parent)
+    QGraphicsView(parent), posLabel(NULL)
 {
     this->init();
     this->setScene(scene);
@@ -25,24 +25,22 @@ void PlotView::updateSceneRect(const QRectF &rect)
 
 void PlotView::selectionChanged(void)
 {
-    if (! delimiting )
+    if (!delimiting)
     {
         QRectF newScene = scene()->selectionArea().boundingRect();
         sceneStack.push(sceneRect());
 
         setSceneRect(newScene);
-        fitInView(newScene, Qt::KeepAspectRatio);
-        emit rectChange(globalRect());
+        this->updateSceneRect(newScene);
     }
 }
 
 void PlotView::zoomOut(void)
 {
-    if (! sceneStack.isEmpty())
+    if (!this->sceneStack.isEmpty())
     {
         setSceneRect(sceneStack.top());
-        fitInView(sceneStack.pop(), Qt::KeepAspectRatio);
-        emit rectChange(globalRect());
+        this->updateSceneRect(sceneStack.pop());
     }
     else
     {
@@ -58,7 +56,7 @@ void PlotView::toggleSelectionMode(void)
 
 void PlotView::drawForeground(QPainter *painter, const QRectF &rect)
 {
-    if (delimiting)
+    if (this->delimiting)
     {
         QPainterPath path;
         path.addRect(rect);
@@ -73,49 +71,46 @@ void PlotView::drawForeground(QPainter *painter, const QRectF &rect)
 
 void PlotView::mouseMoveEvent(QMouseEvent *event)
 {
-//    emit positionChange(event->pos());
-
-    if (dragMode() == QGraphicsView::RubberBandDrag)
+    switch (this->dragMode())
     {
-        if (clicked)
-        {
-            delimiting = true;
-            /* Par défaut, QGraphicsView utilise un QWidget standard pour sa
-             * zone d'affichage. Vous pouvez accéder à ce widget en appelant
-             * viewport() */
-            viewport()->update();
-        }
-    }
-    else
-    {
-//        horizontalScrollBar()->setValue(event->posF().x());
-//        verticalScrollBar()->setValue(event->posF().y());
-
-        // On ne viendra jamais ici ????
-        //QMessageBox::information(this, "dragMode", "pas en rubberBandDrag -- one ne verra jamais ce message 2");
+        // Mode de sélection d'une zone
+        case QGraphicsView::RubberBandDrag:
+            if (this->clicked)
+            {
+                delimiting = true;
+                this->viewport()->update();
+            }
+            break;
+        // Mode de déplacement de la ligne verticale
+        case QGraphicsView::NoDrag:
+            break;
+        default:
+            break;
     }
 
     // Affichage des coordonnées en haut à droit du graphique
     QPointF sceneMousePoint = mapToScene(event->pos());
-    posLabel->setText(QString("%1, %2").arg(sceneMousePoint.x(), 6, 'f', 2).arg(sceneMousePoint.y(), 6, 'f', 2));
-    posLabel->adjustSize();
-    posLabel->move(width() - posLabel->width() - 10, 10);
+    this->posLabel->setText(QString("%1, %2").arg(sceneMousePoint.x(), 6, 'f', 2).arg(sceneMousePoint.y(), 6, 'f', 2));
+    this->posLabel->adjustSize();
+    this->posLabel->move(this->width() - this->posLabel->width() - 10, 10);
     QGraphicsView::mouseMoveEvent(event);
 }
 
 void PlotView::mousePressEvent(QMouseEvent *event)
 {
-    if (dragMode() == QGraphicsView::RubberBandDrag)
+    switch (this->dragMode())
     {
-        this->clicked = true;
-        this->scene()->clearSelection();
-        emit this->beginSelection();
-    }
-    else
-    {
-        // On ne viendra jamais ici ????
-        QMessageBox::information(this, "dragMode", "pas en rubberBandDrag -- one ne verra jamais ce message 1");
-        moving = true;
+        // Mode de sélection d'une zone
+        case QGraphicsView::RubberBandDrag:
+            this->clicked = true;
+            this->scene()->clearSelection();
+            emit this->beginSelection();
+            break;
+        // Mode de déplacement de la ligne verticale
+        case QGraphicsView::NoDrag:
+            break;
+        default:
+            break;
     }
 
     QGraphicsView::mousePressEvent(event);
@@ -123,23 +118,23 @@ void PlotView::mousePressEvent(QMouseEvent *event)
 
 void PlotView::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (dragMode() == QGraphicsView::RubberBandDrag)
+    switch (this->dragMode())
     {
-        clicked = false;
-
-        if (delimiting)
-        {
-            delimiting = false;
-            selectionChanged();
-        }
-
-        emit finishSelection();
-    }
-    else
-    {
-        // On ne viendra jamais ici ????
-        QMessageBox::information(this, "dragMode", "pas en rubberBandDrag -- one ne verra jamais ce message 3");
-        moving = false;
+        // Mode de sélection d'une zone
+        case QGraphicsView::RubberBandDrag:
+            this->clicked = false;
+            if (this->delimiting)
+            {
+                this->delimiting = false;
+                this->selectionChanged();
+            }
+            emit this->finishSelection();
+            break;
+        // Mode de déplacement de la ligne verticale
+        case QGraphicsView::NoDrag:
+            break;
+        default:
+            break;
     }
 
     QGraphicsView::mouseReleaseEvent(event);
@@ -147,14 +142,12 @@ void PlotView::mouseReleaseEvent(QMouseEvent *event)
 
 void PlotView::resizeEvent(QResizeEvent*)
 {
-    fitInView(sceneRect(), Qt::KeepAspectRatio);
-    emit rectChange(globalRect());
+    this->updateSceneRect(sceneRect());
     posLabel->move(width() - posLabel->width() - 10, 10);
 }
 
 void PlotView::init(void)
 {
-    clicked = false;
     delimiting = false;
 
     QPalette palette;

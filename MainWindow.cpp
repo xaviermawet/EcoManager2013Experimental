@@ -341,8 +341,8 @@ void MainWindow::on_actionSaveCurrentLayout_triggered(void)
 
     QString layoutSelected = QInputDialog::getItem(
                 this, tr("Sauvegarde de la disposition courante"),
-                tr("Choisissez l'emplacement où sauver la disposition courante"),
-                listSavedLayouts, 0, false, &ok);
+                tr("Choisissez l'emplacement dans lequel sauver la disposition "
+                   "courante"), listSavedLayouts, 0, false, &ok);
 
     if (!ok)
     {

@@ -53,7 +53,7 @@ void MapView::mousePressEvent(QMouseEvent* event)
                 event->accept();
             }
             break;
-        case QGraphicsView::RubberBandDrag:
+        case QGraphicsView::RubberBandDrag: // zone or point selection
             this->scene()->clearSelection();
             this->setCursor(Qt::CrossCursor);
         default:
@@ -64,9 +64,9 @@ void MapView::mousePressEvent(QMouseEvent* event)
 
 void MapView::mouseMoveEvent(QMouseEvent* event)
 {
-    if (this->delimiting)
+    if (this->delimiting) // Si on délimite un secteur
     {
-        this->viewport()->update(); // Replace updateLineZone();
+        this->viewport()->update(); // Remplace updateLineZone();
         this->rubberLine.setP2(event->pos()); // Changement du point de destination de la ligne de segmentation
         event->accept(); // Event will not be propagated to the parent widget
     }
@@ -85,7 +85,7 @@ void MapView::mouseReleaseEvent(QMouseEvent* event)
             {
                 this->delimiting = false;
                 this->unsetCursor();
-                this->viewport()->update(); // Replace updateLineZone();
+                this->viewport()->update(); // Remplace updateLineZone();
 
                 /* Si le point au départ lors du mousePressEvent est différent du
                  * point d'arrivée lors du mouseReleaseEvent --> on a bien tiré
