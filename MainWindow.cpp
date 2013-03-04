@@ -584,50 +584,7 @@ void MainWindow::createMegaSquirtZone(void)
 
 void MainWindow::createRaceTable(void)
 {
-    // Add column header names
-    //this->ui->raceTable->header()
-
-
-
-// _________________________________________________________________________________________
-
-    /*
-    QStandardItemModel* raceTableModel = new QStandardItemModel(5, 3);
-    raceTableModel->setItem(3, 1,new QStandardItem("Hello World"));
-    this->ui->raceTable->setModel(raceTableModel);
-    this->ui->raceTable->resizeColumnsToContents();
-    */
-
-
-    /*
-    this->raceInformationTableModel = new QStandardItemModel(0, 4);
-    this->raceInformationTableModel->setHeaderData(0, Qt::Horizontal, "Tps(s)", Qt::DisplayRole);
-    this->raceInformationTableModel->setHeaderData(1, Qt::Horizontal, "Dist(m)", Qt::DisplayRole);
-    this->raceInformationTableModel->setHeaderData(2, Qt::Horizontal, "V(km\\h)", Qt::DisplayRole);
-    this->raceInformationTableModel->setHeaderData(3, Qt::Horizontal, "Acc (m/s2)", Qt::DisplayRole);
-    this->ui->raceTable->setModel(this->raceInformationTableModel);
-    //this->ui->raceTable->resizeColumnsToContents();
-    */
-
-/*
-    QStandardItem* item = new QStandardItem("Hello World");
-
-    QList<QStandardItem*> colonnes;
-    colonnes.append(new QStandardItem("colonne 2"));
-    colonnes.append(new QStandardItem("colonne 3"));
-    item->appendColumn(colonnes);
-
-    QStandardItem* parent = new QStandardItem("parent");
-    QStandardItem* enfant = new QStandardItem("enfant");
-    parent->appendRow(enfant);
-    item->appendRow(parent);
-
-    QStandardItemModel* raceTableModel = new QStandardItemModel;
-    raceTableModel->appendRow(item);
-
-    this->ui->raceView->setModel(raceTableModel);
-    */
-
+    // Create the model for the table of laps information
     QList<QVariant> headers;
     headers << "Course" << "Tps(s)" << "Tps(s)" << "Dist(m)" << "v(km\\h)"
             << "Acc(m/s2)" << "RPM" << "PW";
@@ -637,7 +594,9 @@ void MainWindow::createRaceTable(void)
     LapInformationProxyModel* wrapper = new LapInformationProxyModel(this);
     wrapper->setSourceModel(this->raceInformationTableModel);
 
+    // Apply the model to the table and change the selection mode
     this->ui->raceTable->setModel(wrapper);
+    this->ui->raceTable->setSelectionMode(QAbstractItemView::MultiSelection);
 }
 
 void MainWindow::reziseSplitters(void)
@@ -849,7 +808,7 @@ void MainWindow::displayDataLap(void)
 
 
             QList<QVariant> raceInformation;
-            for (int i(0); i < tAccPoints.count(); i++)
+            for (int i(0); i < tAccPoints.count(); i++) // Environ 1000 éléments
             {
                 raceInformation.clear();
 

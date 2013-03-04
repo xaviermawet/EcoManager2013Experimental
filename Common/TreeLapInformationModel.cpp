@@ -5,7 +5,7 @@ TreeLapInformationModel::TreeLapInformationModel(const QList<QVariant>& headers,
     QAbstractItemModel(parent)
 {
     this->rootItem = new TreeNode(headers);
-    this->reset();
+    //this->reset();
 }
 
 TreeLapInformationModel::~TreeLapInformationModel(void)
@@ -54,7 +54,14 @@ Qt::ItemFlags TreeLapInformationModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return 0;
 
-    // Création d'un modèle en lecture seule
+    /* Création d'un modèle en lecture seule +
+     * Seuls les noeds sans enfant peuvent etre sélectionnés
+     */
+    TreeNode* item = static_cast<TreeNode*>(index.internalPointer());
+
+    if (item->childCount())
+        return Qt::ItemIsEnabled;
+
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
