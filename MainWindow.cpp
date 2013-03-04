@@ -672,13 +672,21 @@ void MainWindow::readSettings(const QString& settingsGroup)
     QSettings settings;
 
     settings.beginGroup(settingsGroup);
-    this->restoreGeometry(settings.value("geometry").toByteArray());
+
+    /* Contourne le bug non résolu par Qt de la restauration de la géométrie
+     * d'une fenetre maximisée alors qu'elle est déjà maximisée */
+    if (settings.value("isMaximized").toBool())
+        this->showMaximized();
+    else
+        this->restoreGeometry(settings.value("geometry").toByteArray());
+
     this->ui->mainSplitter->restoreState(
                 settings.value("mainSplitter").toByteArray());
     this->ui->MapPlotAndRaceSplitter->restoreState(
                 settings.value("MapPlotAndRaceSplitter").toByteArray());
     this->ui->MapPlotSplitter->restoreState(
                 settings.value("MapPlotSplitter").toByteArray());
+
     settings.endGroup();
 }
 
@@ -687,6 +695,7 @@ void MainWindow::writeSettings(const QString& settingsGroup) const
     QSettings settings;
 
     settings.beginGroup(settingsGroup);
+    settings.setValue("isMaximized", this->isMaximized());
     settings.setValue("geometry", this->saveGeometry());
     settings.setValue("mainSplitter", this->ui->mainSplitter->saveState());
     settings.setValue("MapPlotAndRaceSplitter", this->ui->MapPlotAndRaceSplitter->saveState());
