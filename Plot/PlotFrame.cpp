@@ -91,7 +91,7 @@ void PlotFrame::clearPlotSelection(void)
     }
 }
 
-void PlotFrame::clearCurves()
+void PlotFrame::clearCurves(void)
 {
     this->clearPlotSelection();
     _scene->clear();
@@ -217,6 +217,8 @@ void PlotFrame::createToolBar()
 
    connect(shCurveAction, SIGNAL(toggled(bool)), this, SLOT(showCurves(bool)));
    connect(shPointsAction, SIGNAL(toggled(bool)), this, SLOT(showPoints(bool)));
+   connect(shVLineAction, SIGNAL(toggled(bool)), this->_mainview, SLOT(verticalLineVisible(bool)));
+   connect(this->_mainview, SIGNAL(verticalLineVisibilityChanged(bool)), shVLineAction, SLOT(setChecked(bool)));
 //   connect(measureAction, SIGNAL(toggled(bool)), this, SLOT(measureMode(bool)));
    connect(zoomOutAction, SIGNAL(triggered()), _mainview, SLOT(zoomOut()));
 }

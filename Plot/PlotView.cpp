@@ -1,13 +1,13 @@
 #include "PlotView.hpp"
 
 PlotView::PlotView(QWidget* parent) :
-    QGraphicsView(parent), rubberLine(), posLabel(NULL)
+    QGraphicsView(parent), posLabel(NULL)
 {
     this->init();
 }
 
 PlotView::PlotView(QGraphicsScene* scene, QWidget* parent) :
-    QGraphicsView(parent), rubberLine(), posLabel(NULL)
+    QGraphicsView(parent), posLabel(NULL)
 {
     this->init();
     this->setScene(scene);
@@ -19,7 +19,8 @@ PlotView::~PlotView()
 
 void PlotView::updateSceneRect(const QRectF &rect)
 {
-    this->fitInView(rect, Qt::KeepAspectRatio);
+    //this->fitInView(rect, Qt::KeepAspectRatio);
+    this->fitInView(rect, Qt::IgnoreAspectRatio);
     emit rectChange(globalRect());
 }
 
@@ -48,10 +49,35 @@ void PlotView::zoomOut(void)
     }
 }
 
+void PlotView::verticalLineVisible(bool visible)
+{
+    if (visible)
+    {
+        // Mode used to display vertical line
+        this->setDragMode(QGraphicsView::NoDrag);
+    }
+    else
+    {
+        this->setDragMode(QGraphicsView::RubberBandDrag);
+        this->viewport()->update();
+    }
+}
+
 void PlotView::toggleSelectionMode(void)
 {
-    this->setDragMode((this->dragMode() == QGraphicsView::ScrollHandDrag) ?
-                 QGraphicsView::RubberBandDrag : QGraphicsView::ScrollHandDrag);
+    if (this->dragMode() == QGraphicsView::NoDrag)
+    {
+        // Mode de sélection d'une zone (zoom)
+        this->setDragMode(QGraphicsView::RubberBandDrag);
+        this->viewport()->update();
+        emit this->verticalLineVisibilityChanged(false);
+    }
+    else
+    {
+        // Mode déplacement de la ligne verticale
+        this->setDragMode(QGraphicsView::NoDrag);
+        emit this->verticalLineVisibilityChanged(true);
+    }
 }
 
 void PlotView::drawForeground(QPainter *painter, const QRectF &rect)
@@ -74,6 +100,15 @@ void PlotView::drawForeground(QPainter *painter, const QRectF &rect)
             break;
         // Mode de déplacement de la ligne verticale
         case QGraphicsView::NoDrag:
+            painter->setPen(QPen(Qt::black, 1));
+
+            // Draw Horizontal line
+            //painter->drawLine(this->sceneRect().left(),  this->mousePos.y(),
+            //                  this->sceneRect().right(), this->mousePos.y());
+
+            // Draw vertical line
+            painter->drawLine(this->mousePos.x(), this->scene()->sceneRect().top(),
+                              this->mousePos.x(), this->scene()->sceneRect().bottom());
             break;
         default:
             break;
@@ -94,7 +129,9 @@ void PlotView::mouseMoveEvent(QMouseEvent *event)
             break;
         // Mode de déplacement de la ligne verticale
         case QGraphicsView::NoDrag:
-        qDebug() << "On bouge la ligne verticale";
+            this->mousePos = this->mapToScene(event->pos());
+            emit this->mousePosChanged(this->mousePos);
+            this->viewport()->update();
             break;
         default:
             break;
@@ -110,6 +147,8 @@ void PlotView::mouseMoveEvent(QMouseEvent *event)
 
 void PlotView::mousePressEvent(QMouseEvent *event)
 {
+    if (event->button() != Qt::LeftButton) return;
+
     switch (this->dragMode())
     {
         // Mode de sélection d'une zone
@@ -158,9 +197,27 @@ void PlotView::resizeEvent(QResizeEvent*)
     posLabel->move(width() - posLabel->width() - 10, 10);
 }
 
+void PlotView::keyPressEvent(QKeyEvent *event)
+{
+    if(event->type() == QKeyEvent::KeyPress)
+    {
+        // CTRL + L is used to change the dragMode
+        if (event->modifiers() == Qt::ControlModifier &&
+            event->key() == Qt::Key_L)
+        {
+            bool showVerticalLine = this->dragMode() == QGraphicsView::RubberBandDrag;
+            this->verticalLineVisible(showVerticalLine);
+            emit this->verticalLineVisibilityChanged(showVerticalLine);
+        }
+    }
+
+    QGraphicsView::keyPressEvent(event);
+}
+
 void PlotView::init(void)
 {
-    delimiting = false;
+    this->delimiting = false;
+    this->clicked = false;
 
     QPalette palette;
     palette.setBrush(QPalette::Highlight, Qt::white);

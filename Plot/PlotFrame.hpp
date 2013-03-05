@@ -42,7 +42,7 @@ class PlotFrame : public QFrame
 
         void showCurves(bool);
         void showPoints(bool);
-        void clearCurves();
+        void clearCurves(void);
         void clearPlotSelection(void);
         void highlightPoint(float absciss, QVariant idTrack);
         void highlightSector(float t1, float t2, QVariant trackId);

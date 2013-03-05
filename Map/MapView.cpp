@@ -12,6 +12,9 @@ MapView::~MapView(void)
 
 void MapView::drawForeground(QPainter* painter, const QRectF& rect)
 {
+    /* Devrait etre fait du coté de la scene ....
+     * http://stackoverflow.com/questions/4698029/best-way-to-create-a-long-line-or-cross-line-cursor-in-qt-graphicsview
+     */
     if (this->delimiting)
         painter->drawLine(this->mapToScene(this->rubberLine.p1()),
                           this->mapToScene(this->rubberLine.p2()));

@@ -15,25 +15,29 @@ class PlotView : public QGraphicsView
 
     signals:
 
-        void positionChange(QPoint);
-        void rectChange(QRectF);
+        void mousePosChanged(const QPointF& mousePos);
+        void rectChange(const QRectF&);
         void beginSelection(void);
         void finishSelection(void);
+        void verticalLineVisibilityChanged(bool visible);
 
     public slots:
 
        void updateSceneRect(const QRectF &rect);
        void selectionChanged(void);
        void zoomOut(void);
-       void toggleSelectionMode(void);
+       void verticalLineVisible(bool visible);
 
     protected:
+
+       void toggleSelectionMode(void);
 
        virtual void drawForeground(QPainter *painter, const QRectF &rect);
        virtual void mouseMoveEvent(QMouseEvent*);
        virtual void mousePressEvent(QMouseEvent*);
        virtual void mouseReleaseEvent(QMouseEvent*);
        virtual void resizeEvent(QResizeEvent*);
+       virtual void keyPressEvent(QKeyEvent *event);
        //virtual void wheelEvent(QWheelEvent*);
 
        void init(void);
@@ -41,8 +45,8 @@ class PlotView : public QGraphicsView
 
        bool clicked;
        bool delimiting;
+       QPointF mousePos; // devrait etre dans une classe implémentant QGraphicsScene
        QStack<QRectF> sceneStack;
-       QLine rubberLine;
        QLabel* posLabel;
 };
 
