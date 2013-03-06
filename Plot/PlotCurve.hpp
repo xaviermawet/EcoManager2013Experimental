@@ -21,6 +21,7 @@ class PlotCurve : public QGraphicsItem
         void setPointsVisible(bool visible); // Modifie le flag visible de tous les points qui composent le tracé
         void setPen(const QPen& p); // Modifie le "pen" de toutes les les lignes et point du tracé
         QVariant id(void) const; // Retourne index (et non l'identifiant) associé au tracé --> tous les points ont le même index
+        QPen getPen(void) const;
 
         virtual QRectF boundingRect() const; // Retourne les coordonnées du rectangle dans lequel sont compris tous les points
         virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -29,6 +30,10 @@ class PlotCurve : public QGraphicsItem
         QList<CoordinateItem*> onSector(float minTimeValue, float maxTimeValue) const;
         AnimateSectorItem* sectorOn(float timeValue) const;
         AnimateSectorItem* sectorOn(float minTimeValue, float maxTimeValue) const;
+
+        // ----------- Ajout, utile pour savoir ou afficher un label -----------
+        CoordinateItem* nearestCoordinateitemsOfX(qreal x);
+        // ---------------------------------------------------------------------
 
         enum { Type = UserType + 5 };
         int type() const { return Type; }

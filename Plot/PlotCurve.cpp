@@ -96,6 +96,11 @@ QVariant PlotCurve::id(void) const
     return internalId;
 }
 
+QPen PlotCurve::getPen(void) const
+{
+    return this->pen;
+}
+
 QRectF PlotCurve::boundingRect() const
 {
     return childrenBoundingRect();
@@ -219,4 +224,37 @@ AnimateSectorItem* PlotCurve::sectorOn(float minTimeValue, float maxTimeValue) c
     }
 
     return sect;
+}
+
+CoordinateItem* PlotCurve::nearestCoordinateitemsOfX(qreal x)
+{
+    /*
+    bool found(false);
+    CoordinateItem* nearestItem;
+    CoordinateItem* currentItem = NULL;
+
+    for (int i(0); i < this->points.count() && !found; i++)
+    {
+        nearestItem = currentItem;
+        currentItem = qgraphicsitem_cast<CoordinateItem*>(this->points.at(i));
+
+        if (currentItem->x() > x)
+            found = true;
+    }
+
+    return found ? nearestItem : NULL;
+    */
+
+    bool found(false);
+    CoordinateItem* currentItem = NULL;
+
+    for (int i(0); i < this->points.count() && !found; i++)
+    {
+        currentItem = qgraphicsitem_cast<CoordinateItem*>(this->points.at(i));
+
+        if (currentItem->x() > x)
+            found = true;
+    }
+
+    return found ? currentItem : NULL;
 }

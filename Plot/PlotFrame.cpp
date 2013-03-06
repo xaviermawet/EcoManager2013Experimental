@@ -36,6 +36,11 @@ PlotFrame::PlotFrame(QFrame *parent) :
     connect(_scene, SIGNAL(selectionChanged()), this, SIGNAL(selectionChanged()));
     connect(_mainview, SIGNAL(beginSelection()), this, SLOT(lockSelectionAbility()));
     connect(_mainview, SIGNAL(finishSelection()), this, SLOT(unlockSelectionAbility()));
+
+    // ---- Connexion du signal mousePosChanger pour afficher les labels -------
+    this->labelInfoPoint = new QLabel(this);
+    connect(this->_mainview, SIGNAL(mousePosChanged(QPointF)), this, SLOT(displayLabels(QPointF)));
+    // -------------------------------------------------------------------------
 }
 
 
@@ -121,7 +126,8 @@ void PlotFrame::highlightPoint(float timeValue, QVariant trackId)
         return;
     }
 
-    sect->setBrush(QBrush(Qt::blue));
+    //sect->setBrush(QBrush(Qt::blue));
+    sect->setBrush(targetPlotCurve->getPen().brush());
 
     if (this->_selectedGroup == NULL)
     {
@@ -155,7 +161,8 @@ void PlotFrame::highlightSector(float t1, float t2, QVariant trackId)
         return;
     }
 
-    sect->setBrush(QBrush(Qt::blue));
+    //sect->setBrush(QBrush(Qt::blue));
+    sect->setBrush(targetPlotCurve->getPen().brush());
 
     if (this->_selectedGroup == NULL)
     {
@@ -165,6 +172,35 @@ void PlotFrame::highlightSector(float t1, float t2, QVariant trackId)
 
     this->_selectedGroup->addToGroup(sect);
     sect->launchAnimation();
+}
+
+void PlotFrame::displayLabels(const QPointF &mousePos)
+{
+    qDebug() << "mousePos x : " << mousePos.x();
+
+    foreach (PlotCurve* curve, this->_curves)
+    {
+        CoordinateItem* itemAtMousePos = curve->nearestCoordinateitemsOfX(mousePos.x());
+
+        if (itemAtMousePos)
+        {
+            qDebug() << "Coordinate item trouvé : " << itemAtMousePos->x()
+                        << itemAtMousePos->y();
+
+            PlotCurve* parent = qgraphicsitem_cast<PlotCurve*>(itemAtMousePos->parentItem());
+            if (!parent) continue;
+
+            // Change the label text color
+            QPalette pal;
+            pal.setColor(QPalette::WindowText, parent->getPen().color());
+            this->labelInfoPoint->setPalette(pal);
+
+            QPoint pos = this->_mainview->mapFromScene(mousePos);
+            this->labelInfoPoint->setText(QString("%1, %2").arg(itemAtMousePos->x(), 6, 'f', 2).arg(itemAtMousePos->y(), 6, 'f', 2));
+            this->labelInfoPoint->adjustSize();
+            this->labelInfoPoint->move(pos.x(), pos.y());
+        }
+    }
 }
 
 void PlotFrame::adaptScales(const QRectF& newRect)
@@ -196,7 +232,7 @@ void PlotFrame::createToolBar()
 
    QAction* shVLineAction = new QAction(QIcon(":/Line.png"), tr("Afficher ligne verticale"), this);
    shVLineAction->setCheckable(true);
-   shVLineAction->setChecked(false);
+   //shVLineAction->setChecked(false);
 
    //QAction* measureAction = new QAction(QIcon(":/icon/measure.png"), tr("Effectuer une mesure"), this);
    //measureAction->setCheckable(true);

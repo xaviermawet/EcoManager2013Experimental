@@ -47,6 +47,8 @@ class PlotFrame : public QFrame
         void highlightPoint(float absciss, QVariant idTrack);
         void highlightSector(float t1, float t2, QVariant trackId);
 
+        void displayLabels(const QPointF& mousePos); // -------------------------
+
     protected slots:
 
         void adaptScales(const QRectF&);
@@ -63,7 +65,7 @@ class PlotFrame : public QFrame
 
         QGraphicsScene* _scene;
         PlotView* _mainview;
-        QList<PlotCurve*> _curves; // Liste de tous les tracés (tous les tours)
+        QList<PlotCurve*> _curves; // Liste de tous les tracés courament affiché (tous les tours)
         QGraphicsItemGroup* _selectedGroup;
         QVBoxLayout* _topScaleLayout;
         QVBoxLayout* _bottomScaleLayout;
@@ -73,6 +75,8 @@ class PlotFrame : public QFrame
         int _selectionLocked;
         bool _pointsVisible;
         bool _curveVisible;
+
+        QLabel* labelInfoPoint; // ---------------------------------------------
 };
 
 #endif /* __PLOTFRAME_HPP__ */

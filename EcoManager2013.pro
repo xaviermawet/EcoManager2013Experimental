@@ -55,7 +55,8 @@ SOURCES += main.cpp\
     Plot/PlotFrame.cpp \
     Common/TreeLapInformationModel.cpp \
     Common/TreeNode.cpp \
-    LapInformationProxyModel.cpp
+    LapInformationProxyModel.cpp \
+    Plot/PlotScene.cpp
 
 HEADERS  += MainWindow.hpp \
     ResourceInstaller.hpp \
@@ -99,7 +100,8 @@ HEADERS  += MainWindow.hpp \
     Plot/PlotFrame.hpp \
     Common/TreeLapInformationModel.hpp \
     Common/TreeNode.hpp \
-    LapInformationProxyModel.hpp
+    LapInformationProxyModel.hpp \
+    Plot/PlotScene.hpp
 
 FORMS    += MainWindow.ui \
     CompetitionEntryDialog.ui \
