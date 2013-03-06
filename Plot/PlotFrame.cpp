@@ -7,6 +7,7 @@ PlotFrame::PlotFrame(QFrame *parent) :
     _selectionLocked = 0;
     _pointsVisible = true;
     _curveVisible = true;
+    this->curveLabelsVisible = false;
     _selectedGroup = NULL;
     createView();
 
@@ -54,6 +55,14 @@ void PlotFrame::addCurve(PlotCurve *curve)
 
     curve->setPointsVisible(_pointsVisible);
     curve->setCurveVisible(_curveVisible);
+
+    /* Créer un label associé à la courbe et servira pour afficher les coordonnées
+     * lorsqu'on bougera la ligne verticale dans la vue
+     */
+    QLabel* curveLabel = new QLabel(this);
+    curveLabel->setVisible(this->curveLabelsVisible);
+    this->curvePointPositionsLabels.append(curveLabel);
+    //this->_scene->addWidget(curveLabel);
 }
 
 PlotCurve* PlotFrame::addCurve(QList<QPointF> points, QVariant curveId)
@@ -86,6 +95,17 @@ void PlotFrame::showPoints(bool visible)
         c->setPointsVisible(visible);
 }
 
+void PlotFrame::showCurveLabels(bool visible)
+{
+    this->curveLabelsVisible = visible;
+
+    foreach (QLabel* curveLabel, this->curvePointPositionsLabels)
+        curveLabel->setVisible(visible);
+
+    // change le QToolButton en appuyé ou non
+    shVLineAction->setChecked(visible);
+}
+
 void PlotFrame::clearPlotSelection(void)
 {
     if (this->_selectedGroup != NULL)
@@ -101,6 +121,9 @@ void PlotFrame::clearCurves(void)
     this->clearPlotSelection();
     _scene->clear();
     _curves.clear();
+
+    // Efface tous les labels
+    this->curvePointPositionsLabels.clear();
 }
 
 void PlotFrame::highlightPoint(float timeValue, QVariant trackId)
@@ -178,9 +201,9 @@ void PlotFrame::displayLabels(const QPointF &mousePos)
 {
     qDebug() << "mousePos x : " << mousePos.x();
 
-    foreach (PlotCurve* curve, this->_curves)
+    for (int i(0); i < this->_curves.count(); i++)
     {
-        CoordinateItem* itemAtMousePos = curve->nearestCoordinateitemsOfX(mousePos.x());
+        CoordinateItem* itemAtMousePos = this->_curves.at(i)->nearestCoordinateitemsOfX(mousePos.x());
 
         if (itemAtMousePos)
         {
@@ -190,6 +213,7 @@ void PlotFrame::displayLabels(const QPointF &mousePos)
             PlotCurve* parent = qgraphicsitem_cast<PlotCurve*>(itemAtMousePos->parentItem());
             if (!parent) continue;
 
+/*
             // Change the label text color
             QPalette pal;
             pal.setColor(QPalette::WindowText, parent->getPen().color());
@@ -199,6 +223,23 @@ void PlotFrame::displayLabels(const QPointF &mousePos)
             this->labelInfoPoint->setText(QString("%1, %2").arg(itemAtMousePos->x(), 6, 'f', 2).arg(itemAtMousePos->y(), 6, 'f', 2));
             this->labelInfoPoint->adjustSize();
             this->labelInfoPoint->move(pos.x(), pos.y());
+*/
+
+            // Get the label associate to the curve
+            QLabel* curveLabel = this->curvePointPositionsLabels.at(i);
+            if (!curveLabel) continue;
+
+            // Change the text color of the label associate to the curve
+            this->palette.setColor(QPalette::WindowText, parent->getPen().color());
+            curveLabel->setPalette(this->palette);
+
+            // Change the text and position of the label associate to the curve
+            curveLabel->setText(QString("%1, %2").arg(itemAtMousePos->x(), 6, 'f', 2).arg(itemAtMousePos->y(), 6, 'f', 2));
+            curveLabel->adjustSize();
+            QPoint pos = this->_mainview->mapFromScene(mousePos);
+
+            curveLabel->move(pos.x(), pos.y() - (i * 12));
+
         }
     }
 }
@@ -230,7 +271,7 @@ void PlotFrame::createToolBar()
    shPointsAction->setCheckable(true);
    shPointsAction->setChecked(true);
 
-   QAction* shVLineAction = new QAction(QIcon(":/Line.png"), tr("Afficher ligne verticale"), this);
+   shVLineAction = new QAction(QIcon(":/Line.png"), tr("Afficher ligne verticale"), this);
    shVLineAction->setCheckable(true);
    //shVLineAction->setChecked(false);
 
@@ -254,7 +295,8 @@ void PlotFrame::createToolBar()
    connect(shCurveAction, SIGNAL(toggled(bool)), this, SLOT(showCurves(bool)));
    connect(shPointsAction, SIGNAL(toggled(bool)), this, SLOT(showPoints(bool)));
    connect(shVLineAction, SIGNAL(toggled(bool)), this->_mainview, SLOT(verticalLineVisible(bool)));
-   connect(this->_mainview, SIGNAL(verticalLineVisibilityChanged(bool)), shVLineAction, SLOT(setChecked(bool)));
+   //connect(this->_mainview, SIGNAL(verticalLineVisibilityChanged(bool)), shVLineAction, SLOT(setChecked(bool)));
+   connect(this->_mainview, SIGNAL(verticalLineVisibilityChanged(bool)), this, SLOT(showCurveLabels(bool)));
 //   connect(measureAction, SIGNAL(toggled(bool)), this, SLOT(measureMode(bool)));
    connect(zoomOutAction, SIGNAL(triggered()), _mainview, SLOT(zoomOut()));
 }

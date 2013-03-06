@@ -42,6 +42,7 @@ class PlotFrame : public QFrame
 
         void showCurves(bool);
         void showPoints(bool);
+        void showCurveLabels(bool visible);
         void clearCurves(void);
         void clearPlotSelection(void);
         void highlightPoint(float absciss, QVariant idTrack);
@@ -75,8 +76,13 @@ class PlotFrame : public QFrame
         int _selectionLocked;
         bool _pointsVisible;
         bool _curveVisible;
+        bool curveLabelsVisible;
 
-        QLabel* labelInfoPoint; // ---------------------------------------------
+        QLabel* labelInfoPoint;
+        QList<QLabel*> curvePointPositionsLabels;
+        QAction* shVLineAction;
+
+        QPalette palette;
 };
 
 #endif /* __PLOTFRAME_HPP__ */
