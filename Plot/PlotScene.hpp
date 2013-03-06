@@ -18,6 +18,11 @@ class PlotScene : public QGraphicsScene
                             const QVariant& curveId = QVariant());
         PlotCurve* addCurve(const QList<IndexedPosition>& points,
                             const QVariant& curveId = QVariant());
+    signals:
+
+        void pointSelected(float absciss, const QVariant& idTrack);
+        void intervalSelected(float firstAbsciss, float secondAbsciss,
+                              const QVariant& idTrack);
 
     public slots:
 
@@ -26,9 +31,20 @@ class PlotScene : public QGraphicsScene
         void clearPlotSelection(void);
         void clearCurves(void);
         void highlightPoints(float timeValue, const QVariant& trackId);
+        void highlightSector(float t1, float t2, const QVariant& trackId);
+
+        /* Ajouter les méthodes pour afficher les labels
+         * Pas oublier de créer un label lorsqu'on ajoute une curve et de les
+         * supprimer lorsqu'on supprime les curves
+         */
+
+        void handleSelection(void);
+        void lockSelectionAbility(void);
+        void unlockSelectionAbility(void);
 
     protected:
 
+        int selectionLocked;
         bool pointsVisible;
         bool curvesVisible;
         QList<PlotCurve*> curves;
