@@ -8,7 +8,7 @@ PlotFrame::PlotFrame(QWidget *parent) :
     ui->setupUi(this);
 
     // Create scene
-    this->plotScene = new PlotScene;
+    this->plotScene = new PlotScene(this);
 
     // Create view
     this->plotView = new PlotView(this->plotScene);
@@ -63,6 +63,33 @@ PlotFrame::PlotFrame(QWidget *parent) :
 PlotFrame::~PlotFrame(void)
 {
     delete ui;
+}
+
+PlotScene* PlotFrame::scene(void) const
+{
+    return this->plotScene;
+}
+
+void PlotFrame::addVerticalAxis(VerticalScale* scale)
+{
+    if (scale->placement() == Scale::Left)
+        this->leftScaleLayout->addWidget(scale);
+    else
+        this->rightScaleLayout->addWidget(scale);
+
+    connect(this, SIGNAL(minVChanged(float)), scale, SLOT(setMin(float)));
+    connect(this, SIGNAL(maxVChanged(float)), scale, SLOT(setMax(float)));
+}
+
+void PlotFrame::addHorizontalAxis(HorizontalScale* scale)
+{
+    if (scale->placement() == Scale::Bottom)
+        this->bottomScaleLayout->addWidget(scale);
+    else
+        this->topScaleLayout->addWidget(scale);
+
+    connect(this, SIGNAL(minHChanged(float)), scale, SLOT(setMin(float)));
+    connect(this, SIGNAL(maxHChanged(float)), scale, SLOT(setMax(float)));
 }
 
 void PlotFrame::on_eraseToolButton_clicked(void)

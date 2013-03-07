@@ -3,6 +3,8 @@
 
 #include "PlotScene.hpp"
 #include "PlotView.hpp"
+#include "VerticalScale.hpp"
+#include "HorizontalScale.hpp"
 #include <QtGui>
 
 namespace Ui {
@@ -17,6 +19,12 @@ class PlotFrame : public QFrame
 
         explicit PlotFrame(QWidget *parent = 0);
         ~PlotFrame(void);
+
+        // Getter
+        PlotScene* scene(void) const;
+
+        void addVerticalAxis(VerticalScale* scale);
+        void addHorizontalAxis(HorizontalScale* scale);
 
     signals:
 

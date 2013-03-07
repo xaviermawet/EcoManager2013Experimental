@@ -1,8 +1,9 @@
 #include "PlotScene.hpp"
 
-PlotScene::PlotScene(QObject *parent) :
+PlotScene::PlotScene(QWidget* widgetParent, QObject *parent) :
     QGraphicsScene(parent), selectionLocked(0), pointsVisible(true),
-    curvesVisible(true), curveLabelsVisible(false), selectedGroup(NULL)
+    curvesVisible(true), curveLabelsVisible(false), selectedGroup(NULL),
+    widgetParent(widgetParent)
 {
 }
 
@@ -26,10 +27,10 @@ void PlotScene::addCurve(PlotCurve *curve)
     curve->setCurveVisible(this->curvesVisible);
 
     // Create a label associated to the new curve
-    QLabel* curveLabel = new QLabel(this);
+    QLabel* curveLabel = new QLabel(this->widgetParent); // Passer un QWidget en paramètre ---------
     curveLabel->setVisible(this->curveLabelsVisible);
     this->curveLabels.append(curveLabel);
-    this->addWidget(curveLabel); // Est-ce vraiment utile ?
+    //this->addWidget(curveLabel); // Est-ce vraiment utile ?
 }
 
 PlotCurve* PlotScene::addCurve(const QList<QPointF>& points,

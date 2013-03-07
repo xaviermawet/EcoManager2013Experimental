@@ -489,8 +489,8 @@ void MainWindow::updateSector(QString competName, int sectNum,
 void MainWindow::clearAllData(void)
 {
     this->mapScene->clearTracks();
-    this->distancePlotFrame->clearCurves();
-    this->timePlotFrame->clearCurves();
+    this->distancePlotFrame->scene()->clearCurves(); //this->distancePlotFrame->clearCurves();
+    this->timePlotFrame->scene()->clearCurves(); //this->timePlotFrame->clearCurves();
 
     // Clear the list of all tracks currently displayed
     this->currentTracksDisplayed.clear();
@@ -849,8 +849,8 @@ void MainWindow::displayDataLap(void)
                 timePlotFrame->addCurve(lineZero);
             }
 */
-            this->distancePlotFrame->addCurve(distSpeedPoints, trackIdentifier);
-            this->timePlotFrame->addCurve(timeSpeedPoints, trackIdentifier);
+            this->distancePlotFrame->scene()->addCurve(distSpeedPoints, trackIdentifier);//this->distancePlotFrame->addCurve(distSpeedPoints, trackIdentifier);
+            this->timePlotFrame->scene()->addCurve(timeSpeedPoints, trackIdentifier);//this->timePlotFrame->addCurve(timeSpeedPoints, trackIdentifier);
 
 //            bool accelerationPositiv = false;
 
@@ -930,17 +930,17 @@ void MainWindow::connectSignals(void)
     connect(this->mapScene, SIGNAL(sectorUpdated(QString,int,IndexedPosition,IndexedPosition)),
             this, SLOT(updateSector(QString,int,IndexedPosition,IndexedPosition)));
     connect(this->mapScene, SIGNAL(pointSelected(float,QVariant)),
-            this->distancePlotFrame, SLOT(highlightPoint(float,QVariant)));
+            this->distancePlotFrame->scene(), SLOT(highlightPoints(float,QVariant)));
     connect(this->mapScene, SIGNAL(pointSelected(float,QVariant)),
-            this->timePlotFrame, SLOT(highlightPoint(float,QVariant)));
+            this->timePlotFrame->scene(), SLOT(highlightPoints(float,QVariant)));
     connect(this->mapScene, SIGNAL(intervalSelected(float,float,QVariant)),
-            this->distancePlotFrame, SLOT(highlightSector(float,float,QVariant)));
+            this->distancePlotFrame->scene(), SLOT(highlightSector(float,float,QVariant)));
     connect(this->mapScene, SIGNAL(intervalSelected(float,float,QVariant)),
-            this->timePlotFrame, SLOT(highlightSector(float,float,QVariant)));
+            this->timePlotFrame->scene(), SLOT(highlightSector(float,float,QVariant)));
     connect(this->mapScene, SIGNAL(selectionChanged()),
-            this->distancePlotFrame, SLOT(clearPlotSelection()));
+            this->distancePlotFrame->scene(), SLOT(clearPlotSelection()));
     connect(this->mapScene, SIGNAL(selectionChanged()),
-            this->timePlotFrame, SLOT(clearPlotSelection()));
+            this->timePlotFrame->scene(), SLOT(clearPlotSelection()));
 
     // Map frame
     connect(this->mapFrame, SIGNAL(enableTrackHoverEvent(bool)),
@@ -950,18 +950,18 @@ void MainWindow::connectSignals(void)
     // Distance plot frame
     connect(this->distancePlotFrame, SIGNAL(selectionChanged()),
             this->mapScene, SLOT(clearSceneSelection()));
-    connect(this->distancePlotFrame, SIGNAL(pointSelected(float,QVariant)),
+    connect(this->distancePlotFrame->scene(), SIGNAL(pointSelected(float,QVariant)),
             this->mapScene, SLOT(highlightPoint(float,QVariant)));
-    connect(this->distancePlotFrame, SIGNAL(intervalSelected(float,float,QVariant)),
+    connect(this->distancePlotFrame->scene(), SIGNAL(intervalSelected(float,float,QVariant)),
             this->mapScene, SLOT(highlightSector(float,float,QVariant)));
     connect(this->distancePlotFrame, SIGNAL(clear()), this, SLOT(clearAllData()));
 
-    // Time plto frame
+    // Time plot frame
     connect(this->timePlotFrame, SIGNAL(selectionChanged()),
             this->mapScene, SLOT(clearSceneSelection()));
-    connect(this->timePlotFrame, SIGNAL(pointSelected(float,QVariant)),
+    connect(this->timePlotFrame->scene(), SIGNAL(pointSelected(float,QVariant)),
             this->mapScene, SLOT(highlightPoint(float,QVariant)));
-    connect(this->timePlotFrame, SIGNAL(intervalSelected(float,float,QVariant)),
+    connect(this->timePlotFrame->scene(), SIGNAL(intervalSelected(float,float,QVariant)),
             this->mapScene, SLOT(highlightSector(float,float,QVariant)));
     connect(this->timePlotFrame, SIGNAL(clear()), this, SLOT(clearAllData()));
 }

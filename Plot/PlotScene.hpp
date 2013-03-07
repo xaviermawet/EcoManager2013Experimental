@@ -11,7 +11,7 @@ class PlotScene : public QGraphicsScene
 
     public:
 
-        PlotScene(QObject* parent = 0);
+        PlotScene(QWidget *widgetParent, QObject* parent = 0);
 
         void addCurve(PlotCurve* curve);
         PlotCurve* addCurve(const QList<QPointF>& points,
@@ -59,6 +59,8 @@ class PlotScene : public QGraphicsScene
         QList<PlotCurve*> curves;
         QList<QLabel*> curveLabels;
         QGraphicsItemGroup* selectedGroup;
+
+        QWidget* widgetParent;
 };
 
 #endif /* __PLOTSCENE_HPP__ */
