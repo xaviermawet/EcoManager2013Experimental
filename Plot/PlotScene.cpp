@@ -1,7 +1,8 @@
 #include "PlotScene.hpp"
 
 PlotScene::PlotScene(QObject *parent) :
-    QGraphicsScene(parent), pointsVisible(false), curvesVisible(false)
+    QGraphicsScene(parent), selectionLocked(0), pointsVisible(true),
+    curvesVisible(true), curveLabelsVisible(false), selectedGroup(NULL)
 {
 }
 
@@ -23,6 +24,12 @@ void PlotScene::addCurve(PlotCurve *curve)
     // Apply the visibility options
     curve->setPointsVisible(this->pointsVisible);
     curve->setCurveVisible(this->curvesVisible);
+
+    // Create a label associated to the new curve
+    QLabel* curveLabel = new QLabel(this);
+    curveLabel->setVisible(this->curveLabelsVisible);
+    this->curveLabels.append(curveLabel);
+    this->addWidget(curveLabel); // Est-ce vraiment utile ?
 }
 
 PlotCurve* PlotScene::addCurve(const QList<QPointF>& points,
@@ -49,7 +56,22 @@ PlotCurve* PlotScene::addCurve(const QList<IndexedPosition>& points,
     return curve;
 }
 
-void PlotScene::showCurves(bool visible)
+bool PlotScene::curvesAreVisible(void) const
+{
+    return this->curvesVisible;
+}
+
+bool PlotScene::pointsAreVisible(void) const
+{
+    return this->pointsVisible;
+}
+
+bool PlotScene::curveLabelsAreVisible(void) const
+{
+    return this->curveLabelsVisible;
+}
+
+void PlotScene::setCurvesVisible(bool visible)
 {
     this->curvesVisible = visible;
 
@@ -58,13 +80,22 @@ void PlotScene::showCurves(bool visible)
         curve->setCurveVisible(visible);
 }
 
-void PlotScene::showPoints(bool visible)
+void PlotScene::setPointsVisible(bool visible)
 {
     this->pointsVisible = visible;
 
     // Change visibility of each point of the scene
     foreach (PlotCurve* curve, this->curves)
         curve->setPointsVisible(visible);
+}
+
+void PlotScene::setCurveLabelsVisible(bool visible)
+{
+    this->curveLabelsVisible = visible;
+
+    // Change visibility of the label associate at each curve of the scene
+    foreach (QLabel* curveLabel, this->curveLabels)
+        curveLabel->setVisible(visible);
 }
 
 void PlotScene::clearPlotSelection(void)
@@ -80,8 +111,9 @@ void PlotScene::clearPlotSelection(void)
 void PlotScene::clearCurves(void)
 {
     this->clearPlotSelection();
-    this->curves.clear(); // Clear the list of curves
-    this->clear();        // Clear the scene
+    this->curves.clear();       // Clear the list of curves
+    this->clear();              // Clear the scene
+    this->curveLabels.clear();  // Clear all the labels associated to the curves
 }
 
 void PlotScene::highlightPoints(float timeValue, const QVariant& trackId)
@@ -166,6 +198,41 @@ void PlotScene::highlightSector(float t1, float t2, const QVariant& trackId)
 
     this->selectedGroup->addToGroup(sect);
     sect->launchAnimation();
+}
+
+void PlotScene::displayLabels(const QPointF& mousePos, const QPointF& scenePos)
+{
+    QPalette palette;
+    PlotCurve* currentCurve = NULL;
+
+    for (int i(0); i < this->curves.count(); i++)
+    {
+        currentCurve = this->curves.at(i);
+
+        /* Get the CoordinateItem which abscisse is the nearest
+         * to the mouse position abscisse */
+        CoordinateItem* itemAtMousePos =
+                currentCurve->nearestCoordinateitemsOfX(scenePos.x());
+
+        if (itemAtMousePos == NULL) continue;
+
+        // Get the label associate to the curve
+        QLabel* curveLabel = this->curveLabels.at(i);
+        if (curveLabel == NULL) continue;
+
+        // Change the text color of the label associate to the curve
+        palette.setColor(QPalette::WindowText, currentCurve->getPen().color());
+        curveLabel->setPalette(palette);
+
+        // Change the text of the label associate to the curve
+        curveLabel->setText(QString("%1, %2").arg(
+                                itemAtMousePos->x(), 6, 'f', 2).arg(
+                                itemAtMousePos->y(), 6, 'f', 2));
+        curveLabel->adjustSize();
+
+        // Move the label
+        curveLabel->move(mousePos.x(), mousePos.y() - (i * 12));
+    }
 }
 
 void PlotScene::handleSelection(void)

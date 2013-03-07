@@ -52,11 +52,11 @@ SOURCES += main.cpp\
     Plot/VerticalScale.cpp \
     Plot/PlotView.cpp \
     Plot/PlotCurve.cpp \
-    Plot/PlotFrame.cpp \
     Common/TreeLapInformationModel.cpp \
     Common/TreeNode.cpp \
     LapInformationProxyModel.cpp \
-    Plot/PlotScene.cpp
+    Plot/PlotScene.cpp \
+    Plot/PlotFrame.cpp
 
 HEADERS  += MainWindow.hpp \
     ResourceInstaller.hpp \
@@ -97,16 +97,17 @@ HEADERS  += MainWindow.hpp \
     Plot/VerticalScale.hpp \
     Plot/PlotView.hpp \
     Plot/PlotCurve.hpp \
-    Plot/PlotFrame.hpp \
     Common/TreeLapInformationModel.hpp \
     Common/TreeNode.hpp \
     LapInformationProxyModel.hpp \
-    Plot/PlotScene.hpp
+    Plot/PlotScene.hpp \
+    Plot/PlotFrame.hpp
 
 FORMS    += MainWindow.ui \
     CompetitionEntryDialog.ui \
     Map/SampleLapViewer.ui \
-    Map/MapFrame.ui
+    Map/MapFrame.ui \
+    Plot/PlotFrame.ui
 
 RESOURCES += \
     Resources.qrc

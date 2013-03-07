@@ -1,88 +1,52 @@
 #ifndef __PLOTFRAME_HPP__
 #define __PLOTFRAME_HPP__
 
+#include "PlotScene.hpp"
 #include "PlotView.hpp"
-#include "HorizontalScale.hpp"
-#include "VerticalScale.hpp"
-#include "PlotCurve.hpp"
-#include "../Common/IndexedPosition.hpp"
-#include "../Map/AnimateSectorItem.hpp"
-#include "../Common/ColorPicker.hpp"
-#include "../Common/CoordinateItem.hpp"
 #include <QtGui>
+
+namespace Ui {
+class PlotFrame;
+}
 
 class PlotFrame : public QFrame
 {
     Q_OBJECT
-
+    
     public:
 
-        explicit PlotFrame(QFrame *parent = 0);
-
-        void addCurve(PlotCurve*);
-        PlotCurve* addCurve(QList<QPointF>, QVariant curveId=QVariant());
-        PlotCurve* addCurve(QList<IndexedPosition>, QVariant curveId=QVariant());
-        void addVerticalAxis(VerticalScale*);
-        void addHorizontalAxis(HorizontalScale*);
-        QGraphicsScene* scene() const;
+        explicit PlotFrame(QWidget *parent = 0);
+        ~PlotFrame(void);
 
     signals:
 
-        void positionChange(QPoint);
-        void pointSelected(float absciss, QVariant idTrack);
-        void intervalSelected(float firstAbsciss, float secondAbsciss, QVariant idTrack);
-        void selectionChanged();
+        void clear(void);
         void minVChanged(float);
         void maxVChanged(float);
         void minHChanged(float);
         void maxHChanged(float);
-        void clear(void);
+        void selectionChanged(void);
 
-    public slots:
+    private slots:
 
-        void showCurves(bool);
-        void showPoints(bool);
-        void showCurveLabels(bool visible);
-        void clearCurves(void);
-        void clearPlotSelection(void);
-        void highlightPoint(float absciss, QVariant idTrack);
-        void highlightSector(float t1, float t2, QVariant trackId);
+        // Autoconnect
+        void on_eraseToolButton_clicked(void);
+        void on_showLineToolButton_toggled(bool checked);
 
-        void displayLabels(const QPointF& mousePos); // -------------------------
-
-    protected slots:
-
-        void adaptScales(const QRectF&);
-        void handleSelection();
-        void lockSelectionAbility();
-        void unlockSelectionAbility();
-
-    private:
-
-        void createView();
-        void createToolBar();
+        // Personal slots
+        void adaptScales(const QRectF& newRect);
 
     protected:
 
-        QGraphicsScene* _scene;
-        PlotView* _mainview;
-        QList<PlotCurve*> _curves; // Liste de tous les tracés courament affiché (tous les tours)
-        QGraphicsItemGroup* _selectedGroup;
-        QVBoxLayout* _topScaleLayout;
-        QVBoxLayout* _bottomScaleLayout;
-        QHBoxLayout* _leftScaleLayout;
-        QHBoxLayout* _rightScaleLayout;
-        QToolBar* _toolbar;
-        int _selectionLocked;
-        bool _pointsVisible;
-        bool _curveVisible;
-        bool curveLabelsVisible;
+        // GUI
+        Ui::PlotFrame* ui;
+        QVBoxLayout* topScaleLayout;
+        QVBoxLayout* bottomScaleLayout;
+        QHBoxLayout* leftScaleLayout;
+        QHBoxLayout* rightScaleLayout;
 
-        QLabel* labelInfoPoint;
-        QList<QLabel*> curvePointPositionsLabels;
-        QAction* shVLineAction;
-
-        QPalette palette;
+        PlotScene* plotScene;
+        PlotView*  plotView;
 };
 
 #endif /* __PLOTFRAME_HPP__ */

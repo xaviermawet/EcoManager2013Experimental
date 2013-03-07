@@ -21,7 +21,7 @@ MapFrame::MapFrame(QWidget *parent) :
             this, SLOT(zoomAround(int,QPointF)));
 }
 
-MapFrame::~MapFrame()
+MapFrame::~MapFrame(void)
 {
     delete ui;
 }

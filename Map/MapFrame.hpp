@@ -15,7 +15,7 @@ class MapFrame : public QFrame
     public:
 
         explicit MapFrame(QWidget *parent = 0);
-        ~MapFrame();
+        ~MapFrame(void);
 
         MapView* view(void) const;
 
@@ -39,7 +39,7 @@ class MapFrame : public QFrame
 
     protected:
 
-        Ui::MapFrame *ui;
+        Ui::MapFrame* ui;
         MapView* _view;
 };
 

@@ -11,13 +11,15 @@
         <file>Resources/Icons/selection-icon.png</file>
         <file>Resources/Icons/cursor-icon.png</file>
         <file>Resources/Icons/cursor_hand.png</file>
-        <file alias="chartline.png">Resources/Icons/chartline.png</file>
-        <file alias="scatter.png">Resources/Icons/chartscatter.png</file>
-        <file alias="zoomout.png">Resources/Icons/Actions-zoom-out-icon.png</file>
+        <file>Resources/Icons/chartline.png</file>
+        <file>Resources/Icons/chartscatter.png</file>
+        <file>Resources/Icons/Actions-zoom-out-icon.png</file>
         <file>Resources/Icons/Layout1.png</file>
         <file>Resources/Icons/Layout2.png</file>
         <file>Resources/Icons/Layout3.png</file>
         <file>Resources/Icons/Layout4.png</file>
-        <file alias="Line.png">Resources/Icons/Line.png</file>
+        <file>Resources/Icons/Line.png</file>
+        <file>Resources/Icons/zoom_out.png</file>
+        <file>Resources/Icons/eraser.png</file>
     </qresource>
 </RCC>

@@ -49,7 +49,7 @@ void PlotView::zoomOut(void)
     }
 }
 
-void PlotView::verticalLineVisible(bool visible)
+void PlotView::setVerticalLineVisible(bool visible)
 {
     if (visible)
     {
@@ -63,22 +63,22 @@ void PlotView::verticalLineVisible(bool visible)
     }
 }
 
-void PlotView::toggleSelectionMode(void)
-{
-    if (this->dragMode() == QGraphicsView::NoDrag)
-    {
-        // Mode de sélection d'une zone (zoom)
-        this->setDragMode(QGraphicsView::RubberBandDrag);
-        this->viewport()->update();
-        emit this->verticalLineVisibilityChanged(false);
-    }
-    else
-    {
-        // Mode déplacement de la ligne verticale
-        this->setDragMode(QGraphicsView::NoDrag);
-        emit this->verticalLineVisibilityChanged(true);
-    }
-}
+//void PlotView::toggleSelectionMode(void)
+//{
+//    if (this->dragMode() == QGraphicsView::NoDrag)
+//    {
+//        // Mode de sélection d'une zone (zoom)
+//        this->setDragMode(QGraphicsView::RubberBandDrag);
+//        this->viewport()->update();
+//        emit this->verticalLineVisibilityChanged(false);
+//    }
+//    else
+//    {
+//        // Mode déplacement de la ligne verticale
+//        this->setDragMode(QGraphicsView::NoDrag);
+//        emit this->verticalLineVisibilityChanged(true);
+//    }
+//}
 
 void PlotView::drawForeground(QPainter *painter, const QRectF &rect)
 {
@@ -130,7 +130,7 @@ void PlotView::mouseMoveEvent(QMouseEvent *event)
         // Mode de déplacement de la ligne verticale
         case QGraphicsView::NoDrag:
             this->mousePos = this->mapToScene(event->pos());
-            emit this->mousePosChanged(this->mousePos);
+            emit this->mousePosChanged(event->posF(), this->mousePos);
             this->viewport()->update();
             break;
         default:
@@ -197,22 +197,22 @@ void PlotView::resizeEvent(QResizeEvent*)
     posLabel->move(width() - posLabel->width() - 10, 10);
 }
 
-void PlotView::keyPressEvent(QKeyEvent *event)
-{
-    if(event->type() == QKeyEvent::KeyPress)
-    {
-        // CTRL + L is used to change the dragMode
-        if (event->modifiers() == Qt::ControlModifier &&
-            event->key() == Qt::Key_L)
-        {
-            bool showVerticalLine = this->dragMode() == QGraphicsView::RubberBandDrag;
-            this->verticalLineVisible(showVerticalLine);
-            emit this->verticalLineVisibilityChanged(showVerticalLine);
-        }
-    }
+//void PlotView::keyPressEvent(QKeyEvent *event)
+//{
+//    if(event->type() == QKeyEvent::KeyPress)
+//    {
+//        // CTRL + L is used to change the dragMode
+//        if (event->modifiers() == Qt::ControlModifier &&
+//            event->key() == Qt::Key_L)
+//        {
+//            bool showVerticalLine = this->dragMode() == QGraphicsView::RubberBandDrag;
+//            this->setVerticalLineVisible(showVerticalLine);
+//            emit this->verticalLineVisibilityChanged(showVerticalLine);
+//        }
+//    }
 
-    QGraphicsView::keyPressEvent(event);
-}
+//    QGraphicsView::keyPressEvent(event);
+//}
 
 void PlotView::init(void)
 {
