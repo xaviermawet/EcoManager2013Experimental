@@ -63,7 +63,7 @@ void MapFrame::on_dragButton_toggled(bool checked)
         this->_view->setDragMode(QGraphicsView::ScrollHandDrag);
 }
 
-void MapFrame::on_clearButton_clicked(void)
+void MapFrame::on_clearToolButton_clicked(void)
 {
     emit this->clearTracks();
 }

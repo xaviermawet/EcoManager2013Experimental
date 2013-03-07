@@ -361,25 +361,21 @@ void MainWindow::on_actionSaveCurrentLayout_triggered(void)
 void MainWindow::on_actionConfiguredLayout1_triggered(void)
 {
     this->readSettings(this->ui->actionConfiguredLayout1->text());
-    //QMessageBox::information(this, "Choix d'une disposition", "Disposition 1 utilisée");
 }
 
 void MainWindow::on_actionConfiguredLayout2_triggered(void)
 {
     this->readSettings(this->ui->actionConfiguredLayout2->text());
-    //QMessageBox::information(this, "Choix d'une disposition", "Disposition 2 utilisée");
 }
 
 void MainWindow::on_actionConfiguredLayout3_triggered(void)
 {
     this->readSettings(this->ui->actionConfiguredLayout3->text());
-    //QMessageBox::information(this, "Choix d'une disposition", "Disposition 3 utilisée");
 }
 
 void MainWindow::on_actionConfiguredLayout4_triggered(void)
 {
     this->readSettings(this->ui->actionConfiguredLayout4->text());
-    //QMessageBox::information(this, "Choix d'une disposition", "Disposition 4 utilisée");
 }
 
 void MainWindow::loadCompetition(int index)
@@ -512,7 +508,6 @@ void MainWindow::createRaceView(void)
 {
     // Mainly developed with Qt Designer
 
-    this->ui->raceView->expandAll();
     this->ui->raceView->resizeColumnToContents(0);
 }
 
@@ -915,6 +910,7 @@ void MainWindow::displayDataLap(void)
                             ref_race, ref_lap, raceInformation);
             }
 
+            this->ui->raceTable->expandAll();
         }
 
     }
@@ -990,7 +986,7 @@ void MainWindow::reloadRaceView(void)
     wrapper->setSourceModel(this->competitionModel);
 
     QItemSelectionModel* oldSelectionModel = this->ui->raceView->selectionModel();
-    if (oldSelectionModel == NULL)
+    if (oldSelectionModel != NULL)
         delete oldSelectionModel;
 
     this->ui->raceView->setModel(wrapper);

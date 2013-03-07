@@ -141,6 +141,9 @@
          <height>24</height>
         </size>
        </property>
+       <property name="shortcut">
+        <string>Ctrl+Del</string>
+       </property>
       </widget>
      </item>
      <item>

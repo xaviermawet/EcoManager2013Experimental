@@ -21,5 +21,6 @@
         <file>Resources/Icons/Line.png</file>
         <file>Resources/Icons/zoom_out.png</file>
         <file>Resources/Icons/eraser.png</file>
+        <file>Resources/Icons/diskette.png</file>
     </qresource>
 </RCC>

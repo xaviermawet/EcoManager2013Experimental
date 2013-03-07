@@ -80,12 +80,16 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="clearButton">
+      <widget class="QToolButton" name="clearToolButton">
        <property name="toolTip">
         <string>Effacer toutes les données dans les différentes vues</string>
        </property>
        <property name="text">
         <string>Effacer</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../Resources.qrc">
+         <normaloff>:/Resources/Icons/eraser.png</normaloff>:/Resources/Icons/eraser.png</iconset>
        </property>
       </widget>
      </item>

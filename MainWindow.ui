@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1200</width>
-    <height>600</height>
+    <width>1005</width>
+    <height>404</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -231,7 +231,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1200</width>
+     <width>1005</width>
      <height>19</height>
     </rect>
    </property>
@@ -463,6 +463,10 @@
    </property>
   </action>
   <action name="actionSaveCurrentLayout">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Resources/Icons/diskette.png</normaloff>:/Resources/Icons/diskette.png</iconset>
+   </property>
    <property name="text">
     <string>Sauver la disposition courante</string>
    </property>
