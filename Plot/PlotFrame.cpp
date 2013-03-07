@@ -54,6 +54,8 @@ PlotFrame::PlotFrame(QWidget *parent) :
             this->plotScene, SLOT(unlockSelectionAbility()));
     connect(this->plotView, SIGNAL(mousePosChanged(QPointF,QPointF)),
             this->plotScene, SLOT(displayLabels(QPointF,QPointF)));
+    connect(this->plotView, SIGNAL(mousePressed(QPointF)),
+            this->plotScene, SLOT(slotDeTest(QPointF)));
     connect(this->plotScene, SIGNAL(selectionChanged()),
             this, SIGNAL(selectionChanged()));
 

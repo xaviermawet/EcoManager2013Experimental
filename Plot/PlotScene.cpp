@@ -311,3 +311,16 @@ void PlotScene::unlockSelectionAbility(void)
         this->handleSelection();
     }
 }
+
+void PlotScene::slotDeTest(const QPointF &scenePos)
+{
+    foreach (PlotCurve* curve, this->curves)
+    {
+        CoordinateItem* itemAtMousePos =
+                curve->nearestCoordinateitemsOfX(scenePos.x());
+
+        if (itemAtMousePos)
+            emit this->pointSelected(itemAtMousePos->index().toFloat(),
+                                     curve->id());
+    }
+}

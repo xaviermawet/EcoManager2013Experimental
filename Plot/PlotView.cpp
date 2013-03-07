@@ -159,6 +159,8 @@ void PlotView::mousePressEvent(QMouseEvent *event)
             break;
         // Mode de déplacement de la ligne verticale
         case QGraphicsView::NoDrag:
+            // Emettre un signal avec la position de la souris dans la
+            emit this->mousePressed(this->mousePos);
             break;
         default:
             break;

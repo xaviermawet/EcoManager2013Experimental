@@ -15,6 +15,7 @@ class PlotView : public QGraphicsView
 
     signals:
 
+        void mousePressed(const QPointF& scenePos);
         void mousePosChanged(const QPointF& mousePos, const QPointF& scenePos);
         void rectChange(const QRectF&);
         void beginSelection(void);

@@ -39,15 +39,11 @@ class PlotScene : public QGraphicsScene
         void highlightPoints(float timeValue, const QVariant& trackId);
         void highlightSector(float t1, float t2, const QVariant& trackId);
         void displayLabels(const QPointF& mousePos, const QPointF& scenePos);
-
-        /* Ajouter les méthodes pour afficher les labels
-         * Pas oublier de créer un label lorsqu'on ajoute une curve et de les
-         * supprimer lorsqu'on supprime les curves
-         */
-
         void handleSelection(void);
         void lockSelectionAbility(void);
         void unlockSelectionAbility(void);
+
+        void slotDeTest(const QPointF& scenePos);
 
     protected:
 
