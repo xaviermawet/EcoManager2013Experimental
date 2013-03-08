@@ -45,6 +45,9 @@ class LapInformationTreeModel : public QAbstractItemModel
         void addMultipleRaceInformation(int refRace, int refLap,
                                         const QList< QList<QVariant> >& data);
 
+        void addRaceInformation2(int refRace, int refLap,
+                                 const QList<QVariant> &data);
+
     private:
 
         TreeElement* nodeFromIndex(const QModelIndex& index) const;

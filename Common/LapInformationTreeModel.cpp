@@ -229,6 +229,13 @@ LapInformationTreeModel::LapInformationTreeModel(const QStringList& headers,
      return result;
  }
 
+ void LapInformationTreeModel::addRaceInformation2(int refRace, int refLap,
+                                                   const QList<QVariant> &data)
+ {
+     if (!this->insertRow(this->rootItem->childCount()))
+         return;
+ }
+
  void LapInformationTreeModel::addRaceInformation(int refRace, int refLap,
                                                   const QList<QVariant> &data)
  {

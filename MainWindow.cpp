@@ -490,6 +490,10 @@ void MainWindow::clearAllData(void)
 
     // Clear the list of all tracks currently displayed
     this->currentTracksDisplayed.clear();
+
+    // Remove laps information from the table
+    this->raceInformationTableModel->removeRows(
+                0, this->raceInformationTableModel->rowCount());
 }
 
 void MainWindow::centerOnScreen(void)
