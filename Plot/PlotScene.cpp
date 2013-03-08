@@ -114,6 +114,10 @@ void PlotScene::clearCurves(void)
     this->clearPlotSelection();
     this->curves.clear();       // Clear the list of curves
     this->clear();              // Clear the scene
+
+    foreach (QLabel* curveLabel, this->curveLabels)
+        delete curveLabel;
+
     this->curveLabels.clear();  // Clear all the labels associated to the curves
 }
 

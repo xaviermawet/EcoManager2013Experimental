@@ -19,13 +19,16 @@ LapInformationTreeModel::LapInformationTreeModel(const QStringList& headers,
 
  int LapInformationTreeModel::columnCount(const QModelIndex& parent) const
  {
-     //return rootItem->columnCount();
+     Q_UNUSED(parent);
 
+     return rootItem->columnCount();
+/*
      TreeElement* parentItem = this->nodeFromIndex(parent);
      if (!parentItem)
          return 0;
 
      return parentItem->columnCount();
+ */
  }
 
  QVariant LapInformationTreeModel::data(const QModelIndex& index, int role) const

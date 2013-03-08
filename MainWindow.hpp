@@ -22,6 +22,7 @@
 #include "Common/ColorizerProxyModel.hpp"
 #include "Map/SampleLapViewer.hpp"
 #include "LapInformationProxyModel.hpp"
+#include "Common/LapInformationTreeModel.hpp"
 
 #include <QtGui>
 #include <QtSql>
@@ -114,7 +115,7 @@ class MainWindow : public QMainWindow
 
         // Personal Models
         GroupingTreeModel* competitionModel;
-        TreeLapInformationModel* raceInformationTableModel;
+        LapInformationTreeModel* raceInformationTableModel; //TreeLapInformationModel* raceInformationTableModel;
 };
 
 #endif /* __MAINWINDOW_HPP__ */

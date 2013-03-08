@@ -639,7 +639,7 @@ void MainWindow::createRaceTable(void)
     QStringList headers;
     headers << tr("Course") << tr("Tps(s)") << tr("Tps(s)") << tr("Dist(m)")
             << tr("v(km\\h)") << tr("Acc(m/s2)") << tr("RPM") << tr("PW");
-    this->raceInformationTableModel = new TreeLapInformationModel(headers);
+    this->raceInformationTableModel = new LapInformationTreeModel(headers); //this->raceInformationTableModel = new TreeLapInformationModel(headers);
 /*
     // Use a proxy model to manage background color of each row
     LapInformationProxyModel* wrapper = new LapInformationProxyModel(this);
