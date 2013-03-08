@@ -636,11 +636,11 @@ void MainWindow::createMegaSquirtZone(void)
 void MainWindow::createRaceTable(void)
 {
     // Create the model for the table of laps information
-    QList<QVariant> headers;
-    headers << "Course" << "Tps(s)" << "Tps(s)" << "Dist(m)" << "v(km\\h)"
-            << "Acc(m/s2)" << "RPM" << "PW";
+    QStringList headers;
+    headers << tr("Course") << tr("Tps(s)") << tr("Tps(s)") << tr("Dist(m)")
+            << tr("v(km\\h)") << tr("Acc(m/s2)") << tr("RPM") << tr("PW");
     this->raceInformationTableModel = new TreeLapInformationModel(headers);
-
+/*
     // Use a proxy model to manage background color of each row
     LapInformationProxyModel* wrapper = new LapInformationProxyModel(this);
     wrapper->setSourceModel(this->raceInformationTableModel);
@@ -648,6 +648,11 @@ void MainWindow::createRaceTable(void)
     // Apply the model to the table and change the selection mode
     this->ui->raceTable->setModel(wrapper);
     this->ui->raceTable->setSelectionMode(QAbstractItemView::MultiSelection);
+*/
+
+    // Apply the model to the table and change the selection mode
+    this->ui->raceTable->setModel(this->raceInformationTableModel);
+    this->ui->raceTable->setAlternatingRowColors(true);
 }
 
 void MainWindow::readSettings(const QString& settingsGroup)

@@ -1,11 +1,14 @@
 #include "TreeLapInformationModel.hpp"
 
-TreeLapInformationModel::TreeLapInformationModel(const QList<QVariant>& headers,
+TreeLapInformationModel::TreeLapInformationModel(const QStringList& headers,
                                                  QObject* parent) :
     QAbstractItemModel(parent)
 {
-    this->rootItem = new TreeNode(headers);
-    //this->reset();
+    QList<QVariant> rootData;
+    foreach (QString header, headers)
+        rootData << header;
+
+    this->rootItem = new TreeNode(rootData);
 }
 
 TreeLapInformationModel::~TreeLapInformationModel(void)
@@ -90,6 +93,8 @@ int TreeLapInformationModel::columnCount(const QModelIndex& parent) const
 
 QVariant TreeLapInformationModel::data(const QModelIndex &index, int role) const
 {
+    qDebug() << "TreeLapInformationModel --> data";
+
     if (!index.isValid())
         return QVariant();
 

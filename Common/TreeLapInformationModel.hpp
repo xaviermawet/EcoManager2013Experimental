@@ -10,8 +10,7 @@ class TreeLapInformationModel : public QAbstractItemModel
 
     public:
 
-        TreeLapInformationModel(const QList<QVariant>& headers,
-                                QObject *parent = 0);
+        TreeLapInformationModel(const QStringList &headers, QObject* parent = 0);
         virtual ~TreeLapInformationModel(void);
 
         virtual QModelIndex index(int row, int column, const QModelIndex &parent) const;
