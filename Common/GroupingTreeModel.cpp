@@ -200,7 +200,6 @@ void GroupingTreeModel::setSourceModel(QAbstractTableModel* model, const QList<i
 
    for (int i(0); i < rowCount; i++) // pour toutes les lignes
    {
-       // 0 et 1 --> size = 2 --> pq ne pas avoir fait un foreach au lieu d'une boucle for :o ?
        for (int j(0); j < grCols.size(); j++) // gr cols = les colonnes que l'on veut regrouper
        {
            int gri = grCols[j]; // gri (groupe index) est le véritable index pour la colonne dans le model passé en paramètre

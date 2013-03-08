@@ -34,7 +34,7 @@ QModelIndex TreeLapInformationModel::index(int row, int column,
 
 QModelIndex TreeLapInformationModel::parent(const QModelIndex& child) const
 {
-     // un index de modèle invalide représente la racine dans un modèle
+    // un index de modèle invalide représente la racine dans un modèle
     if (!child.isValid())
         return QModelIndex();
 
@@ -93,7 +93,7 @@ int TreeLapInformationModel::columnCount(const QModelIndex& parent) const
 
 QVariant TreeLapInformationModel::data(const QModelIndex &index, int role) const
 {
-    qDebug() << "TreeLapInformationModel --> data";
+    qDebug() << "TreeLapInformationModel --> data --> role : " << role;
 
     if (!index.isValid())
         return QVariant();
@@ -226,4 +226,12 @@ TreeNode* TreeLapInformationModel::nodeFromIndex(const QModelIndex& index) const
     if (!index.isValid())
         return this->rootItem;
     return  static_cast<TreeNode*>(index.internalPointer());
+
+    /*
+     if (index.isValid()) {
+         TreeNode *item = static_cast<TreeNode*>(index.internalPointer());
+         if (item) return item;
+     }
+     return rootItem;
+     */
 }

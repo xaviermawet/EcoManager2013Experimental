@@ -24,9 +24,9 @@ class TreeNode
 
         QList<TreeNode*> childItems;
         QList<QVariant> itemData;
-        TreeNode *parentItem;
+        TreeNode* parentItem;
 
         int count;
 };
 
-#endif // TREENODE_HPP
+#endif /* __TREENODE_HPP__ */
