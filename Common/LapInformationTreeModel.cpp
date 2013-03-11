@@ -33,7 +33,7 @@ LapInformationTreeModel::LapInformationTreeModel(const QStringList& headers,
 
  QVariant LapInformationTreeModel::data(const QModelIndex& index, int role) const
  {
-     qDebug() << "LapInformationTreeModel --> data";
+     //qDebug() << "LapInformationTreeModel --> data";
 
      if (!index.isValid())
          return QVariant();

@@ -496,6 +496,82 @@ void MainWindow::clearAllData(void)
                 0, this->raceInformationTableModel->rowCount());
 }
 
+void MainWindow::displayLapInformation(float timeValue, const QVariant &trackId)
+{
+    // Get the race number and the lap number from the trackId
+    QMap<QString, QVariant> trackIdentifier =
+            qvariant_cast< QMap<QString, QVariant> >(trackId);
+    int ref_race = trackIdentifier["race"].toInt();
+    int ref_lap  = trackIdentifier["lap"].toInt();
+
+    /* tiemeValue passé en paramètre est exprimé en secondes mais les timestamp
+     * sauvées dans la base de données sont en millisecondes */
+    int timestamp = timeValue * 1000;
+    qDebug() << "timeValue = " << timeValue;
+    qDebug() << "timestamp = " << timestamp;
+
+    // Récupérer les informations de temps et de vitesses
+    QSqlQuery query;
+    query.prepare("select timestamp, value from SPEED where timestamp <= ? and ref_lap_race = ? and ref_lap_num = ? order by timestamp");
+    query.addBindValue(timestamp);
+    query.addBindValue(ref_race);
+    query.addBindValue(ref_lap);
+
+    if (!query.exec())
+    {
+        QString errorMsg("Impossible de récupérer les données numériques "
+                         "associées à votre sélection pour le tour " +
+                         QString::number(ref_lap) + " de la course " +
+                         QString::number(ref_race));
+        QMessageBox::warning(this, tr("Erreur de récupération de données"),
+                             tr(errorMsg.toStdString().c_str()));
+        return;
+    }
+
+    double time(0),  lastTime(0);
+    double speed(0), lastSpeed(0);
+    double pos(1.5),   lastPos(0); // FIXME : remplacer par la valeur entrée pour le périmètre
+
+    // Boucle de calcul de la distance parcourue jusqu'au temps timeValue
+    while(query.next())
+    {
+        lastTime = time;
+        lastSpeed = speed;
+        lastPos = pos;
+
+        time  = query.value(0).toFloat() / 1000; // Le temps est sauvé en millisecondes dans la db et on le veut en secondes
+        speed = query.value(1).toDouble();
+
+        int multipleWheelPerimeter = ceil(((speed + lastSpeed) / (2 * 3.6)) * (time - lastTime)) / 1.5;
+        pos = lastPos + multipleWheelPerimeter * 1.5;
+
+        qDebug() << "multipleWheelPerimeter = " << multipleWheelPerimeter;
+    }
+
+    // Calcul de l'accélération FIXME : ne pas oublier de vérifier si c'est pas le premier point, dans ce cas, le calcul de l'accélération est impossible !!!!
+    qreal diff = (speed -lastSpeed) / 3.6; // vitesse en m/s
+    qreal acc = diff / (time - lastTime);
+
+    QList<QVariant> lapData;
+    lapData.append(QVariant());
+    lapData.append(timestamp); // Tps (ms)
+    lapData.append(time);      // Tps (s)
+    lapData.append(pos);       // Dist (m)
+    lapData.append(speed);     // V (km\h)
+    lapData.append(acc);       // Acc (m\s²)
+    lapData.append("???");     // RPM
+    lapData.append("???");     // PW
+
+    this->raceInformationTableModel->addRaceInformation(ref_race, ref_lap, lapData);
+    this->ui->raceTable->expandAll();
+}
+
+void MainWindow::displayLapInformation(float lowerTimeValue,
+                                       float upperTimeValue,
+                                       const QVariant &trackId)
+{
+}
+
 void MainWindow::centerOnScreen(void)
 {
     QDesktopWidget screen;
@@ -641,7 +717,7 @@ void MainWindow::createRaceTable(void)
 {
     // Create the model for the table of laps information
     QStringList headers;
-    headers << tr("Course") << tr("Tps(s)") << tr("Tps(s)") << tr("Dist(m)")
+    headers << tr("Course") << tr("Tps(ms)") << tr("Tps(s)") << tr("Dist(m)")
             << tr("v(km\\h)") << tr("Acc(m/s2)") << tr("RPM") << tr("PW");
     this->raceInformationTableModel = new LapInformationTreeModel(headers); //this->raceInformationTableModel = new TreeLapInformationModel(headers);
 /*
@@ -780,14 +856,15 @@ void MainWindow::displayDataLap(void)
             QList<IndexedPosition> timeSpeedPoints; // Liste des points de la vitesse par rapport au temps
             QList<IndexedPosition> dAccPoints;      // Liste des points de l'accélération par rapport à la distance
             QList<IndexedPosition> tAccPoints;      // Liste des points de l'accélération par rapport au temps
-            QPointF lastSpeed;
-            QPointF lastValidSpeed;
+            QPointF lastSpeed(0,0); // Modifié
             int count = 0;
-            double lastPos = 0;
+            double lastPos = 1.5;
 
             while (speedQuery.next())
             {
-                double time = speedQuery.value(0).toFloat() / 1000;
+                qDebug() << "timestamp = " << speedQuery.value(0).toFloat();
+
+                double time = speedQuery.value(0).toFloat() / 1000; // Le temps est sauvé en millisecondes dans la db et on le veut en secondes
                 double speed = speedQuery.value(1).toDouble();
                 double pos;
 
@@ -795,46 +872,52 @@ void MainWindow::displayDataLap(void)
                 dPoint.setIndex(time);
                 tPoint.setIndex(time);
 
-                if (count > 0)
-                {
-                    qreal diff = (speed - lastSpeed.y()) / 3.6;
+//                if (count > 0)
+//                {
+                    qreal diff = (speed - lastSpeed.y()) / 3.6; // vitesse en m/s
                     qreal acc = diff / (time - lastSpeed.x());
 
-                    if (qAbs(acc) < 2 && (time - lastSpeed.x()) < 1)
-                    {
-                        pos = lastPos + ((speed + lastSpeed.y()) / (2 * 3.6)) * (time - lastSpeed.x());
+//                    if (qAbs(acc) < 2 && (time - lastSpeed.x()) < 1)
+//                    {
+                        int multipleWheelPerimeter = ceil(((speed + lastSpeed.y()) / (2 * 3.6)) * (time - lastSpeed.x())) / 1.5;
+                        pos = lastPos + multipleWheelPerimeter * 1.5;
+
+                        qDebug() << "multipleWheelPerimeter = " << multipleWheelPerimeter;
+
                         dPoint.setX(pos);
                         dPoint.setY(speed);
                         lastPos = pos;
+
+
 
                         tPoint.setX(time);
                         tPoint.setY(speed);
                         timeSpeedPoints << tPoint;
 
-                        lastValidSpeed = QPointF(time, speed);
                         dAccPoints << IndexedPosition((pos + lastPos) / 2, acc, time);
                         tAccPoints << IndexedPosition((lastSpeed.x() + time) / 2, acc, time);
-                    }
-                    else
-                    {
-                        dPoint.setX(lastPos);
-                        dPoint.setY(lastSpeed.y());
-                        tPoint.setX(time);
-                        tPoint.setY(lastSpeed.y());
-                        timeSpeedPoints << tPoint;
-                    }
-                }
-                else
-                {
-                    dPoint.setX(0);
-                    dPoint.setY(speed);
-                    lastValidSpeed = QPointF(time, speed);
-                }
+//                    }
+//                    else
+//                    {
+//                        qDebug() << "count : " << count;
+//                        dPoint.setX(lastPos);
+//                        dPoint.setY(lastSpeed.y());
+//                        tPoint.setX(time);
+//                        tPoint.setY(lastSpeed.y());
+//                        timeSpeedPoints << tPoint;
+//                    }
+//                }
+//                else
+//                {
+//                    dPoint.setX(0);
+//                    dPoint.setY(speed);
+//                }
 
                 distSpeedPoints << dPoint;
                 lastSpeed = QPointF(time, speed);
                 count++;
             }
+
             /*
             QList<QPointF> lineZero;
 
@@ -899,6 +982,11 @@ void MainWindow::displayDataLap(void)
             }
             */
 
+            qDebug() << "Nb lignes retournées par la requete = " << count;
+            qDebug() << "distSpeedPoints.count() = " << distSpeedPoints.count();
+            qDebug() << "timeSpeedPoints.count() = " << timeSpeedPoints.count();
+            qDebug() << "dAccPoints.count() = " << dAccPoints.count();
+            qDebug() << "tAccPoints.count() = " << tAccPoints.count();
 
             QList<QVariant> raceInformation;
             for (int i(0); i < tAccPoints.count(); i++) // Environ 1000 éléments
@@ -913,7 +1001,7 @@ void MainWindow::displayDataLap(void)
                 raceInformation.append(timeSpeedPoints.at(i).y()); // vitesse
                 raceInformation.append(tAccPoints.at(i).y()); // Acceleration
                 raceInformation.append("RPM"); // RPM
-                raceInformation.append("PW"); // PW
+                raceInformation.append("PW");  // PW
 
                 this->raceInformationTableModel->addRaceInformation(
                             ref_race, ref_lap, raceInformation);
@@ -957,6 +1045,8 @@ void MainWindow::connectSignals(void)
             this->mapScene, SLOT(clearSceneSelection()));
     connect(this->distancePlotFrame->scene(), SIGNAL(pointSelected(float,QVariant)),
             this->mapScene, SLOT(highlightPoint(float,QVariant)));
+    connect(this->distancePlotFrame->scene(), SIGNAL(pointSelected(float,QVariant)),
+            this, SLOT(displayLapInformation(float,QVariant)));
     connect(this->distancePlotFrame->scene(), SIGNAL(intervalSelected(float,float,QVariant)),
             this->mapScene, SLOT(highlightSector(float,float,QVariant)));
     connect(this->distancePlotFrame, SIGNAL(clear()), this, SLOT(clearAllData()));
@@ -966,6 +1056,8 @@ void MainWindow::connectSignals(void)
             this->mapScene, SLOT(clearSceneSelection()));
     connect(this->timePlotFrame->scene(), SIGNAL(pointSelected(float,QVariant)),
             this->mapScene, SLOT(highlightPoint(float,QVariant)));
+    connect(this->timePlotFrame->scene(), SIGNAL(pointSelected(float,QVariant)),
+            this, SLOT(displayLapInformation(float,QVariant)));
     connect(this->timePlotFrame->scene(), SIGNAL(intervalSelected(float,float,QVariant)),
             this->mapScene, SLOT(highlightSector(float,float,QVariant)));
     connect(this->timePlotFrame, SIGNAL(clear()), this, SLOT(clearAllData()));

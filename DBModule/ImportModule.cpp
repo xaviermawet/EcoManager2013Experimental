@@ -419,20 +419,22 @@ bool ImportModule::loadSpeedData(const QString &path, Race& race)
         return true;
 
 //    in >> origin;
-    origin = in.readLine().toULongLong();
+    origin = in.readLine().toULongLong(); // Lecture de la première valeur de temps comme (origine) temps du début du tour
     prevAbsTime = origin;
     QTime lapTimeOrigin(0, 0);
 
+    qDebug() << "distance : " << race.wheelPerimeter();
     while (!in.atEnd())
     {
 //        in >> absTime;
-        absTime = in.readLine().toULongLong();
-        QDateTime dt = QDateTime::fromMSecsSinceEpoch(absTime / (1000 * 1000));
+        absTime = in.readLine().toULongLong(); // Lecture de la deuxième à la dernière ligne
+        QDateTime dt = QDateTime::fromMSecsSinceEpoch(absTime / (1000 * 1000)); // Toutes les données de temps sont expirmiées en millisecondes depuis l'époque
         numLap = race.numLap(dt.time());
 
+        // Si on change de tour
         if (numLap != prevNumLap)
         {
-            origin = absTime;
+            origin = absTime; // Le temps de référence pour le début du tour = à la donnée qui vient d'etre lue
             prevNumLap = numLap;
             lapTimeOrigin = race.lap(numLap).first;
         }
@@ -440,7 +442,7 @@ bool ImportModule::loadSpeedData(const QString &path, Race& race)
 
         //FIXME
         Q_ASSERT((absTime - prevAbsTime) >= 0);
-        qreal value = race.wheelPerimeter() * 3600.0 * 1000 * 1000 / (absTime - prevAbsTime);
+        qreal value = race.wheelPerimeter() * 3600.0 * 1000 * 1000 / (absTime - prevAbsTime); // vitesse en km/h
 
         // FIXME : filter max value
         if (!qIsInf(value) && value < 80) {
@@ -452,6 +454,7 @@ bool ImportModule::loadSpeedData(const QString &path, Race& race)
 
         prevAbsTime = absTime;
     }
+
     query.addBindValue(timestamps);
     query.addBindValue(values);
     query.addBindValue(refRaces);

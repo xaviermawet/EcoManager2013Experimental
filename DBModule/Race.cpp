@@ -68,7 +68,7 @@ int Race::numLap(const QTime& t)
     if (this->_laps.isEmpty())
         return -1;
 
-    int size(_laps.size());
+    int size(this->_laps.size());
     int count(0);
     QLinkedList< QPair<QTime, QTime> >::const_iterator it =
             this->_laps.constBegin() + this->_lastReturned;

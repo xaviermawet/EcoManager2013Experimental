@@ -74,6 +74,10 @@ class MainWindow : public QMainWindow
         void updateSector(QString, int, IndexedPosition, IndexedPosition);
         void clearAllData(void);
 
+        void displayLapInformation(float timeValue, const QVariant& trackId);
+        void displayLapInformation(float lowerTimeValue, float upperTimeValue,
+                                   const QVariant &trackId);
+
     private:
 
         void centerOnScreen(void);

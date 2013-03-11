@@ -93,7 +93,7 @@ int TreeLapInformationModel::columnCount(const QModelIndex& parent) const
 
 QVariant TreeLapInformationModel::data(const QModelIndex &index, int role) const
 {
-    qDebug() << "TreeLapInformationModel --> data --> role : " << role;
+    //qDebug() << "TreeLapInformationModel --> data --> role : " << role;
 
     if (!index.isValid())
         return QVariant();
