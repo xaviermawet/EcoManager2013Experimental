@@ -988,26 +988,26 @@ void MainWindow::displayDataLap(void)
             qDebug() << "dAccPoints.count() = " << dAccPoints.count();
             qDebug() << "tAccPoints.count() = " << tAccPoints.count();
 
-            QList<QVariant> raceInformation;
-            for (int i(0); i < tAccPoints.count(); i++) // Environ 1000 éléments
-            {
-                raceInformation.clear();
+//            QList<QVariant> raceInformation;
+//            for (int i(0); i < tAccPoints.count(); i++) // Environ 1000 éléments
+//            {
+//                raceInformation.clear();
 
-                // ajout des informations
-                raceInformation.append(QVariant());
-                raceInformation.append(timeSpeedPoints.at(i).index()); // tps 1
-                raceInformation.append(timeSpeedPoints.at(i).index()); // tps 2
-                raceInformation.append(distSpeedPoints.at(i).x()); // distance
-                raceInformation.append(timeSpeedPoints.at(i).y()); // vitesse
-                raceInformation.append(tAccPoints.at(i).y()); // Acceleration
-                raceInformation.append("RPM"); // RPM
-                raceInformation.append("PW");  // PW
+//                // ajout des informations
+//                raceInformation.append(QVariant());
+//                raceInformation.append(timeSpeedPoints.at(i).index()); // tps 1
+//                raceInformation.append(timeSpeedPoints.at(i).index()); // tps 2
+//                raceInformation.append(distSpeedPoints.at(i).x()); // distance
+//                raceInformation.append(timeSpeedPoints.at(i).y()); // vitesse
+//                raceInformation.append(tAccPoints.at(i).y()); // Acceleration
+//                raceInformation.append("RPM"); // RPM
+//                raceInformation.append("PW");  // PW
 
-                this->raceInformationTableModel->addRaceInformation(
-                            ref_race, ref_lap, raceInformation);
-            }
+//                this->raceInformationTableModel->addRaceInformation(
+//                            ref_race, ref_lap, raceInformation);
+//            }
 
-            this->ui->raceTable->expandAll();
+//            this->ui->raceTable->expandAll();
         }
 
     }
