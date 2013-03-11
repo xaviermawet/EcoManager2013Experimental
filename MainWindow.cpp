@@ -378,6 +378,13 @@ void MainWindow::on_actionConfiguredLayout4_triggered(void)
     this->readSettings(this->ui->actionConfiguredLayout4->text());
 }
 
+void MainWindow::on_actionLapDataTableErase_triggered(void)
+{
+    // Remove laps information from the table
+    this->raceInformationTableModel->removeRows(
+                0, this->raceInformationTableModel->rowCount());
+}
+
 void MainWindow::loadCompetition(int index)
 {
     this->currentCompetition = competitionNameModel->record(index).value(0).toString();
@@ -492,8 +499,7 @@ void MainWindow::clearAllData(void)
     this->currentTracksDisplayed.clear();
 
     // Remove laps information from the table
-    this->raceInformationTableModel->removeRows(
-                0, this->raceInformationTableModel->rowCount());
+    this->on_actionLapDataTableErase_triggered();
 }
 
 void MainWindow::displayLapInformation(float timeValue, const QVariant &trackId)
@@ -558,7 +564,7 @@ void MainWindow::displayLapInformation(float timeValue, const QVariant &trackId)
     lapData.append(time);      // Tps (s)
     lapData.append(pos);       // Dist (m)
     lapData.append(speed);     // V (km\h)
-    lapData.append(acc);       // Acc (m\s²)
+    lapData.append(qAbs(acc) > 2 ? "NS" : QString::number(acc)); // Acc (m\s²)
     lapData.append("???");     // RPM
     lapData.append("???");     // PW
 
@@ -570,6 +576,80 @@ void MainWindow::displayLapInformation(float lowerTimeValue,
                                        float upperTimeValue,
                                        const QVariant &trackId)
 {
+    // Get the race number and the lap number from the trackId
+    QMap<QString, QVariant> trackIdentifier =
+            qvariant_cast< QMap<QString, QVariant> >(trackId);
+    int ref_race = trackIdentifier["race"].toInt();
+    int ref_lap  = trackIdentifier["lap"].toInt();
+
+    /* upperTimeValue passé en paramètre est exprimé en secondes mais les
+     * timestamp sauvées dans la base de données sont en millisecondes */
+    int upperTimeStamp = upperTimeValue * 1000;
+
+    // Récupérer les informations de temps et de vitesses
+    QSqlQuery query;
+    query.prepare("select timestamp, value from SPEED where timestamp <= ? and ref_lap_race = ? and ref_lap_num = ? order by timestamp");
+    query.addBindValue(upperTimeStamp);
+    query.addBindValue(ref_race);
+    query.addBindValue(ref_lap);
+
+    if (!query.exec())
+    {
+        QString errorMsg("Impossible de récupérer les données numériques "
+                         "associées à votre sélection pour le tour " +
+                         QString::number(ref_lap) + " de la course " +
+                         QString::number(ref_race));
+        QMessageBox::warning(this, tr("Erreur de récupération de données"),
+                             tr(errorMsg.toStdString().c_str()));
+        return;
+    }
+
+    double time(0),  lastTime(0);
+    double speed(0), lastSpeed(0);
+    double pos(1.5),   lastPos(0); // FIXME : remplacer par la valeur entrée pour le périmètre
+    QList< QList<QVariant> > lapDataList;
+
+    while(query.next())
+    {
+        lastTime = time;
+        lastSpeed = speed;
+        lastPos = pos;
+
+        time  = query.value(0).toFloat() / 1000; // Le temps est sauvé en millisecondes dans la db et on le veut en secondes
+        speed = query.value(1).toDouble();
+
+        int multipleWheelPerimeter = ceil(((speed + lastSpeed) / (2 * 3.6)) * (time - lastTime)) / 1.5;
+        pos = lastPos + multipleWheelPerimeter * 1.5;
+
+        qDebug() << "multipleWheelPerimeter = " << multipleWheelPerimeter;
+
+        // Données a afficher dans le tableau
+        if(time >= lowerTimeValue)
+        {
+            // Calcul de l'accélération FIXME : ne pas oublier de vérifier si c'est pas le premier point, dans ce cas, le calcul de l'accélération est impossible !!!!
+            qreal diff = (speed -lastSpeed) / 3.6; // vitesse en m/s
+            qreal acc  = diff / (time - lastTime);
+
+            QList<QVariant> lapData;
+            lapData.append(QVariant());
+            lapData.append(time * 1000); // Tps (ms)
+            lapData.append(time);        // Tps (s)
+            lapData.append(pos);         // Dist (m)
+            lapData.append(speed);       // V (km\h)
+            lapData.append(qAbs(acc) > 2 ? "NS" : QString::number(acc)); // Acc (m\s²)
+            lapData.append("???");       // RPM
+            lapData.append("???");       // PW
+
+            // Ajout de la ligne de données à la liste
+            lapDataList.append(lapData);
+        }
+    }
+
+    // Ajout des données dans le tableau
+    this->raceInformationTableModel->addMultipleRaceInformation(
+                ref_race, ref_lap, lapDataList);
+
+    this->ui->raceTable->expandAll();
 }
 
 void MainWindow::centerOnScreen(void)
@@ -1049,6 +1129,8 @@ void MainWindow::connectSignals(void)
             this, SLOT(displayLapInformation(float,QVariant)));
     connect(this->distancePlotFrame->scene(), SIGNAL(intervalSelected(float,float,QVariant)),
             this->mapScene, SLOT(highlightSector(float,float,QVariant)));
+    connect(this->distancePlotFrame->scene(), SIGNAL(intervalSelected(float,float,QVariant)),
+            this, SLOT(displayLapInformation(float,float,QVariant)));
     connect(this->distancePlotFrame, SIGNAL(clear()), this, SLOT(clearAllData()));
 
     // Time plot frame
@@ -1060,6 +1142,8 @@ void MainWindow::connectSignals(void)
             this, SLOT(displayLapInformation(float,QVariant)));
     connect(this->timePlotFrame->scene(), SIGNAL(intervalSelected(float,float,QVariant)),
             this->mapScene, SLOT(highlightSector(float,float,QVariant)));
+    connect(this->timePlotFrame->scene(), SIGNAL(intervalSelected(float,float,QVariant)),
+            this, SLOT(displayLapInformation(float,float,QVariant)));
     connect(this->timePlotFrame, SIGNAL(clear()), this, SLOT(clearAllData()));
 }
 

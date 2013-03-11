@@ -331,6 +331,8 @@ LapInformationTreeModel::LapInformationTreeModel(const QStringList& headers,
          refRaceNode->appendChild(refLapNode);
      }
 
+     qDebug() << "addMultipleRaceInformation --> Nombre de lignes : " << data.count();
+
      // Append rows with lap information
      for (int i(0); i < data.count(); ++i)
      {

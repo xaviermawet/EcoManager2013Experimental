@@ -265,7 +265,7 @@
    </widget>
    <widget class="QMenu" name="menuDisplay">
     <property name="title">
-     <string>Affichage</string>
+     <string>&amp;Affichage</string>
     </property>
     <widget class="QMenu" name="menuDisplayRaceTable">
      <property name="title">
@@ -297,7 +297,20 @@
     <addaction name="menuDisplayRaceView"/>
     <addaction name="menuLayout"/>
    </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>&amp;Edition</string>
+    </property>
+    <widget class="QMenu" name="menuLapDataTable">
+     <property name="title">
+      <string>Tableau de données</string>
+     </property>
+     <addaction name="actionLapDataTableErase"/>
+    </widget>
+    <addaction name="menuLapDataTable"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
    <addaction name="menuDisplay"/>
    <addaction name="menuAbout"/>
   </widget>
@@ -532,6 +545,21 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+4</string>
+   </property>
+  </action>
+  <action name="actionLapDataTableErase">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Resources/Icons/eraser.png</normaloff>:/Resources/Icons/eraser.png</iconset>
+   </property>
+   <property name="text">
+    <string>Effacer</string>
+   </property>
+   <property name="toolTip">
+    <string>Effacer le tableau contenant les données numériques des courbes représentées dans la vue graphique</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
    </property>
   </action>
  </widget>
