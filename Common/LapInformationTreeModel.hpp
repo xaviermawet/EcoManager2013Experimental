@@ -21,7 +21,8 @@ class LapInformationTreeModel : public QAbstractItemModel
 
         int rowCount(const QModelIndex& parent = QModelIndex()) const;
         int columnCount(const QModelIndex& parent = QModelIndex()) const;
-        QVariant data(const QModelIndex& index, int role) const;
+        QVariant data(const QModelIndex& index,
+                      int role = Qt::DisplayRole) const;
         QVariant headerData(int section, Qt::Orientation orientation,
                             int role = Qt::DisplayRole) const;
 
@@ -44,6 +45,8 @@ class LapInformationTreeModel : public QAbstractItemModel
                                 const QList<QVariant>& data);
         void addMultipleRaceInformation(int refRace, int refLap,
                                         const QList< QList<QVariant> >& data);
+
+        QVector<QVariant> rowData(const QModelIndex& index) const;
 
     private:
 

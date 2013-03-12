@@ -235,6 +235,9 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="contextMenuPolicy">
+         <enum>Qt::CustomContextMenu</enum>
+        </property>
         <property name="styleSheet">
          <string notr="true"> QTreeView {
      show-decoration-selected: 1;
@@ -355,6 +358,7 @@
      <addaction name="actionLapDataTableResizeToContents"/>
     </widget>
     <addaction name="menuLapDataTable"/>
+    <addaction name="actionClearAllData"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -495,20 +499,32 @@
    <property name="text">
     <string>Positionner en dessous</string>
    </property>
+   <property name="shortcut">
+    <string>Alt+Down</string>
+   </property>
   </action>
   <action name="actionDisplayRaceTableAbove">
    <property name="text">
     <string>Positionner au dessus</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Up</string>
    </property>
   </action>
   <action name="actionDisplayRaceTableOnRight">
    <property name="text">
     <string>Positionner à droite</string>
    </property>
+   <property name="shortcut">
+    <string>Alt+Right</string>
+   </property>
   </action>
   <action name="actionDisplayRaceTableOnLeft">
    <property name="text">
     <string>Positionner à gauche</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Left</string>
    </property>
   </action>
   <action name="actionDisplayRaceView">
@@ -606,7 +622,7 @@
     <string>Effacer le tableau contenant les données numériques des courbes représentées dans la vue graphique</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Z</string>
+    <string>Ctrl+Shift+Z</string>
    </property>
   </action>
   <action name="actionLapDataTableResizeToContents">
@@ -622,6 +638,30 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="actionClearAllData">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Resources/Icons/eraser.png</normaloff>:/Resources/Icons/eraser.png</iconset>
+   </property>
+   <property name="text">
+    <string>Effacer les données dans toutes les vues</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionLapDataComparaison">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Resources/Icons/stats_bars.png</normaloff>:/Resources/Icons/stats_bars.png</iconset>
+   </property>
+   <property name="text">
+    <string>Comparaison des données</string>
+   </property>
+   <property name="toolTip">
+    <string>Comparer les données sélectionnées</string>
    </property>
   </action>
  </widget>

@@ -68,19 +68,22 @@ class MainWindow : public QMainWindow
         void on_actionConfiguredLayout4_triggered(void);
         void on_actionLapDataTableErase_triggered(void);
         void on_actionLapDataTableResizeToContents_triggered(bool checked);
+        void on_actionClearAllData_triggered(void);
+        void on_raceTable_customContextMenuRequested(const QPoint &pos);
 
         // Personal slots
         void loadCompetition(int index);
         void removeSector(const QString& competitionName, int sectorNum);
         void addSector(QString, int, IndexedPosition, IndexedPosition);
         void updateSector(QString, int, IndexedPosition, IndexedPosition);
-        void clearAllData(void);
 
         void displayLapInformation(float timeValue, const QVariant& trackId);
         void displayLapInformation(float lowerTimeValue, float upperTimeValue,
                                    const QVariant &trackId);
 
-    private:
+        void on_actionLapDataComparaison_triggered();
+
+private:
 
         void centerOnScreen(void);
         void createRaceView(void);

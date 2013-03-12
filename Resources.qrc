@@ -23,5 +23,6 @@
         <file>Resources/Icons/eraser.png</file>
         <file>Resources/Icons/diskette.png</file>
         <file>Resources/Icons/resize.png</file>
+        <file>Resources/Icons/stats_bars.png</file>
     </qresource>
 </RCC>

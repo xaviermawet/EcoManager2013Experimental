@@ -380,6 +380,9 @@ void MainWindow::on_actionConfiguredLayout4_triggered(void)
 
 void MainWindow::on_actionLapDataTableErase_triggered(void)
 {
+    // Erase all highlited point on the mapping view
+    this->mapScene->clearSceneSelection();
+
     // Remove laps information from the table
     this->raceInformationTableModel->removeRows(
                 0, this->raceInformationTableModel->rowCount());
@@ -393,11 +396,103 @@ void MainWindow::on_actionLapDataTableResizeToContents_triggered(bool checked)
         this->ui->raceTable->header()->setResizeMode(QHeaderView::Interactive);
 }
 
+void MainWindow::on_actionClearAllData_triggered(void)
+{
+    // Clear the tracks of the mapping view
+    this->mapScene->clearTracks();
+
+    // clear the curves of the graphic views
+    this->distancePlotFrame->scene()->clearCurves();
+    this->timePlotFrame->scene()->clearCurves();
+
+    // Clear the list of all tracks currently displayed
+    this->currentTracksDisplayed.clear();
+
+    // Remove laps information from the table
+    this->on_actionLapDataTableErase_triggered();
+}
+
+void MainWindow::on_raceTable_customContextMenuRequested(const QPoint &pos)
+{
+    /* On ne porpose de faire une comparaison entre deux données du tableau
+     * si et seulement si 2 éléments d'une meme course et du meme tour sont
+     * sélectionnés */
+
+    // Récupérer les index de tous les éléments sélectionnés
+    QModelIndexList rowsSelectedIndexes =
+            this->ui->raceTable->selectionModel()->selectedRows();
+
+    // for QAbstractScrollArea and derived classes you would use:
+    QPoint globalPos = this->ui->raceTable->viewport()->mapToGlobal(pos);
+
+    // The list of all the actions available according to the rows selected
+    QList<QAction *> actions;
+    actions.append(this->ui->actionLapDataTableErase);
+
+    if (rowsSelectedIndexes.count() == 2)
+        actions.append(this->ui->actionLapDataComparaison);
+
+    QMenu::exec(actions, globalPos);
+}
+
+void MainWindow::on_actionLapDataComparaison_triggered()
+{
+    QModelIndexList rowsSelectedIndexes =
+            this->ui->raceTable->selectionModel()->selectedRows(0);
+
+    if (rowsSelectedIndexes.count() != 2)
+        return;
+
+    int lapNum1, raceNum1;
+    int lapNum2, raceNum2;
+    QModelIndex LapNumModelIndex;
+    QModelIndex RaceNumModelIndex;
+
+    // Get lap and race num for the first selected item
+    LapNumModelIndex  = rowsSelectedIndexes.at(0).parent();
+    RaceNumModelIndex = LapNumModelIndex.parent();
+
+    lapNum1 = this->raceInformationTableModel->data(
+                this->raceInformationTableModel->index(LapNumModelIndex.row(), 0, RaceNumModelIndex)).toInt();
+    raceNum1 = this->raceInformationTableModel->data(
+                this->raceInformationTableModel->index(RaceNumModelIndex.row(), 0)).toInt();
+
+    // Get lap and race num for the second selected item
+    LapNumModelIndex  = rowsSelectedIndexes.at(1).parent();
+    RaceNumModelIndex = LapNumModelIndex.parent();
+
+    lapNum2 = this->raceInformationTableModel->data(
+                this->raceInformationTableModel->index(LapNumModelIndex.row(), 0, RaceNumModelIndex)).toInt();
+    raceNum2 = this->raceInformationTableModel->data(
+                this->raceInformationTableModel->index(RaceNumModelIndex.row(), 0)).toInt();
+
+    if (lapNum1 != lapNum2 || raceNum1 != raceNum2)
+    {
+        QMessageBox::warning(this, tr("Action impossible"),
+                             tr("La comparaison ne peut se faire uniquement si les données sont issues de la meme course et du meme tour"));
+        return;
+    }
+
+    QVector<QVariant> row1 = this->raceInformationTableModel->rowData(
+                rowsSelectedIndexes.at(0));
+    QVector<QVariant> row2 = this->raceInformationTableModel->rowData(
+                rowsSelectedIndexes.at(1));
+
+    qDebug() << "row1.count() = " << row1.count();
+    qDebug() << "row2.count() = " << row2.count();
+
+    for (int i(1); i < row1.count(); ++i)
+        qDebug() << i << " --> " << row1.at(i);
+
+    for (int i(1); i < row2.count(); ++i)
+        qDebug() << i << " --> " << row2.at(i);
+}
+
 void MainWindow::loadCompetition(int index)
 {
     this->currentCompetition = competitionNameModel->record(index).value(0).toString();
 
-    this->clearAllData(); // Clear all tracks information of each view
+    this->on_actionClearAllData_triggered(); // Clear all tracks information of each view
     this->mapScene->clearSectors(); // clear sectors
 
     // clear the sector view
@@ -495,19 +590,6 @@ void MainWindow::updateSector(QString competName, int sectNum,
 
     if (!updateBoundaries.exec())
         qWarning() << updateBoundaries.lastQuery() << updateBoundaries.lastError();
-}
-
-void MainWindow::clearAllData(void)
-{
-    this->mapScene->clearTracks();
-    this->distancePlotFrame->scene()->clearCurves(); //this->distancePlotFrame->clearCurves();
-    this->timePlotFrame->scene()->clearCurves(); //this->timePlotFrame->clearCurves();
-
-    // Clear the list of all tracks currently displayed
-    this->currentTracksDisplayed.clear();
-
-    // Remove laps information from the table
-    this->on_actionLapDataTableErase_triggered();
 }
 
 void MainWindow::displayLapInformation(float timeValue, const QVariant &trackId)
@@ -694,7 +776,7 @@ void MainWindow::createToolsBar(void)
     this->competitionBox->setEditable(false);
     this->competitionBox->setModel(this->competitionNameModel);
     this->competitionBox->setSizePolicy(QSizePolicy::Expanding,
-                                        QSizePolicy::Expanding);
+                                        QSizePolicy::Maximum);
 
     // Add the comboBox to the toolBar of the MainWindow
     this->ui->mainToolBar->insertWidget(this->ui->actionDelimitingSectors,
@@ -1126,7 +1208,8 @@ void MainWindow::connectSignals(void)
     // Map frame
     connect(this->mapFrame, SIGNAL(enableTrackHoverEvent(bool)),
             this->mapScene, SLOT(enableTrackAcceptHoverEvents(bool)));
-    connect(this->mapFrame, SIGNAL(clearTracks()), this, SLOT(clearAllData()));
+    connect(this->mapFrame, SIGNAL(clearTracks()),
+            this, SLOT(on_actionClearAllData_triggered()));
 
     // Distance plot frame
     connect(this->distancePlotFrame, SIGNAL(selectionChanged()),
@@ -1139,7 +1222,8 @@ void MainWindow::connectSignals(void)
             this->mapScene, SLOT(highlightSector(float,float,QVariant)));
     connect(this->distancePlotFrame->scene(), SIGNAL(intervalSelected(float,float,QVariant)),
             this, SLOT(displayLapInformation(float,float,QVariant)));
-    connect(this->distancePlotFrame, SIGNAL(clear()), this, SLOT(clearAllData()));
+    connect(this->distancePlotFrame, SIGNAL(clear()),
+            this, SLOT(on_actionClearAllData_triggered()));
 
     // Time plot frame
     connect(this->timePlotFrame, SIGNAL(selectionChanged()),
@@ -1152,7 +1236,8 @@ void MainWindow::connectSignals(void)
             this->mapScene, SLOT(highlightSector(float,float,QVariant)));
     connect(this->timePlotFrame->scene(), SIGNAL(intervalSelected(float,float,QVariant)),
             this, SLOT(displayLapInformation(float,float,QVariant)));
-    connect(this->timePlotFrame, SIGNAL(clear()), this, SLOT(clearAllData()));
+    connect(this->timePlotFrame, SIGNAL(clear()),
+            this, SLOT(on_actionClearAllData_triggered()));
 }
 
 void MainWindow::reloadRaceView(void)

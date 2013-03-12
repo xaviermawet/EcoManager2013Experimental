@@ -344,3 +344,20 @@ LapInformationTreeModel::LapInformationTreeModel(const QStringList& headers,
 
      this->reset();
  }
+
+ QVector<QVariant> LapInformationTreeModel::rowData(const QModelIndex &index) const
+ {
+     QVector<QVariant> data;
+
+     if (!index.isValid())
+         return data;
+
+     TreeElement* item = this->nodeFromIndex(index);
+
+     if (!item)
+         return data;
+
+     for (int i(0); i < item->columnCount(); ++i)
+         data.append(item->data(i));
+     return data;
+ }
