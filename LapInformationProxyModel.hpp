@@ -11,6 +11,8 @@ class LapInformationProxyModel : public QIdentityProxyModel
         virtual ~LapInformationProxyModel(void);
 
         virtual QVariant data(const QModelIndex &proxyIndex, int role) const;
+        virtual QVariant headerData(int section, Qt::Orientation orientation,
+                                    int role = Qt::DisplayRole) const;
 };
 
 #endif /* __LAPINFORMATIONPROXYMODEL_HPP__ */

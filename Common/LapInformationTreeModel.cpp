@@ -77,6 +77,7 @@ LapInformationTreeModel::LapInformationTreeModel(const QStringList& headers,
 
      return this->rootItem;
  }
+
  QVariant LapInformationTreeModel::headerData(int section,
                                               Qt::Orientation orientation,
                                               int role) const
@@ -229,13 +230,6 @@ LapInformationTreeModel::LapInformationTreeModel(const QStringList& headers,
      return result;
  }
 
- void LapInformationTreeModel::addRaceInformation2(int refRace, int refLap,
-                                                   const QList<QVariant> &data)
- {
-     if (!this->insertRow(this->rootItem->childCount()))
-         return;
- }
-
  void LapInformationTreeModel::addRaceInformation(int refRace, int refLap,
                                                   const QList<QVariant> &data)
  {
@@ -294,8 +288,11 @@ LapInformationTreeModel::LapInformationTreeModel(const QStringList& headers,
  void LapInformationTreeModel::addMultipleRaceInformation(
          int refRace, int refLap, const QList<QList<QVariant> > &data)
  {
-     TreeElement* refRaceNode = NULL;
-     TreeElement* refLapNode  = NULL;
+
+     qDebug() << "course = " << refRace << " lap = " << refLap;
+
+     TreeElement* refRaceNode = NULL; bool refRaceFound(false);
+     TreeElement* refLapNode  = NULL; bool refLapFound(false);
 
      // Check if an entry for the race already exists
      for (int i(0); i < this->rootItem->childCount(); ++i)
@@ -303,11 +300,14 @@ LapInformationTreeModel::LapInformationTreeModel(const QStringList& headers,
          refRaceNode = this->rootItem->child(i);
 
          if (refRaceNode->data(0).toInt() == refRace)
+         {
+             refRaceFound = true;
              break;
+         }
      }
 
      // Create entry for the race if it dosen't exists
-     if (!refRaceNode)
+     if (!refRaceFound)
      {
          refRaceNode = new TreeElement(refRace, this->rootItem);
          this->rootItem->appendChild(refRaceNode);
@@ -321,17 +321,18 @@ LapInformationTreeModel::LapInformationTreeModel(const QStringList& headers,
              refLapNode = refRaceNode->child(i);
 
              if (refLapNode->data(0).toInt() == refLap)
+             {
+                 refLapFound = true;
                  break;
+             }
          }
      }
 
-     if (!refLapNode)
+     if (!refLapFound)
      {
          refLapNode = new TreeElement(refLap, refRaceNode);
          refRaceNode->appendChild(refLapNode);
      }
-
-     qDebug() << "addMultipleRaceInformation --> Nombre de lignes : " << data.count();
 
      // Append rows with lap information
      for (int i(0); i < data.count(); ++i)

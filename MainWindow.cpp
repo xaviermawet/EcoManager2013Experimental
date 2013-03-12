@@ -385,6 +385,14 @@ void MainWindow::on_actionLapDataTableErase_triggered(void)
                 0, this->raceInformationTableModel->rowCount());
 }
 
+void MainWindow::on_actionLapDataTableResizeToContents_triggered(bool checked)
+{
+    if (checked)
+        this->ui->raceTable->header()->setResizeMode(QHeaderView::ResizeToContents);
+    else
+        this->ui->raceTable->header()->setResizeMode(QHeaderView::Interactive);
+}
+
 void MainWindow::loadCompetition(int index)
 {
     this->currentCompetition = competitionNameModel->record(index).value(0).toString();
@@ -551,10 +559,10 @@ void MainWindow::displayLapInformation(float timeValue, const QVariant &trackId)
         int multipleWheelPerimeter = ceil(((speed + lastSpeed) / (2 * 3.6)) * (time - lastTime)) / 1.5;
         pos = lastPos + multipleWheelPerimeter * 1.5;
 
-        qDebug() << "multipleWheelPerimeter = " << multipleWheelPerimeter;
+        //qDebug() << "multipleWheelPerimeter = " << multipleWheelPerimeter;
     }
 
-    // Calcul de l'accélération FIXME : ne pas oublier de vérifier si c'est pas le premier point, dans ce cas, le calcul de l'accélération est impossible !!!!
+    // Calcul de l'accélération
     qreal diff = (speed -lastSpeed) / 3.6; // vitesse en m/s
     qreal acc = diff / (time - lastTime);
 
@@ -565,8 +573,8 @@ void MainWindow::displayLapInformation(float timeValue, const QVariant &trackId)
     lapData.append(pos);       // Dist (m)
     lapData.append(speed);     // V (km\h)
     lapData.append(qAbs(acc) > 2 ? "NS" : QString::number(acc)); // Acc (m\s²)
-    lapData.append("???");     // RPM
-    lapData.append("???");     // PW
+    lapData.append("RPM");     // RPM
+    lapData.append("PW");      // PW
 
     this->raceInformationTableModel->addRaceInformation(ref_race, ref_lap, lapData);
     this->ui->raceTable->expandAll();
@@ -581,6 +589,8 @@ void MainWindow::displayLapInformation(float lowerTimeValue,
             qvariant_cast< QMap<QString, QVariant> >(trackId);
     int ref_race = trackIdentifier["race"].toInt();
     int ref_lap  = trackIdentifier["lap"].toInt();
+
+    qDebug() << "Afficher les données pour  Race = " << ref_race << " LAP = " << ref_lap;
 
     /* upperTimeValue passé en paramètre est exprimé en secondes mais les
      * timestamp sauvées dans la base de données sont en millisecondes */
@@ -621,7 +631,7 @@ void MainWindow::displayLapInformation(float lowerTimeValue,
         int multipleWheelPerimeter = ceil(((speed + lastSpeed) / (2 * 3.6)) * (time - lastTime)) / 1.5;
         pos = lastPos + multipleWheelPerimeter * 1.5;
 
-        qDebug() << "multipleWheelPerimeter = " << multipleWheelPerimeter;
+        //qDebug() << "multipleWheelPerimeter = " << multipleWheelPerimeter;
 
         // Données a afficher dans le tableau
         if(time >= lowerTimeValue)
@@ -637,8 +647,8 @@ void MainWindow::displayLapInformation(float lowerTimeValue,
             lapData.append(pos);         // Dist (m)
             lapData.append(speed);       // V (km\h)
             lapData.append(qAbs(acc) > 2 ? "NS" : QString::number(acc)); // Acc (m\s²)
-            lapData.append("???");       // RPM
-            lapData.append("???");       // PW
+            lapData.append("RPM");       // RPM
+            lapData.append("PW");        // PW
 
             // Ajout de la ligne de données à la liste
             lapDataList.append(lapData);
@@ -800,19 +810,17 @@ void MainWindow::createRaceTable(void)
     headers << tr("Course") << tr("Tps(ms)") << tr("Tps(s)") << tr("Dist(m)")
             << tr("v(km\\h)") << tr("Acc(m/s2)") << tr("RPM") << tr("PW");
     this->raceInformationTableModel = new LapInformationTreeModel(headers); //this->raceInformationTableModel = new TreeLapInformationModel(headers);
-/*
-    // Use a proxy model to manage background color of each row
+
+    /* Use a proxy model to manage background color of each row and manage
+     * how the data for Race and lap number are displayed */
     LapInformationProxyModel* wrapper = new LapInformationProxyModel(this);
     wrapper->setSourceModel(this->raceInformationTableModel);
 
     // Apply the model to the table and change the selection mode
+    //this->ui->raceTable->setModel(this->raceInformationTableModel);
     this->ui->raceTable->setModel(wrapper);
     this->ui->raceTable->setSelectionMode(QAbstractItemView::MultiSelection);
-*/
-
-    // Apply the model to the table and change the selection mode
-    this->ui->raceTable->setModel(this->raceInformationTableModel);
-    this->ui->raceTable->setAlternatingRowColors(true);
+    this->ui->raceTable->setAlternatingRowColors(true); // Can be done with stylesheet, proxyModel or the mainModel
 }
 
 void MainWindow::readSettings(const QString& settingsGroup)
@@ -942,7 +950,7 @@ void MainWindow::displayDataLap(void)
 
             while (speedQuery.next())
             {
-                qDebug() << "timestamp = " << speedQuery.value(0).toFloat();
+                //qDebug() << "timestamp = " << speedQuery.value(0).toFloat();
 
                 double time = speedQuery.value(0).toFloat() / 1000; // Le temps est sauvé en millisecondes dans la db et on le veut en secondes
                 double speed = speedQuery.value(1).toDouble();
@@ -962,7 +970,7 @@ void MainWindow::displayDataLap(void)
                         int multipleWheelPerimeter = ceil(((speed + lastSpeed.y()) / (2 * 3.6)) * (time - lastSpeed.x())) / 1.5;
                         pos = lastPos + multipleWheelPerimeter * 1.5;
 
-                        qDebug() << "multipleWheelPerimeter = " << multipleWheelPerimeter;
+                        //qDebug() << "multipleWheelPerimeter = " << multipleWheelPerimeter;
 
                         dPoint.setX(pos);
                         dPoint.setY(speed);

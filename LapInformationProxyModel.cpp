@@ -40,15 +40,17 @@ QVariant LapInformationProxyModel::data(const QModelIndex &proxyIndex, int role)
     return QIdentityProxyModel::data(proxyIndex, role);
 
 
-
-
-
-
-
     /*
     if (role != Qt::BackgroundColorRole || proxyIndex.row() % 2 == 0)
         return QIdentityProxyModel::data(proxyIndex, role);
 
     return QColor(220, 220, 220);
     */
+}
+
+QVariant LapInformationProxyModel::headerData(int section,
+                                             Qt::Orientation orientation,
+                                             int role) const
+{
+    return QIdentityProxyModel::headerData(section, orientation, role);
 }

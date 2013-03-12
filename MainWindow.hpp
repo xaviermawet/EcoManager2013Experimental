@@ -67,6 +67,7 @@ class MainWindow : public QMainWindow
         void on_actionConfiguredLayout3_triggered(void);
         void on_actionConfiguredLayout4_triggered(void);
         void on_actionLapDataTableErase_triggered(void);
+        void on_actionLapDataTableResizeToContents_triggered(bool checked);
 
         // Personal slots
         void loadCompetition(int index);
