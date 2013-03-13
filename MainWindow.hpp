@@ -23,6 +23,7 @@
 #include "Map/SampleLapViewer.hpp"
 #include "LapInformationProxyModel.hpp"
 #include "Common/LapInformationTreeModel.hpp"
+#include "LapDataCompartor.hpp"
 
 #include <QtGui>
 #include <QtSql>
@@ -70,6 +71,7 @@ class MainWindow : public QMainWindow
         void on_actionLapDataTableResizeToContents_triggered(bool checked);
         void on_actionClearAllData_triggered(void);
         void on_raceTable_customContextMenuRequested(const QPoint &pos);
+        void on_actionLapDataComparaison_triggered(void);
 
         // Personal slots
         void loadCompetition(int index);
@@ -81,9 +83,7 @@ class MainWindow : public QMainWindow
         void displayLapInformation(float lowerTimeValue, float upperTimeValue,
                                    const QVariant &trackId);
 
-        void on_actionLapDataComparaison_triggered();
-
-private:
+    private:
 
         void centerOnScreen(void);
         void createRaceView(void);

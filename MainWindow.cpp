@@ -414,10 +414,6 @@ void MainWindow::on_actionClearAllData_triggered(void)
 
 void MainWindow::on_raceTable_customContextMenuRequested(const QPoint &pos)
 {
-    /* On ne porpose de faire une comparaison entre deux données du tableau
-     * si et seulement si 2 éléments d'une meme course et du meme tour sont
-     * sélectionnés */
-
     // Récupérer les index de tous les éléments sélectionnés
     QModelIndexList rowsSelectedIndexes =
             this->ui->raceTable->selectionModel()->selectedRows();
@@ -425,17 +421,52 @@ void MainWindow::on_raceTable_customContextMenuRequested(const QPoint &pos)
     // for QAbstractScrollArea and derived classes you would use:
     QPoint globalPos = this->ui->raceTable->viewport()->mapToGlobal(pos);
 
-    // The list of all the actions available according to the rows selected
+    // Contains all the actions available according to the rows selected
     QList<QAction *> actions;
     actions.append(this->ui->actionLapDataTableErase);
 
+    /* On ne porpose de faire une comparaison entre deux données du tableau
+     * si et seulement si ce sont des données issues d'une meme course et
+     * du meme tour */
     if (rowsSelectedIndexes.count() == 2)
-        actions.append(this->ui->actionLapDataComparaison);
+    {
+        /*
+        int lapNum1, raceNum1;
+        int lapNum2, raceNum2;
+        QModelIndex LapNumModelIndex;
+        QModelIndex RaceNumModelIndex;
+
+        // Get lap and race num for the first selected item
+        LapNumModelIndex  = rowsSelectedIndexes.at(0).parent();
+        RaceNumModelIndex = LapNumModelIndex.parent();
+
+        lapNum1 = this->raceInformationTableModel->data(
+                    this->raceInformationTableModel->index(LapNumModelIndex.row(), 0, RaceNumModelIndex)).toInt();
+        raceNum1 = this->raceInformationTableModel->data(
+                    this->raceInformationTableModel->index(RaceNumModelIndex.row(), 0)).toInt();
+
+        // Get lap and race num for the second selected item
+        LapNumModelIndex  = rowsSelectedIndexes.at(1).parent();
+        RaceNumModelIndex = LapNumModelIndex.parent();
+
+        lapNum2 = this->raceInformationTableModel->data(
+                    this->raceInformationTableModel->index(LapNumModelIndex.row(), 0, RaceNumModelIndex)).toInt();
+        raceNum2 = this->raceInformationTableModel->data(
+                    this->raceInformationTableModel->index(RaceNumModelIndex.row(), 0)).toInt();
+
+        if (lapNum1 == lapNum2 && raceNum1 == raceNum2)
+            actions.append(this->ui->actionLapDataComparaison);
+       */
+
+        if (rowsSelectedIndexes.at(0).parent() ==
+                rowsSelectedIndexes.at(1).parent())
+            actions.append(this->ui->actionLapDataComparaison);
+    }
 
     QMenu::exec(actions, globalPos);
 }
 
-void MainWindow::on_actionLapDataComparaison_triggered()
+void MainWindow::on_actionLapDataComparaison_triggered(void)
 {
     QModelIndexList rowsSelectedIndexes =
             this->ui->raceTable->selectionModel()->selectedRows(0);
@@ -443,8 +474,7 @@ void MainWindow::on_actionLapDataComparaison_triggered()
     if (rowsSelectedIndexes.count() != 2)
         return;
 
-    int lapNum1, raceNum1;
-    int lapNum2, raceNum2;
+    int lapNum, raceNum;
     QModelIndex LapNumModelIndex;
     QModelIndex RaceNumModelIndex;
 
@@ -452,40 +482,21 @@ void MainWindow::on_actionLapDataComparaison_triggered()
     LapNumModelIndex  = rowsSelectedIndexes.at(0).parent();
     RaceNumModelIndex = LapNumModelIndex.parent();
 
-    lapNum1 = this->raceInformationTableModel->data(
-                this->raceInformationTableModel->index(LapNumModelIndex.row(), 0, RaceNumModelIndex)).toInt();
-    raceNum1 = this->raceInformationTableModel->data(
-                this->raceInformationTableModel->index(RaceNumModelIndex.row(), 0)).toInt();
-
-    // Get lap and race num for the second selected item
-    LapNumModelIndex  = rowsSelectedIndexes.at(1).parent();
-    RaceNumModelIndex = LapNumModelIndex.parent();
-
-    lapNum2 = this->raceInformationTableModel->data(
-                this->raceInformationTableModel->index(LapNumModelIndex.row(), 0, RaceNumModelIndex)).toInt();
-    raceNum2 = this->raceInformationTableModel->data(
-                this->raceInformationTableModel->index(RaceNumModelIndex.row(), 0)).toInt();
-
-    if (lapNum1 != lapNum2 || raceNum1 != raceNum2)
-    {
-        QMessageBox::warning(this, tr("Action impossible"),
-                             tr("La comparaison ne peut se faire uniquement si les données sont issues de la meme course et du meme tour"));
-        return;
-    }
+    lapNum = this->raceInformationTableModel->data(
+                this->raceInformationTableModel->index(LapNumModelIndex.row(),
+                                                 0, RaceNumModelIndex)).toInt();
+    raceNum = this->raceInformationTableModel->data(
+                this->raceInformationTableModel->index(RaceNumModelIndex.row(),
+                                                       0)).toInt();
 
     QVector<QVariant> row1 = this->raceInformationTableModel->rowData(
                 rowsSelectedIndexes.at(0));
     QVector<QVariant> row2 = this->raceInformationTableModel->rowData(
                 rowsSelectedIndexes.at(1));
 
-    qDebug() << "row1.count() = " << row1.count();
-    qDebug() << "row2.count() = " << row2.count();
-
-    for (int i(1); i < row1.count(); ++i)
-        qDebug() << i << " --> " << row1.at(i);
-
-    for (int i(1); i < row2.count(); ++i)
-        qDebug() << i << " --> " << row2.at(i);
+    LapDataCompartor ldc(raceNum, lapNum, this);
+    ldc.addLapsData(row1.toList(), row2.toList());
+    ldc.exec();
 }
 
 void MainWindow::loadCompetition(int index)
@@ -890,7 +901,7 @@ void MainWindow::createRaceTable(void)
     // Create the model for the table of laps information
     QStringList headers;
     headers << tr("Course") << tr("Tps(ms)") << tr("Tps(s)") << tr("Dist(m)")
-            << tr("v(km\\h)") << tr("Acc(m/s2)") << tr("RPM") << tr("PW");
+            << tr("v(km\\h)") << tr("Acc (m\\s2)") << tr("RPM") << tr("PW");
     this->raceInformationTableModel = new LapInformationTreeModel(headers); //this->raceInformationTableModel = new TreeLapInformationModel(headers);
 
     /* Use a proxy model to manage background color of each row and manage
