@@ -352,10 +352,18 @@
     </property>
     <widget class="QMenu" name="menuLapDataTable">
      <property name="title">
-      <string>Tableau de données</string>
+      <string>&amp;Tableau de données</string>
      </property>
-     <addaction name="actionLapDataTableErase"/>
+     <addaction name="actionLapDataComparaison"/>
+     <addaction name="actionLapDataDrawSectors"/>
+     <addaction name="actionLapDataDisplayInAllViews"/>
+     <addaction name="actionLapDataDisplayInGraphics"/>
+     <addaction name="actionLapDataDisplayInMapping"/>
+     <addaction name="actionLapDataRemoveFromAllViews"/>
+     <addaction name="separator"/>
+     <addaction name="actionLapDataEraseTable"/>
      <addaction name="actionLapDataTableResizeToContents"/>
+     <addaction name="actionLapDataSelectAll"/>
     </widget>
     <addaction name="menuLapDataTable"/>
     <addaction name="actionClearAllData"/>
@@ -610,13 +618,13 @@
     <string>Ctrl+4</string>
    </property>
   </action>
-  <action name="actionLapDataTableErase">
+  <action name="actionLapDataEraseTable">
    <property name="icon">
     <iconset resource="Resources.qrc">
      <normaloff>:/Resources/Icons/eraser.png</normaloff>:/Resources/Icons/eraser.png</iconset>
    </property>
    <property name="text">
-    <string>Effacer</string>
+    <string>Effacer le tableau entier</string>
    </property>
    <property name="toolTip">
     <string>Effacer le tableau contenant les données numériques des courbes représentées dans la vue graphique</string>
@@ -637,7 +645,7 @@
     <string>Ajuster la taille des colonnes à leur contenu</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+A</string>
+    <string>Ctrl+R</string>
    </property>
   </action>
   <action name="actionClearAllData">
@@ -662,6 +670,55 @@
    </property>
    <property name="toolTip">
     <string>Comparer les données sélectionnées</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionLapDataSelectAll">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Resources/Icons/table-select-all-icon.png</normaloff>:/Resources/Icons/table-select-all-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Tout sélectionner</string>
+   </property>
+   <property name="toolTip">
+    <string>Sélectionner tous les éléments du tableau</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="actionLapDataDisplayInMapping">
+   <property name="text">
+    <string>Afficher dans la vue mapping</string>
+   </property>
+  </action>
+  <action name="actionLapDataDisplayInGraphics">
+   <property name="text">
+    <string>Afficher dans les vues graphiques</string>
+   </property>
+  </action>
+  <action name="actionLapDataDisplayInAllViews">
+   <property name="text">
+    <string>Afficher dans toutes les vues</string>
+   </property>
+  </action>
+  <action name="actionLapDataRemoveFromAllViews">
+   <property name="text">
+    <string>Retirer les données de toutes les vues</string>
+   </property>
+  </action>
+  <action name="actionLapDataDrawSectors">
+   <property name="text">
+    <string>Dessiner les secteurs</string>
    </property>
   </action>
  </widget>

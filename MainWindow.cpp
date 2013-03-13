@@ -378,7 +378,7 @@ void MainWindow::on_actionConfiguredLayout4_triggered(void)
     this->readSettings(this->ui->actionConfiguredLayout4->text());
 }
 
-void MainWindow::on_actionLapDataTableErase_triggered(void)
+void MainWindow::on_actionLapDataEraseTable_triggered(void)
 {
     // Erase all highlited point on the mapping view
     this->mapScene->clearSceneSelection();
@@ -409,61 +409,13 @@ void MainWindow::on_actionClearAllData_triggered(void)
     this->currentTracksDisplayed.clear();
 
     // Remove laps information from the table
-    this->on_actionLapDataTableErase_triggered();
+    this->on_actionLapDataEraseTable_triggered();
 }
 
 void MainWindow::on_raceTable_customContextMenuRequested(const QPoint &pos)
 {
-    // Récupérer les index de tous les éléments sélectionnés
-    QModelIndexList rowsSelectedIndexes =
-            this->ui->raceTable->selectionModel()->selectedRows();
-
-    // for QAbstractScrollArea and derived classes you would use:
-    QPoint globalPos = this->ui->raceTable->viewport()->mapToGlobal(pos);
-
-    // Contains all the actions available according to the rows selected
-    QList<QAction *> actions;
-    actions.append(this->ui->actionLapDataTableErase);
-
-    /* On ne porpose de faire une comparaison entre deux données du tableau
-     * si et seulement si ce sont des données issues d'une meme course et
-     * du meme tour */
-    if (rowsSelectedIndexes.count() == 2)
-    {
-        /*
-        int lapNum1, raceNum1;
-        int lapNum2, raceNum2;
-        QModelIndex LapNumModelIndex;
-        QModelIndex RaceNumModelIndex;
-
-        // Get lap and race num for the first selected item
-        LapNumModelIndex  = rowsSelectedIndexes.at(0).parent();
-        RaceNumModelIndex = LapNumModelIndex.parent();
-
-        lapNum1 = this->raceInformationTableModel->data(
-                    this->raceInformationTableModel->index(LapNumModelIndex.row(), 0, RaceNumModelIndex)).toInt();
-        raceNum1 = this->raceInformationTableModel->data(
-                    this->raceInformationTableModel->index(RaceNumModelIndex.row(), 0)).toInt();
-
-        // Get lap and race num for the second selected item
-        LapNumModelIndex  = rowsSelectedIndexes.at(1).parent();
-        RaceNumModelIndex = LapNumModelIndex.parent();
-
-        lapNum2 = this->raceInformationTableModel->data(
-                    this->raceInformationTableModel->index(LapNumModelIndex.row(), 0, RaceNumModelIndex)).toInt();
-        raceNum2 = this->raceInformationTableModel->data(
-                    this->raceInformationTableModel->index(RaceNumModelIndex.row(), 0)).toInt();
-
-        if (lapNum1 == lapNum2 && raceNum1 == raceNum2)
-            actions.append(this->ui->actionLapDataComparaison);
-       */
-
-        if (rowsSelectedIndexes.at(0).parent() ==
-                rowsSelectedIndexes.at(1).parent())
-            actions.append(this->ui->actionLapDataComparaison);
-    }
-
-    QMenu::exec(actions, globalPos);
+    this->ui->menuLapDataTable->exec(
+                this->ui->raceTable->viewport()->mapToGlobal(pos));
 }
 
 void MainWindow::on_actionLapDataComparaison_triggered(void)
@@ -497,6 +449,105 @@ void MainWindow::on_actionLapDataComparaison_triggered(void)
     LapDataCompartor ldc(raceNum, lapNum, this);
     ldc.addLapsData(row1.toList(), row2.toList());
     ldc.exec();
+}
+
+void MainWindow::on_raceTable_doubleClicked(const QModelIndex &index)
+{
+    // Check if a valid row has been double clicked
+    QModelIndexList rowsSelected = this->ui->raceTable->selectionModel()->selectedRows();
+    if (rowsSelected.count() <= 0)
+        return;
+
+    // Get the time in milliseconds for the selected item
+    int time = this->raceInformationTableModel->data(
+                this->raceInformationTableModel->index(
+                    index.row(), 1, index.parent())).toInt();
+
+    QMessageBox::information(this, QString::number(time), QString::number(time));
+}
+
+void MainWindow::on_menuLapDataTable_aboutToShow(void)
+{
+    // Récupérer les index de tous les éléments sélectionnés
+    QModelIndexList rowsSelectedIndexes =
+            this->ui->raceTable->selectionModel()->selectedRows();
+
+    bool multipleRowsSelected = rowsSelectedIndexes.count() > 0;
+    bool comparaisonVisible   = rowsSelectedIndexes.count() == 2 &&
+                                rowsSelectedIndexes.at(0).parent() ==
+                                rowsSelectedIndexes.at(1).parent();
+
+    // Afficher dans toutes les vues
+    this->ui->actionLapDataDisplayInAllViews->setVisible(multipleRowsSelected);
+
+    // Affiher dans la vue mapping
+    this->ui->actionLapDataDisplayInMapping->setVisible(multipleRowsSelected);
+
+    // Afficher dans les vues graphiques
+    this->ui->actionLapDataDisplayInGraphics->setVisible(multipleRowsSelected);
+
+    // Retirer les données sélectionnées (du tableau et des vues)
+    this->ui->actionLapDataRemoveFromAllViews->setVisible(multipleRowsSelected);
+
+    /* On ne porpose de faire une comparaison entre deux données du tableau
+     * si et seulement si ce sont des données issues d'une meme course et
+     * du meme tour */
+    this->ui->actionLapDataComparaison->setVisible(comparaisonVisible);
+    this->ui->actionLapDataDrawSectors->setVisible(comparaisonVisible);
+}
+
+void MainWindow::on_actionLapDataSelectAll_triggered(bool checked)
+{
+    if (checked)
+        this->ui->raceTable->selectAll();
+    else
+        this->ui->raceTable->clearSelection();
+}
+
+void MainWindow::on_actionLapDataDrawSectors_triggered(void)
+{
+    QModelIndexList rowsSelectedIndexes =
+            this->ui->raceTable->selectionModel()->selectedRows(0);
+
+    if (rowsSelectedIndexes.count() != 2)
+        return;
+
+    QModelIndex LapNumModelIndex;
+    QModelIndex RaceNumModelIndex;
+
+    // Get lap and race num for the first selected item
+    LapNumModelIndex  = rowsSelectedIndexes.at(0).parent();
+    RaceNumModelIndex = LapNumModelIndex.parent();
+
+    QMap<QString, QVariant> trackId;
+    trackId["race"] = this->raceInformationTableModel->data(
+                this->raceInformationTableModel->index(RaceNumModelIndex.row(),
+                                                       0)).toInt();
+
+    trackId["lap"] = this->raceInformationTableModel->data(
+                this->raceInformationTableModel->index(LapNumModelIndex.row(),
+                                                 0, RaceNumModelIndex)).toInt();
+
+    // Get the time in milliseconds for the selected item
+    QModelIndex rowIndex = rowsSelectedIndexes.at(0);
+    float time1 = this->raceInformationTableModel->data(
+                this->raceInformationTableModel->index(
+                    rowIndex.row(), 2, rowIndex.parent())).toFloat();
+
+    rowIndex = rowsSelectedIndexes.at(1);
+    float time2 = this->raceInformationTableModel->data(
+                this->raceInformationTableModel->index(
+                    rowIndex.row(), 2, rowIndex.parent())).toFloat();
+
+
+    this->mapScene->clearSceneSelection();
+    this->mapScene->highlightSector(time1, time2, trackId);
+
+    this->distancePlotFrame->scene()->clearPlotSelection();
+    this->distancePlotFrame->scene()->highlightSector(time1, time2, trackId); // FIXME : méthode qui utilise un arondissement car prévu pour des données de temps issues de la vue mapping
+
+    this->timePlotFrame->scene()->clearPlotSelection();
+    this->timePlotFrame->scene()->highlightSector(time1, time2, trackId); // FIXME : méthode qui utilise un arondissement car prévu pour des données de temps issues de la vue mapping
 }
 
 void MainWindow::loadCompetition(int index)

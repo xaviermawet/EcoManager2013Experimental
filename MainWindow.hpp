@@ -67,11 +67,15 @@ class MainWindow : public QMainWindow
         void on_actionConfiguredLayout2_triggered(void);
         void on_actionConfiguredLayout3_triggered(void);
         void on_actionConfiguredLayout4_triggered(void);
-        void on_actionLapDataTableErase_triggered(void);
+        void on_actionLapDataEraseTable_triggered(void);
         void on_actionLapDataTableResizeToContents_triggered(bool checked);
         void on_actionClearAllData_triggered(void);
         void on_raceTable_customContextMenuRequested(const QPoint &pos);
         void on_actionLapDataComparaison_triggered(void);
+        void on_raceTable_doubleClicked(const QModelIndex &index);
+        void on_menuLapDataTable_aboutToShow(void);
+        void on_actionLapDataSelectAll_triggered(bool checked);
+        void on_actionLapDataDrawSectors_triggered(void);
 
         // Personal slots
         void loadCompetition(int index);
