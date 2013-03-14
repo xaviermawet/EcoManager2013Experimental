@@ -33,7 +33,6 @@ class PlotFrame : public QFrame
         void maxVChanged(float);
         void minHChanged(float);
         void maxHChanged(float);
-        void selectionChanged(void);
 
     private slots:
 
@@ -41,6 +40,7 @@ class PlotFrame : public QFrame
         void on_eraseToolButton_clicked(void);
         void on_showLineToolButton_toggled(bool checked);
         void on_printToolButton_clicked(void);
+        void on_eraseSelectionToolButton_clicked(void);
 
         // Personal slots
         void adaptScales(const QRectF& newRect);

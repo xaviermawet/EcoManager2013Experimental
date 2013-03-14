@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="mainVerticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="headerHorizontalLayout" stretch="0,0,0,0,0">
+    <layout class="QHBoxLayout" name="headerHorizontalLayout" stretch="0,0,0,0,0,0">
      <item>
       <widget class="QToolButton" name="selectPointZoneButton">
        <property name="toolTip">
@@ -77,6 +77,20 @@
        <attribute name="buttonGroup">
         <string notr="true">toolButtonsGroup</string>
        </attribute>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="eraseSelectionToolButton">
+       <property name="toolTip">
+        <string>Effacer les éléments mis en évidence</string>
+       </property>
+       <property name="text">
+        <string>Effacer la sélection</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../Resources.qrc">
+         <normaloff>:/Resources/Icons/eraser2.png</normaloff>:/Resources/Icons/eraser2.png</iconset>
+       </property>
       </widget>
      </item>
      <item>

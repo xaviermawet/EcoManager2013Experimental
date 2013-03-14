@@ -78,3 +78,8 @@ void MapFrame::zoomAround(int level, QPointF origin)
     this->_view->centerOn(this->_view->mapToScene(origin.toPoint()));
     this->zoom(level);
 }
+
+void MapFrame::on_eraseSelectionToolButton_clicked(void)
+{
+    QMessageBox::information(this, "Impossible", "Ne sais rien faire car ne contient pas la scene ... quel con");
+}

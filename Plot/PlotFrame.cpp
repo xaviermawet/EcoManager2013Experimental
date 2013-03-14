@@ -56,8 +56,6 @@ PlotFrame::PlotFrame(QWidget *parent) :
             this->plotScene, SLOT(displayLabels(QPointF,QPointF)));
     connect(this->plotView, SIGNAL(mousePressed(QPointF)),
             this->plotScene, SLOT(slotDeTest(QPointF)));
-    connect(this->plotScene, SIGNAL(selectionChanged()),
-            this, SIGNAL(selectionChanged()));
 
     setMouseTracking(true);
 }
@@ -142,6 +140,11 @@ void PlotFrame::on_printToolButton_clicked(void)
 
     img.save(QFileDialog::getSaveFileName());
 
+}
+
+void PlotFrame::on_eraseSelectionToolButton_clicked(void)
+{
+    this->plotScene->clearPlotSelection();
 }
 
 void PlotFrame::adaptScales(const QRectF& newRect)

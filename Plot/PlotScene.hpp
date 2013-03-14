@@ -3,6 +3,7 @@
 
 #include "PlotCurve.hpp"
 #include "../Common/ColorPicker.hpp"
+#include "../Map/TickItem.hpp"
 #include <QtGui>
 
 class PlotScene : public QGraphicsScene
@@ -36,8 +37,10 @@ class PlotScene : public QGraphicsScene
         void setCurveLabelsVisible(bool visible);
         void clearPlotSelection(void);
         void clearCurves(void);
+        void highlightPoint(float timeValue, const QVariant& trackId);
         void highlightPoints(float timeValue, const QVariant& trackId);
         void highlightSector(float t1, float t2, const QVariant& trackId);
+        void highlightOnlySector(float t1, float t2, QVariant trackId);
         void displayLabels(const QPointF& mousePos, const QPointF& scenePos);
         void handleSelection(void);
         void lockSelectionAbility(void);

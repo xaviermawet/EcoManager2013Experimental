@@ -49,6 +49,7 @@ class MapScene : public QGraphicsScene
         void manageSelectedZone(void);
         void highlightPoint(float timeValue, QVariant trackId);
         void highlightSector(float t1, float t2, QVariant trackId);
+        void highlightOnlySector(float t1, float t2, QVariant trackId);
         void clearSceneSelection(void);
         void clearTracks(void);
         void clearSectors(void);

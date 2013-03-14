@@ -32,6 +32,7 @@ class MapFrame : public QFrame
         void on_cutSectorButton_toggled(bool checked);
         void on_dragButton_toggled(bool checked);
         void on_clearToolButton_clicked(void);
+        void on_eraseSelectionToolButton_clicked(void);
 
         // Personal slots
         void zoom(int level);

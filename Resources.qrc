@@ -26,5 +26,6 @@
         <file>Resources/Icons/stats_bars.png</file>
         <file>Resources/Icons/table-select-all-icon.png</file>
         <file>Resources/Icons/print.png</file>
+        <file>Resources/Icons/eraser2.png</file>
     </qresource>
 </RCC>

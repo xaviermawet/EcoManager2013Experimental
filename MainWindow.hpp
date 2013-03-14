@@ -76,6 +76,7 @@ class MainWindow : public QMainWindow
         void on_menuLapDataTable_aboutToShow(void);
         void on_actionLapDataSelectAll_triggered(bool checked);
         void on_actionLapDataDrawSectors_triggered(void);
+        void on_actionLapDataDisplayInAllViews_triggered(void);
 
         // Personal slots
         void loadCompetition(int index);
@@ -102,6 +103,7 @@ class MainWindow : public QMainWindow
         void connectSignals(void);
         void reloadRaceView(void);
         void loadSectors(const QString& competitionName);
+        void highlightPointInAllView(const QModelIndex& index);
 
     protected:
 

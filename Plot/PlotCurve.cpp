@@ -112,6 +112,29 @@ void PlotCurve::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     Q_UNUSED(widget)
 }
 
+CoordinateItem* PlotCurve::nearestCoord(float time)
+{
+    bool found(false);
+    CoordinateItem* currentItem = NULL;
+
+    for (int i(0); !found && i < this->points.count(); ++i)
+    {
+        currentItem = qgraphicsitem_cast<CoordinateItem*>(this->points.at(i));
+
+        if (currentItem == NULL)
+            continue;
+
+        /*
+        if (currentItem->index().toFloat() >= time)
+            found = true;
+        */
+
+        found = currentItem->index().toFloat() >= time;
+    }
+
+    return found ? currentItem : NULL;
+}
+
 QList<CoordinateItem*> PlotCurve::nearestCoordinateitems(float timeValue) const
 {
     int seconde = qRound(timeValue);

@@ -26,6 +26,7 @@ class PlotCurve : public QGraphicsItem
         virtual QRectF boundingRect() const; // Retourne les coordonnées du rectangle dans lequel sont compris tous les points
         virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
+        CoordinateItem* nearestCoord(float time);
         QList<CoordinateItem*> nearestCoordinateitems(float timeValue) const;
         QList<CoordinateItem*> onSector(float minTimeValue, float maxTimeValue) const;
         AnimateSectorItem* sectorOn(float timeValue) const;

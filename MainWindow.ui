@@ -357,8 +357,6 @@
      <addaction name="actionLapDataComparaison"/>
      <addaction name="actionLapDataDrawSectors"/>
      <addaction name="actionLapDataDisplayInAllViews"/>
-     <addaction name="actionLapDataDisplayInGraphics"/>
-     <addaction name="actionLapDataDisplayInMapping"/>
      <addaction name="actionLapDataRemoveFromAllViews"/>
      <addaction name="separator"/>
      <addaction name="actionLapDataEraseTable"/>
@@ -694,16 +692,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+A</string>
-   </property>
-  </action>
-  <action name="actionLapDataDisplayInMapping">
-   <property name="text">
-    <string>Afficher dans la vue mapping</string>
-   </property>
-  </action>
-  <action name="actionLapDataDisplayInGraphics">
-   <property name="text">
-    <string>Afficher dans les vues graphiques</string>
    </property>
   </action>
   <action name="actionLapDataDisplayInAllViews">

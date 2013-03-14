@@ -363,8 +363,6 @@ void MapScene::manageSelectedZone(void)
 
 void MapScene::highlightPoint(float timeValue, QVariant trackId)
 {
-    qDebug() << "point cliqué sur graphique : " << timeValue;
-
     TrackItem* targetTrack(NULL);
     bool found(false);
 
@@ -382,24 +380,29 @@ void MapScene::highlightPoint(float timeValue, QVariant trackId)
     /* Vu que mnt on a une corrélation parfaite entre les vues graphiques et
      * la vue mapping, on devrait tjs trouver la trackItem correspondant
      */
-    if (found)
+    if (!found)
+        return;
+
+    CoordinateItem* nearestCoord = targetTrack->nearestCoord(timeValue);
+    if (nearestCoord == NULL)
+        return;
+
+    TickItem* tick = new TickItem;
+    tick->setPos(nearestCoord->pos());
+
+    if (this->_selectedGroup == NULL)
     {
-        CoordinateItem* nearestCoord = targetTrack->nearestCoord(timeValue);
-
-        if (nearestCoord != NULL)
-        {
-            TickItem* tick = new TickItem;
-            tick->setPos(nearestCoord->pos());
-
-            if (this->_selectedGroup == NULL)
-            {
-                this->_selectedGroup = new QGraphicsItemGroup;
-                this->addItem(this->_selectedGroup);
-            }
-
-            this->_selectedGroup->addToGroup(tick);
-        }
+        this->_selectedGroup = new QGraphicsItemGroup;
+        this->addItem(this->_selectedGroup);
     }
+
+    this->_selectedGroup->addToGroup(tick);
+}
+
+void MapScene::highlightOnlySector(float t1, float t2, QVariant trackId)
+{
+    this->clearSceneSelection();
+    this->highlightSector(t1, t2, trackId);
 }
 
 void MapScene::highlightSector(float t1, float t2, QVariant trackId)
@@ -420,24 +423,23 @@ void MapScene::highlightSector(float t1, float t2, QVariant trackId)
         }
     }
 
-    if (found)
+    if (!found)
+        return;
+
+    AnimateSectorItem* sect = targetTrack->sectorOn(t1, t2);
+    if (sect == NULL)
+        return;
+
+    sect->setBrush(QBrush(Qt::red));
+
+    if (this->_selectedGroup == NULL)
     {
-        AnimateSectorItem* sect = targetTrack->sectorOn(t1, t2);
-
-        if (sect != NULL)
-        {
-            sect->setBrush(QBrush(Qt::red));
-
-            if (this->_selectedGroup == NULL)
-            {
-                this->_selectedGroup = new QGraphicsItemGroup;
-                this->addItem(this->_selectedGroup);
-            }
-
-            this->_selectedGroup->addToGroup(sect);
-            sect->launchAnimation();
-        }
+        this->_selectedGroup = new QGraphicsItemGroup;
+        this->addItem(this->_selectedGroup);
     }
+
+    this->_selectedGroup->addToGroup(sect);
+    sect->launchAnimation();
 }
 
 void MapScene::clearSceneSelection(void)

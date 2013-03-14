@@ -121,10 +121,42 @@ void PlotScene::clearCurves(void)
     this->curveLabels.clear();  // Clear all the labels associated to the curves
 }
 
+void PlotScene::highlightPoint(float timeValue, const QVariant &trackId)
+{
+    PlotCurve* targetPlotCurve = NULL;
+
+    // Find the curve associate to trackId of the point selected on the mapping
+    for(int i(0); targetPlotCurve == NULL && i < this->curves.count(); i++)
+        if (this->curves.at(i)->id() == trackId)
+            targetPlotCurve = this->curves[i];
+
+    if (targetPlotCurve == NULL)
+    {
+        qDebug() << "No PlotCurve associate to the trackId found";
+        return;
+    }
+
+    CoordinateItem* nearestCoord = targetPlotCurve->nearestCoord(timeValue);
+    if (nearestCoord == NULL)
+        return;
+
+    TickItem* tick = new TickItem(true);
+    tick->setPos(nearestCoord->pos());
+
+    /* Create the group that will contain all the GraphicsItem corresponding
+     * to the selected zone or point */
+    if (this->selectedGroup == NULL)
+    {
+        this->selectedGroup = new QGraphicsItemGroup;
+        this->addItem(this->selectedGroup);
+    }
+
+    this->selectedGroup->addToGroup(tick);
+    tick->launchAnimation();
+}
+
 void PlotScene::highlightPoints(float timeValue, const QVariant& trackId)
 {
-    qDebug() << "Point cliqué sur mapping : " << timeValue;
-
     PlotCurve* targetPlotCurve = NULL;
 
     // Find the curve associate to trackId of the point selected on the mapping
@@ -203,6 +235,12 @@ void PlotScene::highlightSector(float t1, float t2, const QVariant& trackId)
 
     this->selectedGroup->addToGroup(sect);
     sect->launchAnimation();
+}
+
+void PlotScene::highlightOnlySector(float t1, float t2, QVariant trackId)
+{
+    this->clearPlotSelection();
+    this->highlightSector(t1, t2, trackId);
 }
 
 void PlotScene::displayLabels(const QPointF& mousePos, const QPointF& scenePos)
