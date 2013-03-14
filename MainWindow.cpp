@@ -383,6 +383,10 @@ void MainWindow::on_actionLapDataEraseTable_triggered(void)
     // Erase all highlited point on the mapping view
     this->mapScene->clearSceneSelection();
 
+    // Erase all highlited point on the mapping view
+    this->distancePlotFrame->scene()->clearPlotSelection();
+    this->timePlotFrame->scene()->clearPlotSelection();
+
     // Remove laps information from the table
     this->raceInformationTableModel->removeRows(
                 0, this->raceInformationTableModel->rowCount());

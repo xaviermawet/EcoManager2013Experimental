@@ -108,6 +108,42 @@ void PlotFrame::on_showLineToolButton_toggled(bool checked)
     this->plotScene->setCurveLabelsVisible(checked);
 }
 
+void PlotFrame::on_printToolButton_clicked(void)
+{
+    if (this->plotScene->items().count() <= 0)
+    {
+        QMessageBox::information(this, tr("Impression impossible"),
+                                 tr("Aucune courbe à imprimer"));
+        return;
+    }
+
+    /*
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setPageSize(QPrinter::A4);
+    QPainter painter(&printer); // NOTE : au lieu de placer un QPrinter, passer un QImage pour une sauvegarde en photo
+
+    // print, fitting the viewport contents into a full page
+    this->plotView->render(&painter);
+
+    QPrintDialog printDialog(&printer, this);
+    if (printDialog.exec() == QDialog::Accepted)
+    {
+        QMessageBox::information(this, "Impression du graphique",
+                                 "Impression du graphique");
+    }
+    */
+
+    ;
+    QImage img;
+    QPainter painter(&img);
+
+    // print, fitting the viewport contents into a full page
+    this->plotView->render(&painter);
+
+    img.save(QFileDialog::getSaveFileName());
+
+}
+
 void PlotFrame::adaptScales(const QRectF& newRect)
 {
     emit this->minVChanged(newRect.top());

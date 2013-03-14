@@ -101,6 +101,26 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="printToolButton">
+       <property name="toolTip">
+        <string>Imprimer la zone graphique courante</string>
+       </property>
+       <property name="text">
+        <string>Imprimer</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../Resources.qrc">
+         <normaloff>:/Resources/Icons/print.png</normaloff>:/Resources/Icons/print.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="zoomOutToolButton">
        <property name="toolTip">
         <string>Effectuer un zoom arrière</string>

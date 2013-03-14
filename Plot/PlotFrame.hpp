@@ -40,6 +40,7 @@ class PlotFrame : public QFrame
         // Autoconnect
         void on_eraseToolButton_clicked(void);
         void on_showLineToolButton_toggled(bool checked);
+        void on_printToolButton_clicked(void);
 
         // Personal slots
         void adaptScales(const QRectF& newRect);
