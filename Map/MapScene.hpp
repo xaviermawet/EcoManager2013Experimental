@@ -30,7 +30,7 @@ class MapScene : public QGraphicsScene
         void addTrack(const QVector<QPointF>& points,
                       const QVector<float>& metaData,
                       QVariant idTrack = QVariant());
-        void attacheMapView(MapView* view);
+
         void fixSymbol(float timeValue, QColor color, QVariant trackId);
         void removeSymbol(QVariant trackId);
 

@@ -2,6 +2,7 @@
 #define __MAPFRAME_HPP__
 
 #include "MapView.hpp"
+#include "MapScene.hpp"
 #include <QtGui>
 
 namespace Ui {
@@ -17,12 +18,13 @@ class MapFrame : public QFrame
         explicit MapFrame(QWidget *parent = 0);
         ~MapFrame(void);
 
-        MapView* view(void) const;
+        // Getter
+        MapView*  view(void) const;
+        MapScene* scene(void) const;
 
     signals:
 
         void clearTracks(void);
-        void enableTrackHoverEvent(bool enable);
 
     private slots:
 
@@ -40,8 +42,13 @@ class MapFrame : public QFrame
 
     protected:
 
+        // GUI
         Ui::MapFrame* ui;
-        MapView* _view;
+
+        // Scene and view
+        MapScene* mapScene;
+        MapView*  mapView;
+
 };
 
 #endif /* __MAPFRAME_HPP__ */

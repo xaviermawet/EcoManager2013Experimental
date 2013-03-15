@@ -9,7 +9,8 @@ class MapView : public QGraphicsView
 
     public:
 
-        MapView(QWidget *parent);
+        MapView(QWidget* parent = 0);
+        MapView(QGraphicsScene* scene, QWidget* parent = 0);
         virtual ~MapView(void);
 
     signals:

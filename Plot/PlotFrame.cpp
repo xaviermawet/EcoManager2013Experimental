@@ -62,7 +62,7 @@ PlotFrame::PlotFrame(QWidget *parent) :
 
 PlotFrame::~PlotFrame(void)
 {
-    delete ui;
+    delete this->ui;
 }
 
 PlotScene* PlotFrame::scene(void) const
@@ -131,7 +131,6 @@ void PlotFrame::on_printToolButton_clicked(void)
     }
     */
 
-    ;
     QImage img;
     QPainter painter(&img);
 

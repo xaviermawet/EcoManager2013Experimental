@@ -2,33 +2,45 @@
 #include "ui_MapFrame.h"
 
 MapFrame::MapFrame(QWidget *parent) :
-    QFrame(parent), ui(new Ui::MapFrame), _view(NULL)
+    QFrame(parent), ui(new Ui::MapFrame), mapScene(NULL), mapView(NULL)
 {
     // GUI Configuration
     ui->setupUi(this);
 
-    // View Configuration
-    this->_view = new MapView(this);
-    this->_view->setRenderHint(QPainter::Antialiasing, true);
-    this->_view->setOptimizationFlags(QGraphicsView::DontSavePainterState);
-    this->_view->setDragMode(QGraphicsView::ScrollHandDrag);
+    // Create scene
+    this->mapScene = new MapScene(50 * 1000, this);
+
+    // Create view
+    this->mapView = new MapView(this->mapScene, this);
+    this->mapView->setRenderHint(QPainter::Antialiasing, true);
+    this->mapView->setOptimizationFlags(QGraphicsView::DontSavePainterState);
+    this->mapView->setDragMode(QGraphicsView::ScrollHandDrag);
 
     // Add the view to the view layout
-    this->ui->viewHorizontalLayout->insertWidget(0, this->_view);
+    this->ui->viewHorizontalLayout->insertWidget(0, this->mapView);
 
-    // Connect the view signal to MapFrame
-    connect(this->_view, SIGNAL(zoomedAround(int, QPointF)),
+    // Connect signals and slots of view and scene
+    connect(this->mapView, SIGNAL(areaDelimited(QPointF,QPointF)),
+            this->mapScene, SLOT(cutSectorBetween(QPointF,QPointF)));
+    connect(this->mapView, SIGNAL(pointOrZoneSelected()),
+            this->mapScene, SLOT(manageSelectedZone()));
+    connect(this->mapView, SIGNAL(zoomedAround(int, QPointF)),
             this, SLOT(zoomAround(int,QPointF)));
 }
 
 MapFrame::~MapFrame(void)
 {
-    delete ui;
+    delete this->ui;
 }
 
 MapView* MapFrame::view(void) const
 {
-    return this->_view;
+    return this->mapView;
+}
+
+MapScene* MapFrame::scene(void) const
+{
+    return this->mapScene;
 }
 
 // updateScale
@@ -38,34 +50,39 @@ void MapFrame::on_zoomSlider_valueChanged(int value)
 
     qreal scaleFactor =  qPow(2, (this->ui->zoomSlider->value() - 50) / 10.0);
 
-    this->_view->resetMatrix();
-    this->_view->scale(scaleFactor, scaleFactor);
+    this->mapView->resetMatrix();
+    this->mapView->scale(scaleFactor, scaleFactor);
 }
 
 void MapFrame::on_selectPointZoneButton_toggled(bool checked)
 {
     // Active the RubberBandDrag and change the cursor
     if (checked)
-        this->_view->setDragMode(QGraphicsView::RubberBandDrag);
+        this->mapView->setDragMode(QGraphicsView::RubberBandDrag);
 
-    emit this->enableTrackHoverEvent(checked);
+    this->mapScene->enableTrackAcceptHoverEvents(checked); // Appeler le slot directement ou faire un connect en plus de l'autoconnect ??? (surtout, est ce que si je fais un connect avec cet objet, l'autoconnect marchera t-il encore ?
 }
 
 void MapFrame::on_cutSectorButton_toggled(bool checked)
 {
     if (checked)
-        this->_view->setDragMode(QGraphicsView::NoDrag);
+        this->mapView->setDragMode(QGraphicsView::NoDrag);
 }
 
 void MapFrame::on_dragButton_toggled(bool checked)
 {
     if (checked)
-        this->_view->setDragMode(QGraphicsView::ScrollHandDrag);
+        this->mapView->setDragMode(QGraphicsView::ScrollHandDrag);
 }
 
 void MapFrame::on_clearToolButton_clicked(void)
 {
     emit this->clearTracks();
+}
+
+void MapFrame::on_eraseSelectionToolButton_clicked(void)
+{
+    this->mapScene->clearSceneSelection();
 }
 
 void MapFrame::zoom(int level)
@@ -75,11 +92,6 @@ void MapFrame::zoom(int level)
 
 void MapFrame::zoomAround(int level, QPointF origin)
 {
-    this->_view->centerOn(this->_view->mapToScene(origin.toPoint()));
+    this->mapView->centerOn(this->mapView->mapToScene(origin.toPoint()));
     this->zoom(level);
-}
-
-void MapFrame::on_eraseSelectionToolButton_clicked(void)
-{
-    QMessageBox::information(this, "Impossible", "Ne sais rien faire car ne contient pas la scene ... quel con");
 }

@@ -1,9 +1,16 @@
 #include "MapView.hpp"
 
-MapView::MapView(QWidget *parent) :
+MapView::MapView(QWidget* parent) :
     QGraphicsView(parent), delimiting(false), rubberLine()
 {
     this->setBackgroundBrush(QColor(0, 0, 0, 180));
+}
+
+MapView::MapView(QGraphicsScene* scene, QWidget *parent) :
+    QGraphicsView(parent), delimiting(false), rubberLine()
+{
+    this->setBackgroundBrush(QColor(0, 0, 0, 180));
+    this->setScene(scene);
 }
 
 MapView::~MapView(void)

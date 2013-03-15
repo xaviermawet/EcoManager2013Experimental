@@ -143,21 +143,6 @@ void MapScene::addTrack(const QVector<QPointF>& points,
     this->setSceneRect(this->itemsBoundingRect());
 }
 
-void MapScene::attacheMapView(MapView *view)
-{
-    view->setScene(this);
-    connect(view, SIGNAL(areaDelimited(QPointF, QPointF)),
-            this, SLOT(cutSectorBetween(QPointF,QPointF)));
-
-    /* Connecter le signal émit lors de la sélection d'un point et dans ce slot
-     * récupérer les info du point sélectionné et émettre un signal qui sera
-     * capté (connecté) au niveau de mainWindow et connecté à un SLOT de la
-     * PlotScene (qui n'existe pas) donc à PlotFrame
-     */
-    connect(view , SIGNAL(pointOrZoneSelected()),
-            this, SLOT(manageSelectedZone()));
-}
-
 void MapScene::fixSymbol(float timeValue, QColor color, QVariant trackId)
 {
     //FIXME !!

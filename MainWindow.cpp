@@ -62,7 +62,7 @@ bool MainWindow::eventFilter(QObject* src, QEvent* event)
             {
                 QSqlRecord sectorRec = sectorModel->record(selectedSector.row());
                 int numSect = sectorRec.value(sectorModel->fieldIndex("num")).toInt();
-                mapScene->mergeSector(numSect - 1, numSect);
+                this->mapFrame->scene()->mergeSector(numSect - 1, numSect);
             }
         }
     }
@@ -253,8 +253,8 @@ void MainWindow::on_actionDelimitingSectors_triggered(void)
             else
             {
                 // Erase previous sectors from the map scene
-                if (this->mapScene->hasSectors())
-                    this->mapScene->clearSectors();
+                if (this->mapFrame->scene()->hasSectors())
+                    this->mapFrame->scene()->clearSectors();
 
                 // Display new sector
                 loadSectors(currentCompetition);
@@ -381,7 +381,7 @@ void MainWindow::on_actionConfiguredLayout4_triggered(void)
 void MainWindow::on_actionLapDataEraseTable_triggered(void)
 {
     // Erase all highlited point or sector on the mapping view
-    this->mapScene->clearSceneSelection();
+    this->mapFrame->scene()->clearSceneSelection();
 
     // Erase all highlited point on the mapping view
     this->distancePlotFrame->scene()->clearPlotSelection();
@@ -403,7 +403,7 @@ void MainWindow::on_actionLapDataTableResizeToContents_triggered(bool checked)
 void MainWindow::on_actionClearAllData_triggered(void)
 {
     // Clear the tracks of the mapping view
-    this->mapScene->clearTracks();
+    this->mapFrame->scene()->clearTracks();
 
     // clear the curves of the graphic views
     this->distancePlotFrame->scene()->clearCurves();
@@ -533,8 +533,8 @@ void MainWindow::on_actionLapDataDrawSectors_triggered(void)
                     rowIndex.row(), 2, rowIndex.parent())).toFloat();
 
 
-    //this->mapScene->clearSceneSelection();
-    this->mapScene->highlightSector(time1, time2, trackId);
+    //this->mapFrame->scene()->clearSceneSelection();
+    this->mapFrame->scene()->highlightSector(time1, time2, trackId);
 
     //this->distancePlotFrame->scene()->clearPlotSelection();
     this->distancePlotFrame->scene()->highlightSector(time1, time2, trackId); // FIXME : méthode qui utilise un arondissement car prévu pour des données de temps issues de la vue mapping
@@ -559,7 +559,7 @@ void MainWindow::loadCompetition(int index)
     this->currentCompetition = competitionNameModel->record(index).value(0).toString();
 
     this->on_actionClearAllData_triggered(); // Clear all tracks information of each view
-    this->mapScene->clearSectors(); // clear sectors
+    this->mapFrame->scene()->clearSectors(); // clear sectors
 
     // clear the sector view
     if (this->sectorModel)
@@ -859,12 +859,8 @@ void MainWindow::createToolsBar(void)
 
 void MainWindow::createMapZone(void)
 {
-    // Create the map scene
-    this->mapScene = new MapScene(50 * 1000, this);
-
     // Create the map frame (the map view is included)
     this->mapFrame = new MapFrame(this);
-    this->mapScene->attacheMapView(mapFrame->view());
     this->mapFrame->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
     // Manage the sector view
@@ -1074,11 +1070,11 @@ void MainWindow::displayDataLap(void)
 
             qDebug() << posQuery.lastQuery();
             qDebug() <<  ref_race << curIndex.row() << pos.size();
-            this->mapScene->addTrack(pos, indexValues, trackIdentifier);
+            this->mapFrame->scene()->addTrack(pos, indexValues, trackIdentifier);
         }
 
         // If a sampling lap has already be defined, just load it in the view
-        if (!this->mapScene->hasSectors())
+        if (!this->mapFrame->scene()->hasSectors())
             this->loadSectors(this->currentCompetition);
 
         /* ------------------------------------------------------------------ *
@@ -1185,11 +1181,11 @@ void MainWindow::displayDataLap(void)
 //                qDebug() << value;
 //                if (value > 0 && ! accelerationPositiv) {
 //                    qDebug() << "+ transition found";
-//                    mapScene->fixSymbol(ip.index(), QColor(0, 255, 0, 150), trackIdentifier);
+//                    mapFrame->scene()->fixSymbol(ip.index(), QColor(0, 255, 0, 150), trackIdentifier);
 //                    accelerationPositiv = true;
 //                } else if (value < 0 && accelerationPositiv) {
 //                    qDebug() << "- transition found";
-//                    mapScene->fixSymbol(ip.index(), QColor(203, 0, 0, 150), trackIdentifier);
+//                    mapFrame->scene()->fixSymbol(ip.index(), QColor(203, 0, 0, 150), trackIdentifier);
 //                    accelerationPositiv = false;
 //                }
 //            }
@@ -1254,65 +1250,59 @@ void MainWindow::displayDataLap(void)
 
 void MainWindow::connectSignals(void)
 {
-    // Map scene
-    connect(this->mapScene, SIGNAL(sectorRemoved(QString,int)),
+    // Map frame/scene
+    connect(this->mapFrame->scene(), SIGNAL(sectorRemoved(QString,int)),
             this, SLOT(removeSector(QString,int)));
-    connect(this->mapScene, SIGNAL(sectorAdded(QString,int,IndexedPosition,IndexedPosition)),
+    connect(this->mapFrame->scene(), SIGNAL(sectorAdded(QString,int,IndexedPosition,IndexedPosition)),
             this, SLOT(addSector(QString,int,IndexedPosition,IndexedPosition)));
-    connect(this->mapScene, SIGNAL(sectorUpdated(QString,int,IndexedPosition,IndexedPosition)),
+    connect(this->mapFrame->scene(), SIGNAL(sectorUpdated(QString,int,IndexedPosition,IndexedPosition)),
             this, SLOT(updateSector(QString,int,IndexedPosition,IndexedPosition)));
-    connect(this->mapScene, SIGNAL(pointSelected(float,QVariant)),
+    connect(this->mapFrame->scene(), SIGNAL(pointSelected(float,QVariant)),
             this->distancePlotFrame->scene(), SLOT(highlightPoints(float,QVariant)));
-    connect(this->mapScene, SIGNAL(pointSelected(float,QVariant)),
+    connect(this->mapFrame->scene(), SIGNAL(pointSelected(float,QVariant)),
             this->timePlotFrame->scene(), SLOT(highlightPoints(float,QVariant)));
-    connect(this->mapScene, SIGNAL(intervalSelected(float,float,QVariant)),
+    connect(this->mapFrame->scene(), SIGNAL(intervalSelected(float,float,QVariant)),
             this->distancePlotFrame->scene(), SLOT(highlightSector(float,float,QVariant)));
-    connect(this->mapScene, SIGNAL(intervalSelected(float,float,QVariant)),
+    connect(this->mapFrame->scene(), SIGNAL(intervalSelected(float,float,QVariant)),
             this->timePlotFrame->scene(), SLOT(highlightSector(float,float,QVariant)));
-
-    connect(this->mapScene, SIGNAL(intervalSelected(float,float,QVariant)),
+    connect(this->mapFrame->scene(), SIGNAL(intervalSelected(float,float,QVariant)),
             this, SLOT(displayLapInformation(float,float,QVariant)));
-
-//    connect(this->mapScene, SIGNAL(selectionChanged()),
+//    connect(this->mapFrame->scene(), SIGNAL(selectionChanged()),
 //            this->distancePlotFrame->scene(), SLOT(clearPlotSelection()));
-//    connect(this->mapScene, SIGNAL(selectionChanged()),
+//    connect(this->mapFrame->scene(), SIGNAL(selectionChanged()),
 //            this->timePlotFrame->scene(), SLOT(clearPlotSelection()));
-    connect(this->mapScene, SIGNAL(selectionChanged()),
+    connect(this->mapFrame->scene(), SIGNAL(selectionChanged()),
             this, SLOT(on_actionLapDataEraseTable_triggered()));
-
-    // Map frame
-    connect(this->mapFrame, SIGNAL(enableTrackHoverEvent(bool)),
-            this->mapScene, SLOT(enableTrackAcceptHoverEvents(bool)));
     connect(this->mapFrame, SIGNAL(clearTracks()),
             this, SLOT(on_actionClearAllData_triggered()));
 
-    // Distance plot frame
+    // Distance plot frame/scene
     //connect(this->distancePlotFrame, SIGNAL(selectionChanged()),
-            //this->mapScene, SLOT(clearSceneSelection()));
+            //this->mapFrame->scene(), SLOT(clearSceneSelection()));
     connect(this->distancePlotFrame->scene(), SIGNAL(selectionChanged()),
             this, SLOT(on_actionLapDataEraseTable_triggered()));
     connect(this->distancePlotFrame->scene(), SIGNAL(pointSelected(float,QVariant)),
-            this->mapScene, SLOT(highlightPoint(float,QVariant)));
+            this->mapFrame->scene(), SLOT(highlightPoint(float,QVariant)));
     connect(this->distancePlotFrame->scene(), SIGNAL(pointSelected(float,QVariant)),
             this, SLOT(displayLapInformation(float,QVariant)));
     connect(this->distancePlotFrame->scene(), SIGNAL(intervalSelected(float,float,QVariant)),
-            this->mapScene, SLOT(highlightSector(float,float,QVariant)));
+            this->mapFrame->scene(), SLOT(highlightSector(float,float,QVariant)));
     connect(this->distancePlotFrame->scene(), SIGNAL(intervalSelected(float,float,QVariant)),
             this, SLOT(displayLapInformation(float,float,QVariant)));
     connect(this->distancePlotFrame, SIGNAL(clear()),
             this, SLOT(on_actionClearAllData_triggered()));
 
-    // Time plot frame
+    // Time plot frame/scene
     //connect(this->timePlotFrame, SIGNAL(selectionChanged()),
-            //this->mapScene, SLOT(clearSceneSelection()));
+            //this->mapFrame->scene(), SLOT(clearSceneSelection()));
     connect(this->timePlotFrame->scene(), SIGNAL(selectionChanged()),
             this, SLOT(on_actionLapDataEraseTable_triggered()));
     connect(this->timePlotFrame->scene(), SIGNAL(pointSelected(float,QVariant)),
-            this->mapScene, SLOT(highlightPoint(float,QVariant)));
+            this->mapFrame->scene(), SLOT(highlightPoint(float,QVariant)));
     connect(this->timePlotFrame->scene(), SIGNAL(pointSelected(float,QVariant)),
             this, SLOT(displayLapInformation(float,QVariant)));
     connect(this->timePlotFrame->scene(), SIGNAL(intervalSelected(float,float,QVariant)),
-            this->mapScene, SLOT(highlightSector(float,float,QVariant)));
+            this->mapFrame->scene(), SLOT(highlightSector(float,float,QVariant)));
     connect(this->timePlotFrame->scene(), SIGNAL(intervalSelected(float,float,QVariant)),
             this, SLOT(displayLapInformation(float,float,QVariant)));
     connect(this->timePlotFrame, SIGNAL(clear()),
@@ -1404,12 +1394,12 @@ void MainWindow::loadSectors(const QString &competitionName)
             }
 
             if (! sectorPoints.isEmpty())
-                this->mapScene->addSector(sectorPoints, competitionName);
+                this->mapFrame->scene()->addSector(sectorPoints, competitionName);
         }
         currentSector++;
     }
 
-    this->ui->sectorView->setVisible(mapScene->hasSectors());
+    this->ui->sectorView->setVisible(mapFrame->scene()->hasSectors());
 }
 
 void MainWindow::highlightPointInAllView(const QModelIndex &index)
@@ -1436,7 +1426,7 @@ void MainWindow::highlightPointInAllView(const QModelIndex &index)
                     index.row(), 1, LapNumModelIndex)).toInt() / 1000.0;
 
     // Highlight point in all view
-    this->mapScene->highlightPoint(time, trackId);
+    this->mapFrame->scene()->highlightPoint(time, trackId);
     this->timePlotFrame->scene()->highlightPoint(time, trackId);
     this->distancePlotFrame->scene()->highlightPoint(time, trackId);
 }

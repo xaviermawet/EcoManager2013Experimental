@@ -116,7 +116,6 @@ class MainWindow : public QMainWindow
         QList< QMap<QString, QVariant> > currentTracksDisplayed;
 
         // Mapping
-        MapScene* mapScene;
         MapFrame* mapFrame;
 
         // Plot
