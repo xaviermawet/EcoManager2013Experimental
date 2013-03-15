@@ -19,6 +19,8 @@ PlotView::~PlotView()
 
 void PlotView::updateSceneRect(const QRectF &rect)
 {
+    qDebug() << "PlotView --> updateSceneRect";
+
     //this->fitInView(rect, Qt::KeepAspectRatio);
     this->fitInView(rect, Qt::IgnoreAspectRatio);
     emit rectChange(globalRect());
@@ -115,7 +117,7 @@ void PlotView::drawForeground(QPainter *painter, const QRectF &rect)
     }
 }
 
-void PlotView::mouseMoveEvent(QMouseEvent *event)
+void PlotView::mouseMoveEvent(QMouseEvent* event)
 {
     switch (this->dragMode())
     {
@@ -145,7 +147,7 @@ void PlotView::mouseMoveEvent(QMouseEvent *event)
     QGraphicsView::mouseMoveEvent(event);
 }
 
-void PlotView::mousePressEvent(QMouseEvent *event)
+void PlotView::mousePressEvent(QMouseEvent* event)
 {
     if (event->button() != Qt::LeftButton) return;
 
@@ -169,7 +171,7 @@ void PlotView::mousePressEvent(QMouseEvent *event)
     QGraphicsView::mousePressEvent(event);
 }
 
-void PlotView::mouseReleaseEvent(QMouseEvent *event)
+void PlotView::mouseReleaseEvent(QMouseEvent* event)
 {
     switch (this->dragMode())
     {
@@ -193,10 +195,88 @@ void PlotView::mouseReleaseEvent(QMouseEvent *event)
     QGraphicsView::mouseReleaseEvent(event);
 }
 
-void PlotView::resizeEvent(QResizeEvent*)
+void PlotView::resizeEvent(QResizeEvent* event)
 {
+    Q_UNUSED(event);
+
     this->updateSceneRect(sceneRect());
     posLabel->move(width() - posLabel->width() - 10, 10);
+}
+
+void PlotView::wheelEvent(QWheelEvent* event)
+{
+    // zoom only when CTRL key pressed
+    if (event->modifiers().testFlag(Qt::ControlModifier))
+    {
+        int numSteps = event->delta() / 15 / 8;
+
+        if (numSteps == 0)
+        {
+            event->ignore();
+            return;
+        }
+
+        qreal sc = pow(1.025, numSteps); // I use scale factor 1.025
+        this->zoom(sc, mapToScene(event->pos()));
+        event->accept();
+    }
+
+    /*
+    if (event->modifiers() & Qt::ControlModifier)
+    {
+        qDebug() << "On zoom dans les vues graphiques";
+        this->centerOn(event->pos());
+
+        emit this->zoomedAround(event->delta() > 0 ? 1 : -1);
+
+
+        // Get the area of the scene visualized by this view
+        QRectF rectScene = this->sceneRect();
+
+        qDebug() << rectScene.topLeft() << " " << rectScene.topRight() << " "
+                 << rectScene.bottomLeft() << " " << rectScene.bottomRight();
+
+        // Adjust size
+        QPointF tr = rectScene.topRight();
+        tr.setX(tr.x() + (event->delta() > 0 ? -1 : 1));
+        tr.setY(tr.y() + (event->delta() > 0 ? -1 : 1));
+        rectScene.setTopRight(tr);
+
+        QPointF tl = rectScene.topLeft();
+        tl.setX(tl.x() + (event->delta() > 0 ? 1 : -1));
+        tl.setY(tl.y() + (event->delta() > 0 ? -1 : 1));
+        rectScene.setTopLeft(tl);
+
+        QPointF br = rectScene.bottomRight();
+        br.setX(br.x() + (event->delta() > 0 ? -1 : 1));
+        br.setY(br.y() + (event->delta() > 0 ? 1 : -1));
+        rectScene.setBottomRight(br);
+
+        QPointF bl = rectScene.bottomLeft();
+        bl.setX(bl.x() + (event->delta() > 0 ? 1 : -1));
+        bl.setY(bl.y() + (event->delta() > 0 ? 1 : -1));
+        rectScene.setBottomLeft(bl);
+
+        qDebug() << rectScene.topLeft() << " " << rectScene.topRight() << " "
+                 << rectScene.bottomLeft() << " " << rectScene.bottomRight();
+
+        // Centre sur la souris ???
+
+        // Update the scene rect
+        this->setSceneRect(rectScene);
+        this->updateSceneRect(rectScene);
+    }
+    else
+    {
+        QGraphicsView::wheelEvent(event);
+    }
+    */
+}
+
+void PlotView::zoom(qreal factor, const QPointF &centerPoint)
+{
+    scale(factor, factor);
+    //centerOn(centerPoint);
 }
 
 //void PlotView::keyPressEvent(QKeyEvent *event)

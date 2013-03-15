@@ -20,6 +20,7 @@ class PlotView : public QGraphicsView
         void rectChange(const QRectF&);
         void beginSelection(void);
         void finishSelection(void);
+        void zoomedAround(int level);
         //void verticalLineVisibilityChanged(bool visible);
 
     public slots:
@@ -34,12 +35,13 @@ class PlotView : public QGraphicsView
        //void toggleSelectionMode(void);
 
        virtual void drawForeground(QPainter *painter, const QRectF &rect);
-       virtual void mouseMoveEvent(QMouseEvent*);
-       virtual void mousePressEvent(QMouseEvent*);
-       virtual void mouseReleaseEvent(QMouseEvent*);
-       virtual void resizeEvent(QResizeEvent*);
+       virtual void mouseMoveEvent(QMouseEvent* event);
+       virtual void mousePressEvent(QMouseEvent* event);
+       virtual void mouseReleaseEvent(QMouseEvent* event);
+       virtual void resizeEvent(QResizeEvent* event);
+       virtual void wheelEvent(QWheelEvent* event);
+       void zoom(qreal factor, const QPointF& centerPoint);
        //virtual void keyPressEvent(QKeyEvent *event);
-       //virtual void wheelEvent(QWheelEvent*);
 
        void init(void);
        QRectF globalRect(void) const;

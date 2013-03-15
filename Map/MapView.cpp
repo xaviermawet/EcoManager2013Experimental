@@ -34,9 +34,11 @@ void MapView::wheelEvent(QWheelEvent *event)
 {
     if (event->modifiers() & Qt::ControlModifier)
     {
-        if (event->delta() > 0) // On zoom avec la molette
+        // On zoom avec la molette
+        if (event->delta() > 0)
             emit zoomedAround(1, event->pos());
-        else // On dezoom
+        // On dezoom
+        else
             emit zoomedAround(-1, event->pos());
         event->accept();
     }

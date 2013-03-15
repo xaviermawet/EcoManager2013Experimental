@@ -22,10 +22,10 @@ class MapView : public QGraphicsView
     protected:
 
         virtual void drawForeground(QPainter* painter, const QRectF& rect);
-        virtual void mousePressEvent(QMouseEvent *);
-        virtual void mouseMoveEvent(QMouseEvent *);
-        virtual void mouseReleaseEvent(QMouseEvent *);
-        virtual void wheelEvent(QWheelEvent *);
+        virtual void mousePressEvent(QMouseEvent* event);
+        virtual void mouseMoveEvent(QMouseEvent* event);
+        virtual void mouseReleaseEvent(QMouseEvent* event);
+        virtual void wheelEvent(QWheelEvent* event);
 
         bool delimiting;
         QLine rubberLine;

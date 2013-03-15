@@ -378,6 +378,9 @@
      <height>35</height>
     </size>
    </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
    <property name="allowedAreas">
     <set>Qt::BottomToolBarArea|Qt::TopToolBarArea</set>
    </property>

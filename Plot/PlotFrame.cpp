@@ -56,6 +56,8 @@ PlotFrame::PlotFrame(QWidget *parent) :
             this->plotScene, SLOT(displayLabels(QPointF,QPointF)));
     connect(this->plotView, SIGNAL(mousePressed(QPointF)),
             this->plotScene, SLOT(slotDeTest(QPointF)));
+    connect(this->plotView, SIGNAL(zoomedAround(int)),
+            this, SLOT(zoomAround(int)));
 
     setMouseTracking(true);
 }
@@ -63,6 +65,13 @@ PlotFrame::PlotFrame(QWidget *parent) :
 PlotFrame::~PlotFrame(void)
 {
     delete this->ui;
+    delete this->plotScene;
+    delete this->plotView;
+}
+
+PlotView* PlotFrame::view(void) const
+{
+    return this->plotView;
 }
 
 PlotScene* PlotFrame::scene(void) const
@@ -146,10 +155,24 @@ void PlotFrame::on_eraseSelectionToolButton_clicked(void)
     this->plotScene->clearPlotSelection();
 }
 
+void PlotFrame::on_zoomSlider_valueChanged(int value)
+{
+    qDebug() << "Graphique : valeur du slider change à " << value;
+
+    qreal scaleFactor =  qPow(2, (value - 50) / 10.0);
+
+    qDebug() << "scaleFactor : " << scaleFactor;
+}
+
 void PlotFrame::adaptScales(const QRectF& newRect)
 {
     emit this->minVChanged(newRect.top());
     emit this->maxVChanged(newRect.bottom());
     emit this->minHChanged(newRect.left());
     emit this->maxHChanged(newRect.right());
+}
+
+void PlotFrame::zoomAround(int level)
+{
+    this->ui->zoomSlider->setValue(this->ui->zoomSlider->value() + level * 2);
 }
