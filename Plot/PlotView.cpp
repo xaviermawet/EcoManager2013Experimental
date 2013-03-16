@@ -1,13 +1,13 @@
 #include "PlotView.hpp"
 
 PlotView::PlotView(QWidget* parent) :
-    QGraphicsView(parent), posLabel(NULL)
+    QGraphicsView(parent), posLabel(NULL), _numScheduledScalings(0)
 {
     this->init();
 }
 
 PlotView::PlotView(QGraphicsScene* scene, QWidget* parent) :
-    QGraphicsView(parent), posLabel(NULL)
+    QGraphicsView(parent), posLabel(NULL), _numScheduledScalings(0)
 {
     this->init();
     this->setScene(scene);
@@ -63,6 +63,29 @@ void PlotView::setVerticalLineVisible(bool visible)
         this->setDragMode(QGraphicsView::RubberBandDrag);
         this->viewport()->update();
     }
+}
+
+void PlotView::scalingTime(qreal x)
+{
+    Q_UNUSED(x);
+
+    qreal factor = 1.0 + qreal(this->_numScheduledScalings) / 300.0;
+    scale(factor, factor);
+
+    QRectF newScene = scene()->selectionArea().boundingRect();
+    setSceneRect(newScene);
+    this->updateSceneRect(newScene);
+}
+
+void PlotView::animFinished(void)
+{
+    if (_numScheduledScalings > 0)
+        _numScheduledScalings--;
+    else
+        _numScheduledScalings++;
+
+    // Of course, we need to take care of dynamically created QTimeLines
+    sender()->~QObject();
 }
 
 //void PlotView::toggleSelectionMode(void)
@@ -205,6 +228,35 @@ void PlotView::resizeEvent(QResizeEvent* event)
 
 void PlotView::wheelEvent(QWheelEvent* event)
 {
+    // Smooth zoom copied from http://qt-project.org/wiki/SmoothZoomInQGraphicsView
+    if (event->modifiers().testFlag(Qt::ControlModifier))
+    {
+        int numDegrees = event->delta() / 8;
+        int numSteps = numDegrees / 15;  // see QWheelEvent documentation
+        this->_numScheduledScalings += numSteps;
+
+        /* if user moved the wheel in another direction,
+         * we reset previously scheduled scalings */
+        if (this->_numScheduledScalings * numSteps < 0)
+                this->_numScheduledScalings = numSteps;
+
+        // Will invoke scalingTime function every 20ms during his 350ms lifespan
+        QTimeLine* anim = new QTimeLine(350, this);
+        anim->setUpdateInterval(20);
+
+        connect(anim, SIGNAL(valueChanged(qreal)), SLOT(scalingTime(qreal)));
+        connect(anim, SIGNAL(finished()), SLOT(animFinished()));
+        anim->start();
+    }
+    else
+    {
+        QGraphicsView::wheelEvent(event);
+    }
+
+
+
+    /*
+     * zoom qui marche ......
     // zoom only when CTRL key pressed
     if (event->modifiers().testFlag(Qt::ControlModifier))
     {
@@ -220,6 +272,13 @@ void PlotView::wheelEvent(QWheelEvent* event)
         this->zoom(sc, mapToScene(event->pos()));
         event->accept();
     }
+    */
+
+
+
+
+
+
 
     /*
     if (event->modifiers() & Qt::ControlModifier)
@@ -273,28 +332,11 @@ void PlotView::wheelEvent(QWheelEvent* event)
     */
 }
 
-void PlotView::zoom(qreal factor, const QPointF &centerPoint)
+void PlotView::zoom(qreal factor, const QPointF& centerPoint)
 {
     scale(factor, factor);
-    //centerOn(centerPoint);
+    centerOn(centerPoint);
 }
-
-//void PlotView::keyPressEvent(QKeyEvent *event)
-//{
-//    if(event->type() == QKeyEvent::KeyPress)
-//    {
-//        // CTRL + L is used to change the dragMode
-//        if (event->modifiers() == Qt::ControlModifier &&
-//            event->key() == Qt::Key_L)
-//        {
-//            bool showVerticalLine = this->dragMode() == QGraphicsView::RubberBandDrag;
-//            this->setVerticalLineVisible(showVerticalLine);
-//            emit this->verticalLineVisibilityChanged(showVerticalLine);
-//        }
-//    }
-
-//    QGraphicsView::keyPressEvent(event);
-//}
 
 void PlotView::init(void)
 {

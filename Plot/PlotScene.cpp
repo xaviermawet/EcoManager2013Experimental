@@ -57,6 +57,14 @@ PlotCurve* PlotScene::addCurve(const QList<IndexedPosition>& points,
     return curve;
 }
 
+CoordinateItem* PlotScene::nearestCoordinateitemOfX(qreal x) const // NOTE : p-e passe un QPointF à la place ?
+{
+    if (this->curves.isEmpty()) // NOTE : ajouter || !this->curvesAreVisible() ?
+        return NULL;
+
+    return this->curves.at(0)->nearestCoordinateitemsOfX(x);
+}
+
 bool PlotScene::curvesAreVisible(void) const
 {
     return this->curvesVisible;

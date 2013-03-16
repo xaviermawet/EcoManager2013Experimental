@@ -20,6 +20,8 @@ class PlotScene : public QGraphicsScene
         PlotCurve* addCurve(const QList<IndexedPosition>& points,
                             const QVariant& curveId = QVariant());
 
+        CoordinateItem* nearestCoordinateitemOfX(qreal x) const; // Return NULL if no curve available
+
         bool curvesAreVisible(void) const;
         bool pointsAreVisible(void) const;
         bool curveLabelsAreVisible(void) const;

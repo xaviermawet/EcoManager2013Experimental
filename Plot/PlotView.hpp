@@ -30,6 +30,11 @@ class PlotView : public QGraphicsView
        void zoomOut(void);
        void setVerticalLineVisible(bool visible);
 
+    protected slots:
+
+       void scalingTime(qreal x); // Ajout zoom : http://qt-project.org/wiki/SmoothZoomInQGraphicsView
+       void animFinished(void);   // Ajout zoom : http://qt-project.org/wiki/SmoothZoomInQGraphicsView
+
     protected:
 
        //void toggleSelectionMode(void);
@@ -41,7 +46,6 @@ class PlotView : public QGraphicsView
        virtual void resizeEvent(QResizeEvent* event);
        virtual void wheelEvent(QWheelEvent* event);
        void zoom(qreal factor, const QPointF& centerPoint);
-       //virtual void keyPressEvent(QKeyEvent *event);
 
        void init(void);
        QRectF globalRect(void) const;
@@ -51,6 +55,8 @@ class PlotView : public QGraphicsView
        QPointF mousePos; // devrait etre dans une classe implémentant QGraphicsScene
        QStack<QRectF> sceneStack;
        QLabel* posLabel;
+
+       int _numScheduledScalings; // pour le Zoom comme à cette adresse : http://qt-project.org/wiki/SmoothZoomInQGraphicsView
 };
 
 #endif // PLOTVIEW_HPP
