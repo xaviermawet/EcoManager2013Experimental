@@ -21,7 +21,6 @@ class PlotView : public QGraphicsView
         void beginSelection(void);
         void finishSelection(void);
         void zoomedAround(int level);
-        //void verticalLineVisibilityChanged(bool visible);
 
     public slots:
 
@@ -32,12 +31,11 @@ class PlotView : public QGraphicsView
 
     protected slots:
 
-       void scalingTime(qreal x); // Ajout zoom : http://qt-project.org/wiki/SmoothZoomInQGraphicsView
-       void animFinished(void);   // Ajout zoom : http://qt-project.org/wiki/SmoothZoomInQGraphicsView
+       // Zoom slots
+       void scalingTime(qreal x);
+       void animFinished(void);
 
     protected:
-
-       //void toggleSelectionMode(void);
 
        virtual void drawForeground(QPainter *painter, const QRectF &rect);
        virtual void mouseMoveEvent(QMouseEvent* event);
@@ -45,6 +43,10 @@ class PlotView : public QGraphicsView
        virtual void mouseReleaseEvent(QMouseEvent* event);
        virtual void resizeEvent(QResizeEvent* event);
        virtual void wheelEvent(QWheelEvent* event);
+       virtual void keyPressEvent(QKeyEvent* event);
+       virtual void keyReleaseEvent(QKeyEvent* event);
+       virtual void dragMoveEvent(QDragMoveEvent* event);
+
        void zoom(qreal factor, const QPointF& centerPoint);
 
        void init(void);
@@ -52,11 +54,13 @@ class PlotView : public QGraphicsView
 
        bool clicked;
        bool delimiting;
-       QPointF mousePos; // devrait etre dans une classe implémentant QGraphicsScene
+       bool viewMoving;
+       QPointF mousePos;
        QStack<QRectF> sceneStack;
        QLabel* posLabel;
 
-       int _numScheduledScalings; // pour le Zoom comme à cette adresse : http://qt-project.org/wiki/SmoothZoomInQGraphicsView
+       int _numScheduledScalings;
+       DragMode oldDragMode;
 };
 
 #endif // PLOTVIEW_HPP

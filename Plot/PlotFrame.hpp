@@ -42,11 +42,11 @@ class PlotFrame : public QFrame
         void on_showLineToolButton_toggled(bool checked);
         void on_printToolButton_clicked(void);
         void on_eraseSelectionToolButton_clicked(void);
-        void on_zoomSlider_valueChanged(int value);
+        void on_ScrollHandDragButton_clicked(void);
+        void on_restoreDefaultSizeToolButton_clicked(void);
 
         // Personal slots
         void adaptScales(const QRectF& newRect);
-        void zoomAround(int level);
 
     protected:
 

@@ -19,8 +19,6 @@ PlotView::~PlotView()
 
 void PlotView::updateSceneRect(const QRectF &rect)
 {
-    qDebug() << "PlotView --> updateSceneRect";
-
     //this->fitInView(rect, Qt::KeepAspectRatio);
     this->fitInView(rect, Qt::IgnoreAspectRatio);
     emit rectChange(globalRect());
@@ -72,9 +70,9 @@ void PlotView::scalingTime(qreal x)
     qreal factor = 1.0 + qreal(this->_numScheduledScalings) / 300.0;
     scale(factor, factor);
 
-    QRectF newScene = scene()->selectionArea().boundingRect();
+    QRectF newScene = this->viewport()->childrenRect();
     setSceneRect(newScene);
-    this->updateSceneRect(newScene);
+    emit rectChange(globalRect());
 }
 
 void PlotView::animFinished(void)
@@ -87,23 +85,6 @@ void PlotView::animFinished(void)
     // Of course, we need to take care of dynamically created QTimeLines
     sender()->~QObject();
 }
-
-//void PlotView::toggleSelectionMode(void)
-//{
-//    if (this->dragMode() == QGraphicsView::NoDrag)
-//    {
-//        // Mode de sélection d'une zone (zoom)
-//        this->setDragMode(QGraphicsView::RubberBandDrag);
-//        this->viewport()->update();
-//        emit this->verticalLineVisibilityChanged(false);
-//    }
-//    else
-//    {
-//        // Mode déplacement de la ligne verticale
-//        this->setDragMode(QGraphicsView::NoDrag);
-//        emit this->verticalLineVisibilityChanged(true);
-//    }
-//}
 
 void PlotView::drawForeground(QPainter *painter, const QRectF &rect)
 {
@@ -158,7 +139,13 @@ void PlotView::mouseMoveEvent(QMouseEvent* event)
             emit this->mousePosChanged(event->posF(), this->mousePos);
             this->viewport()->update();
             break;
-        default:
+        case QGraphicsView::ScrollHandDrag:
+            if (this->viewMoving)
+            {
+                QRectF newScene = this->viewport()->childrenRect();
+                setSceneRect(newScene);
+                emit rectChange(globalRect());
+            }
             break;
     }
 
@@ -187,7 +174,8 @@ void PlotView::mousePressEvent(QMouseEvent* event)
             // Emettre un signal avec la position de la souris dans la
             emit this->mousePressed(this->mousePos);
             break;
-        default:
+        case QGraphicsView::ScrollHandDrag:
+            this->viewMoving = true;
             break;
     }
 
@@ -211,7 +199,8 @@ void PlotView::mouseReleaseEvent(QMouseEvent* event)
         // Mode de déplacement de la ligne verticale
         case QGraphicsView::NoDrag:
             break;
-        default:
+        case QGraphicsView::ScrollHandDrag:
+            this->viewMoving = false;
             break;
     }
 
@@ -235,8 +224,8 @@ void PlotView::wheelEvent(QWheelEvent* event)
         int numSteps = numDegrees / 15;  // see QWheelEvent documentation
         this->_numScheduledScalings += numSteps;
 
-        /* if user moved the wheel in another direction,
-         * we reset previously scheduled scalings */
+        // if user moved the wheel in another direction,
+        // we reset previously scheduled scalings
         if (this->_numScheduledScalings * numSteps < 0)
                 this->_numScheduledScalings = numSteps;
 
@@ -248,15 +237,8 @@ void PlotView::wheelEvent(QWheelEvent* event)
         connect(anim, SIGNAL(finished()), SLOT(animFinished()));
         anim->start();
     }
-    else
-    {
-        QGraphicsView::wheelEvent(event);
-    }
 
-
-
-    /*
-     * zoom qui marche ......
+/*
     // zoom only when CTRL key pressed
     if (event->modifiers().testFlag(Qt::ControlModifier))
     {
@@ -272,64 +254,35 @@ void PlotView::wheelEvent(QWheelEvent* event)
         this->zoom(sc, mapToScene(event->pos()));
         event->accept();
     }
-    */
+*/
+}
 
-
-
-
-
-
-
-    /*
-    if (event->modifiers() & Qt::ControlModifier)
+void PlotView::keyPressEvent(QKeyEvent* event)
+{
+    if (event->key() == Qt::Key_Control)
     {
-        qDebug() << "On zoom dans les vues graphiques";
-        this->centerOn(event->pos());
+        qDebug() << "Changer le drag mode en ScrollHandDrag";
 
-        emit this->zoomedAround(event->delta() > 0 ? 1 : -1);
-
-
-        // Get the area of the scene visualized by this view
-        QRectF rectScene = this->sceneRect();
-
-        qDebug() << rectScene.topLeft() << " " << rectScene.topRight() << " "
-                 << rectScene.bottomLeft() << " " << rectScene.bottomRight();
-
-        // Adjust size
-        QPointF tr = rectScene.topRight();
-        tr.setX(tr.x() + (event->delta() > 0 ? -1 : 1));
-        tr.setY(tr.y() + (event->delta() > 0 ? -1 : 1));
-        rectScene.setTopRight(tr);
-
-        QPointF tl = rectScene.topLeft();
-        tl.setX(tl.x() + (event->delta() > 0 ? 1 : -1));
-        tl.setY(tl.y() + (event->delta() > 0 ? -1 : 1));
-        rectScene.setTopLeft(tl);
-
-        QPointF br = rectScene.bottomRight();
-        br.setX(br.x() + (event->delta() > 0 ? -1 : 1));
-        br.setY(br.y() + (event->delta() > 0 ? 1 : -1));
-        rectScene.setBottomRight(br);
-
-        QPointF bl = rectScene.bottomLeft();
-        bl.setX(bl.x() + (event->delta() > 0 ? 1 : -1));
-        bl.setY(bl.y() + (event->delta() > 0 ? 1 : -1));
-        rectScene.setBottomLeft(bl);
-
-        qDebug() << rectScene.topLeft() << " " << rectScene.topRight() << " "
-                 << rectScene.bottomLeft() << " " << rectScene.bottomRight();
-
-        // Centre sur la souris ???
-
-        // Update the scene rect
-        this->setSceneRect(rectScene);
-        this->updateSceneRect(rectScene);
+        // Save the current drag mode
+        this->oldDragMode = this->dragMode();
+        this->setDragMode(QGraphicsView::ScrollHandDrag);
     }
-    else
+}
+
+void PlotView::keyReleaseEvent(QKeyEvent* event)
+{
+    if (event->key() == Qt::Key_Control)
     {
-        QGraphicsView::wheelEvent(event);
+        qDebug() << "Restaurer l'ancien drag mode"; //this->setDragMode(QGraphicsView::ScrollHandDrag);
+
+        // Restore the previous drag mode
+        this->setDragMode(this->oldDragMode);
     }
-    */
+}
+
+void PlotView::dragMoveEvent(QDragMoveEvent* event)
+{
+    qDebug() << "dragMoveEvent ------------------";
 }
 
 void PlotView::zoom(qreal factor, const QPointF& centerPoint)
@@ -342,6 +295,7 @@ void PlotView::init(void)
 {
     this->delimiting = false;
     this->clicked = false;
+    this->viewMoving = false;
 
     QPalette palette;
     palette.setBrush(QPalette::Highlight, Qt::white);
@@ -355,9 +309,10 @@ void PlotView::init(void)
     setAlignment(Qt::AlignLeft | Qt::AlignBottom); // relative Alignment of scene through view
     scale(1, -1);
 
-    setInteractive(true); // !!!!!!!!!!!!!!!!! (true est la valeur par défaut --> cette instruction ne fait rien ! )
-    setMouseTracking(true); // !!!!!!!!!!!!!!!!! le widget reçoit les événements de mouvements de souris même si aucun bouton n'est pressé
+    setInteractive(true);
+    setMouseTracking(true);
     setDragMode(QGraphicsView::RubberBandDrag);
+    this->oldDragMode = this->dragMode();
 
     posLabel = new QLabel("(0, 0)", this);
     posLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);

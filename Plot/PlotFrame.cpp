@@ -155,13 +155,15 @@ void PlotFrame::on_eraseSelectionToolButton_clicked(void)
     this->plotScene->clearPlotSelection();
 }
 
-void PlotFrame::on_zoomSlider_valueChanged(int value)
+void PlotFrame::on_ScrollHandDragButton_clicked(void)
 {
-    qDebug() << "Graphique : valeur du slider change à " << value;
+    this->plotView->setDragMode(QGraphicsView::ScrollHandDrag);
+}
 
-    qreal scaleFactor =  qPow(2, (value - 50) / 10.0);
-
-    qDebug() << "scaleFactor : " << scaleFactor;
+void PlotFrame::on_restoreDefaultSizeToolButton_clicked(void)
+{
+    QMessageBox::information(this, "Réinitialiser la taille",
+                             "Ne pas oublier de vider le stack");
 }
 
 void PlotFrame::adaptScales(const QRectF& newRect)
@@ -170,9 +172,4 @@ void PlotFrame::adaptScales(const QRectF& newRect)
     emit this->maxVChanged(newRect.bottom());
     emit this->minHChanged(newRect.left());
     emit this->maxHChanged(newRect.right());
-}
-
-void PlotFrame::zoomAround(int level)
-{
-    this->ui->zoomSlider->setValue(this->ui->zoomSlider->value() + level * 2);
 }
