@@ -5,6 +5,7 @@
 #include "PlotView.hpp"
 #include "VerticalScale.hpp"
 #include "HorizontalScale.hpp"
+#include "PlotPrintDialog.hpp"
 #include <QtGui>
 
 namespace Ui {

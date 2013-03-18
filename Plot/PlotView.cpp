@@ -261,8 +261,6 @@ void PlotView::keyPressEvent(QKeyEvent* event)
 {
     if (event->key() == Qt::Key_Control)
     {
-        qDebug() << "Changer le drag mode en ScrollHandDrag";
-
         // Save the current drag mode
         this->oldDragMode = this->dragMode();
         this->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -273,16 +271,9 @@ void PlotView::keyReleaseEvent(QKeyEvent* event)
 {
     if (event->key() == Qt::Key_Control)
     {
-        qDebug() << "Restaurer l'ancien drag mode"; //this->setDragMode(QGraphicsView::ScrollHandDrag);
-
         // Restore the previous drag mode
         this->setDragMode(this->oldDragMode);
     }
-}
-
-void PlotView::dragMoveEvent(QDragMoveEvent* event)
-{
-    qDebug() << "dragMoveEvent ------------------";
 }
 
 void PlotView::zoom(qreal factor, const QPointF& centerPoint)

@@ -59,7 +59,8 @@ SOURCES += main.cpp\
     Plot/PlotFrame.cpp \
     Common/LapInformationTreeModel.cpp \
     Common/TreeElement.cpp \
-    LapDataCompartor.cpp
+    LapDataCompartor.cpp \
+    Plot/PlotPrintDialog.cpp
 
 HEADERS  += MainWindow.hpp \
     ResourceInstaller.hpp \
@@ -107,14 +108,16 @@ HEADERS  += MainWindow.hpp \
     Plot/PlotFrame.hpp \
     Common/LapInformationTreeModel.hpp \
     Common/TreeElement.hpp \
-    LapDataCompartor.hpp
+    LapDataCompartor.hpp \
+    Plot/PlotPrintDialog.hpp
 
 FORMS    += MainWindow.ui \
     CompetitionEntryDialog.ui \
     Map/SampleLapViewer.ui \
     Map/MapFrame.ui \
     Plot/PlotFrame.ui \
-    LapDataCompartor.ui
+    LapDataCompartor.ui \
+    Plot/PlotPrintDialog.ui
 
 RESOURCES += \
     Resources.qrc

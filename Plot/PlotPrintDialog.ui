@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PlotPrintDialog</class>
+ <widget class="QDialog" name="PlotPrintDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>514</width>
+    <height>382</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Options d'impression ou de sauvegarde</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_3">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="printTypeLabel">
+        <property name="text">
+         <string>Type :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="printTypeComboBox">
+        <item>
+         <property name="text">
+          <string>Impression sur papier</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Sauvegarder au format image</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Sauvegarder au format pdf</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="graphicOptionLabel">
+        <property name="text">
+         <string>Option gaphique :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QCheckBox" name="withScaleCheckBox">
+          <property name="text">
+           <string>Avec échelles</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkBox_2">
+          <property name="text">
+           <string>Sans échelle</string>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="zoneDeCaptureLabel">
+        <property name="text">
+         <string>Zone de capture :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QCheckBox" name="currentViewCheckBox">
+          <property name="text">
+           <string>Zone courante</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup_2</string>
+          </attribute>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="globalViewCheckBox">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Graphique entier</string>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup_2</string>
+          </attribute>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="warningIconLabel">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLabel" name="warningLabel">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#000000;&quot;&gt;Attention à bien &lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#aa0000;&quot;&gt;maximiser&lt;/span&gt;&lt;span style=&quot; color:#000000;&quot;&gt; la taille du graphique&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="pictureGroupBox">
+     <property name="title">
+      <string>Paramètres image</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="pictureQualityLabel">
+        <property name="text">
+         <string>Qualité</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QSlider" name="pictureQualitySlider">
+          <property name="maximum">
+           <number>100</number>
+          </property>
+          <property name="value">
+           <number>50</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="pictureQualitySpinBox">
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="accelerated">
+           <bool>true</bool>
+          </property>
+          <property name="maximum">
+           <number>100</number>
+          </property>
+          <property name="value">
+           <number>50</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="printerGroupBox">
+     <property name="title">
+      <string>Paramètres imprimante</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Mode : </string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="printerModeComboBox">
+        <property name="currentIndex">
+         <number>2</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>Résolution de l'écran</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Résolution par défaut de l'imprimante</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Haute résolution</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="tailleDuPapierLabel">
+        <property name="text">
+         <string>Taille du papier :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="paperSizeComboBox">
+        <item>
+         <property name="text">
+          <string>A4  (210 x 297 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>B5  (176 x 250 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Letter (215.9 x 279.4 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Legal (215.9 x 355.6 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Executive (190.5 x 254 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>A0 (841 x 1189 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>A1 (594 x 841 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>A2 (420 x 594 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>A3 (297 x 420 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>A5 (148 x 210 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>A6 (105 x 148 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>A7 (74 x 105 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>A8 (52 x 74 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>A9 (37 x 52 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>B0 (1000 x 1414 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>B1 (707 x 1000 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>B10 (31 x 44 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>B2 (500 x 707 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>B3 (353 x 500 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>B4 (250 x 353 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>B6 (125 x 176 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>B7 (88 x 125 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>B8 (62 x 88 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>B9 (33 x 62 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>C5E (163 x 229 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Comm10E (105 x 241 mm, U.S. Common 10 Envelope)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>DLE (110 x 220 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Folio (210 x 330 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Ledger (431.8 x 279.4 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Tabloid (279.4 x 431.8 mm)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Manuel</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="orientationLabel">
+        <property name="text">
+         <string>Orientation</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="paperOrientationComboBox">
+        <property name="currentIndex">
+         <number>1</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>Portrait</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Paysage</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>PlotPrintDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>257</x>
+     <y>448</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>PlotPrintDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>325</x>
+     <y>448</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pictureQualitySlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>pictureQualitySpinBox</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>346</x>
+     <y>234</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>493</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pictureQualitySpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>pictureQualitySlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>490</x>
+     <y>238</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>294</x>
+     <y>233</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <buttongroups>
+  <buttongroup name="buttonGroup"/>
+  <buttongroup name="buttonGroup_2"/>
+ </buttongroups>
+</ui>

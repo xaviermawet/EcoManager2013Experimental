@@ -56,8 +56,6 @@ PlotFrame::PlotFrame(QWidget *parent) :
             this->plotScene, SLOT(displayLabels(QPointF,QPointF)));
     connect(this->plotView, SIGNAL(mousePressed(QPointF)),
             this->plotScene, SLOT(slotDeTest(QPointF)));
-    connect(this->plotView, SIGNAL(zoomedAround(int)),
-            this, SLOT(zoomAround(int)));
 
     setMouseTracking(true);
 }
@@ -124,30 +122,136 @@ void PlotFrame::on_printToolButton_clicked(void)
         return;
     }
 
-    /*
-    QPrinter printer(QPrinter::HighResolution);
-    printer.setPageSize(QPrinter::A4);
-    QPainter painter(&printer); // NOTE : au lieu de placer un QPrinter, passer un QImage pour une sauvegarde en photo
+    // Display printing options dialog
+    PlotPrintDialog ppd;
+    if (ppd.exec() == QDialog::Rejected)
+        return;
 
-    // print, fitting the viewport contents into a full page
-    this->plotView->render(&painter);
-
-    QPrintDialog printDialog(&printer, this);
-    if (printDialog.exec() == QDialog::Accepted)
+    // Printing options
+    switch (ppd.getPrintType())
     {
-        QMessageBox::information(this, "Impression du graphique",
-                                 "Impression du graphique");
+        case PlotPrintDialog::printing:
+        {
+            // Printer configuration
+            QPrinter printer(ppd.printerMode());
+            printer.setPaperSize(ppd.paperSize());
+            printer.setOrientation(ppd.paperOrientation());
+
+            // Printer dialog to choose a printer
+            QPrintDialog printDialog(&printer);
+            if (printDialog.exec() == QDialog::Rejected)
+            {
+                QMessageBox::information(this, tr("Impression interrompue"),
+                             tr("L'impression à correctement été interrompue"));
+                break;
+            }
+
+            // Printing ...
+            QPainter painter;
+            painter.setRenderHint(QPainter::Antialiasing);
+            painter.begin(&printer);
+
+            if(ppd.printWithScales())
+            {
+                // Enlever les boutons d'options
+                QRect rectLayoutToolButtons = this->ui->toolButtonsHLayout->geometry();
+                this->ui->toolButtonsHLayout->setGeometry(QRect(0, 0, 0, 0));
+
+                double xscale = printer.pageRect().width() / double(this->width());
+                double yscale = printer.pageRect().height() / double(this->height());
+                double scale = qMin(xscale, yscale);
+                painter.translate(printer.paperRect().x() + printer.pageRect().width() / 2,
+                                  printer.paperRect().y() + printer.pageRect().height() / 2);
+                painter.scale(scale, scale);
+                painter.translate(-width() / 2, -height() / 2);
+
+                /* Modifie flag pour ne pas imprimer la couleur de
+                 * fond des widgets parnets et enfants */
+                this->render(&painter, QPoint(), QRegion(),
+                             QWidget::DrawChildren);
+
+                // Restore layout geometry
+                this->ui->toolButtonsHLayout->setGeometry(rectLayoutToolButtons);
+            }
+            else
+            {
+                if (ppd.printCurrentView())
+                    this->plotView->render(&painter, QRectF(), QRect(),
+                                           Qt::IgnoreAspectRatio);
+                else
+                    this->plotScene->render(&painter, QRectF(), QRectF(),
+                                            Qt::IgnoreAspectRatio);
+            }
+
+            painter.end();
+            break;
+        }
+        case PlotPrintDialog::picture:
+        {
+            QString fileName = QFileDialog::getSaveFileName(
+                        this, tr("Sauvegarder un image du graphique"),
+                        QDir::homePath(), tr("Images (*.png *.xpm *.jpg)"));
+            QFileInfo fileInfo(fileName);
+
+            if (ppd.printWithScales())
+            {
+                // Enlever les boutons d'options
+                QRect rectLayoutToolButtons = this->ui->toolButtonsHLayout->geometry();
+                this->ui->toolButtonsHLayout->setGeometry(QRect(0, 0, 0, 0));
+
+                QPixmap pixmap(this->size());
+                this->render(&pixmap);
+
+                // Restore layout geometry
+                this->ui->toolButtonsHLayout->setGeometry(rectLayoutToolButtons);
+
+                pixmap.save(fileInfo.absoluteFilePath(),
+                            fileInfo.suffix().toStdString().c_str(),
+                            ppd.pictureQuality());
+            }
+            else
+            {
+                if (ppd.printCurrentView()) // Marche
+                {
+                    QImage image(QSize(1920, 1080), QImage::Format_ARGB32);
+                    QPainter painter;
+                    painter.begin(&image);
+                    painter.setRenderHint(QPainter::Antialiasing);
+
+                    this->plotView->render(&painter, QRectF(), QRect(),
+                                           Qt::IgnoreAspectRatio);
+                    image.save(fileInfo.absoluteFilePath(),
+                               fileInfo.suffix().toStdString().c_str(),
+                               ppd.pictureQuality());
+                    painter.end();
+                }
+                else
+                {
+                    QImage image(QSize(1920, 1080), QImage::Format_ARGB32);
+                    QPainter painter;
+                    painter.begin(&image);
+                    painter.setRenderHint(QPainter::Antialiasing);
+
+
+
+                    this->plotScene->render(&painter, QRectF(), QRectF(),
+                                            Qt::IgnoreAspectRatio);
+
+                    image = image.mirrored();
+                    image.save(fileInfo.absoluteFilePath(),
+                               fileInfo.suffix().toStdString().c_str(),
+                               ppd.pictureQuality());
+                    painter.end();
+                }
+            }
+
+            break;
+        }
+        default:
+            QMessageBox::warning(this, tr("Impression impossible"),
+                                 tr("Mode d'impression non supporté"));
+            break;
     }
-    */
-
-    QImage img;
-    QPainter painter(&img);
-
-    // print, fitting the viewport contents into a full page
-    this->plotView->render(&painter);
-
-    img.save(QFileDialog::getSaveFileName());
-
 }
 
 void PlotFrame::on_eraseSelectionToolButton_clicked(void)

@@ -27,5 +27,8 @@
         <file>Resources/Icons/table-select-all-icon.png</file>
         <file>Resources/Icons/print.png</file>
         <file>Resources/Icons/eraser2.png</file>
+        <file>Resources/Icons/EcoManager2013.png</file>
+        <file>Resources/Icons/stats_cross.png</file>
+        <file>Resources/Icons/stats_lines.png</file>
     </qresource>
 </RCC>

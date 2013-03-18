@@ -45,7 +45,6 @@ class PlotView : public QGraphicsView
        virtual void wheelEvent(QWheelEvent* event);
        virtual void keyPressEvent(QKeyEvent* event);
        virtual void keyReleaseEvent(QKeyEvent* event);
-       virtual void dragMoveEvent(QDragMoveEvent* event);
 
        void zoom(qreal factor, const QPointF& centerPoint);
 

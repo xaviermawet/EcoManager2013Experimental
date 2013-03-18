@@ -26,7 +26,7 @@
        </property>
        <property name="icon">
         <iconset resource="../Resources.qrc">
-         <normaloff>:/Resources/Icons/chartline.png</normaloff>:/Resources/Icons/chartline.png</iconset>
+         <normaloff>:/Resources/Icons/stats_lines.png</normaloff>:/Resources/Icons/stats_lines.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -55,7 +55,7 @@
        </property>
        <property name="icon">
         <iconset resource="../Resources.qrc">
-         <normaloff>:/Resources/Icons/chartscatter.png</normaloff>:/Resources/Icons/chartscatter.png</iconset>
+         <normaloff>:/Resources/Icons/stats_cross.png</normaloff>:/Resources/Icons/stats_cross.png</iconset>
        </property>
        <property name="iconSize">
         <size>

@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="Resources.qrc">
-    <normaloff>:/Resources/Icons/GoogleMaps.png</normaloff>:/Resources/Icons/GoogleMaps.png</iconset>
+    <normaloff>:/Resources/Icons/EcoManager2013.png</normaloff>:/Resources/Icons/EcoManager2013.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="mainVerticalLayout">
