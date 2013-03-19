@@ -43,7 +43,6 @@ class PlotFrame : public QFrame
         void on_showLineToolButton_toggled(bool checked);
         void on_printToolButton_clicked(void);
         void on_eraseSelectionToolButton_clicked(void);
-        void on_ScrollHandDragButton_clicked(void);
         void on_restoreDefaultPlotSizeToolButton_clicked(void);
 
         // Personal slots

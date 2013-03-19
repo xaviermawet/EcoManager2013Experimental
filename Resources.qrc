@@ -30,5 +30,8 @@
         <file>Resources/Icons/EcoManager2013.png</file>
         <file>Resources/Icons/stats_cross.png</file>
         <file>Resources/Icons/stats_lines.png</file>
+        <file>Resources/Icons/location.png</file>
+        <file>Resources/Icons/add.png</file>
+        <file>Resources/Icons/less.png</file>
     </qresource>
 </RCC>

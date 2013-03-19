@@ -82,7 +82,7 @@
      <item>
       <widget class="QToolButton" name="eraseSelectionToolButton">
        <property name="toolTip">
-        <string>Effacer les éléments mis en évidence</string>
+        <string>Effacer les éléments mis en évidence dans la vue courante</string>
        </property>
        <property name="text">
         <string>Effacer la sélection</string>

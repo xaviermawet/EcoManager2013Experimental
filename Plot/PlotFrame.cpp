@@ -259,16 +259,9 @@ void PlotFrame::on_eraseSelectionToolButton_clicked(void)
     this->plotScene->clearPlotSelection();
 }
 
-void PlotFrame::on_ScrollHandDragButton_clicked(void)
-{
-    this->plotView->setDragMode(QGraphicsView::ScrollHandDrag);
-}
-
 void PlotFrame::on_restoreDefaultPlotSizeToolButton_clicked(void)
 {
     this->plotView->restoreSceneRect();
-
-    //this->plotScene->setSceneRect(this->plotScene->itemsBoundingRect());
 }
 
 void PlotFrame::adaptScales(const QRectF& newRect)

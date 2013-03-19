@@ -269,30 +269,8 @@ void MainWindow::on_actionDelimitingSectors_triggered(void)
 
 void MainWindow::on_raceView_customContextMenuRequested(const QPoint &pos)
 {
-    // Vérifier si l'élément sur lequel le clique est effectué est bien un tour
-    QModelIndex curIndex = this->ui->raceView->selectionModel()->currentIndex();
-    if (!curIndex.parent().parent().isValid())
-        return;
-
-    // Get the position where the menu will appear
-    //QPoint globalPos = this->raceView->mapToGlobal(pos);
-
-    // for QAbstractScrollArea and derived classes you would use:
-    QPoint globalPos = this->ui->raceView->viewport()->mapToGlobal(pos);
-
-    QList<QAction *> actions;
-    actions.append(this->ui->actionExportTrackDataInCSV);
-
-    if (actions.count() > 0)
-        QMenu::exec(actions, globalPos);
-}
-
-void MainWindow::on_actionExportTrackDataInCSV_triggered(void)
-{
-    QModelIndex curIndex = this->ui->raceView->selectionModel()->currentIndex();
-
-    QMessageBox::information(this, "Exportation des données",
-              "tour correctement récupéré --> Exportation dans un fichier CSV");
+    this->ui->menuEditRaceView->exec(
+                this->ui->raceView->viewport()->mapToGlobal(pos));
 }
 
 void MainWindow::on_actionDisplayRaceTableData_triggered(bool checked)
@@ -402,6 +380,8 @@ void MainWindow::on_actionLapDataTableResizeToContents_triggered(bool checked)
 
 void MainWindow::on_actionClearAllData_triggered(void)
 {
+    qDebug() << "On efface tout";
+
     // Clear the tracks of the mapping view
     this->mapFrame->scene()->clearTracks();
 
@@ -552,6 +532,39 @@ void MainWindow::on_actionLapDataDisplayInAllViews_triggered(void)
     // Mise en évidence de tous les points sélectionnés dans toutes les vues
     foreach (QModelIndex index, rowsSelectedIndexes)
         this->highlightPointInAllView(index);
+}
+
+void MainWindow::on_menuEditRaceView_aboutToShow(void)
+{
+    // Vérifier si l'élément sur lequel le clique est effectué est bien un tour
+    QModelIndex curIndex = this->ui->raceView->selectionModel()->currentIndex();
+    if (!curIndex.parent().parent().isValid())
+    {
+        this->ui->actionRaceViewDisplayLap->setVisible(false);
+        this->ui->actionRaceViewRemoveLap->setVisible(false);
+        this->ui->actionRaceViewExportLapDataInCSV->setVisible(false);
+        return;
+    }
+
+    // Create trak identifier
+    int ref_race = competitionModel->data(competitionModel->index(curIndex.row(), 1, curIndex.parent())).toInt();
+    int ref_lap = competitionModel->data(competitionModel->index(curIndex.row(), 2, curIndex.parent())).toInt();
+
+    QMap<QString, QVariant> trackIdentifier;
+    trackIdentifier["race"] = ref_race;
+    trackIdentifier["lap"] = ref_lap;
+
+    bool lapAlreadyDisplayed = this->currentTracksDisplayed.contains(
+                trackIdentifier);
+
+    this->ui->actionRaceViewDisplayLap->setVisible(!lapAlreadyDisplayed);
+    this->ui->actionRaceViewRemoveLap->setVisible(lapAlreadyDisplayed);
+    this->ui->actionRaceViewExportLapDataInCSV->setVisible(true);
+}
+
+void MainWindow::on_actionRaceViewDisplayLap_triggered(void)
+{
+    this->displayDataLap();
 }
 
 void MainWindow::loadCompetition(int index)

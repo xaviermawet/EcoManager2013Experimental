@@ -84,11 +84,15 @@ int TreeLapInformationModel::rowCount(const QModelIndex& parent) const
 
 int TreeLapInformationModel::columnCount(const QModelIndex& parent) const
 {
+    /*
     TreeNode* parentItem = this->nodeFromIndex(parent);
     if (!parentItem)
         return 0;
 
     return parentItem->columnCount();
+    */
+
+    return this->rootItem->columnCount();
 }
 
 QVariant TreeLapInformationModel::data(const QModelIndex &index, int role) const

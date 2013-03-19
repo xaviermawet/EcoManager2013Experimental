@@ -342,8 +342,8 @@
      <addaction name="actionConfiguredLayout4"/>
      <addaction name="actionSaveCurrentLayout"/>
     </widget>
-    <addaction name="menuDisplayRaceTable"/>
     <addaction name="menuDisplayRaceView"/>
+    <addaction name="menuDisplayRaceTable"/>
     <addaction name="menuLayout"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -363,6 +363,15 @@
      <addaction name="actionLapDataTableResizeToContents"/>
      <addaction name="actionLapDataSelectAll"/>
     </widget>
+    <widget class="QMenu" name="menuEditRaceView">
+     <property name="title">
+      <string>Liste des courses</string>
+     </property>
+     <addaction name="actionRaceViewDisplayLap"/>
+     <addaction name="actionRaceViewRemoveLap"/>
+     <addaction name="actionRaceViewExportLapDataInCSV"/>
+    </widget>
+    <addaction name="menuEditRaceView"/>
     <addaction name="menuLapDataTable"/>
     <addaction name="actionClearAllData"/>
    </widget>
@@ -479,18 +488,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+D</string>
-   </property>
-  </action>
-  <action name="actionExportTrackDataInCSV">
-   <property name="icon">
-    <iconset resource="Resources.qrc">
-     <normaloff>:/Resources/Icons/upload.png</normaloff>:/Resources/Icons/upload.png</iconset>
-   </property>
-   <property name="text">
-    <string>Exporter dans un fichier CSV</string>
-   </property>
-   <property name="toolTip">
-    <string>Exporter les données du tour dans un fichier CSV</string>
    </property>
   </action>
   <action name="actionDisplayRaceTableData">
@@ -698,11 +695,19 @@
    </property>
   </action>
   <action name="actionLapDataDisplayInAllViews">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Resources/Icons/location.png</normaloff>:/Resources/Icons/location.png</iconset>
+   </property>
    <property name="text">
     <string>Afficher dans toutes les vues</string>
    </property>
   </action>
   <action name="actionLapDataRemoveFromAllViews">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Resources/Icons/less.png</normaloff>:/Resources/Icons/less.png</iconset>
+   </property>
    <property name="text">
     <string>Retirer les données de toutes les vues</string>
    </property>
@@ -710,6 +715,33 @@
   <action name="actionLapDataDrawSectors">
    <property name="text">
     <string>Dessiner les secteurs</string>
+   </property>
+  </action>
+  <action name="actionRaceViewDisplayLap">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Resources/Icons/add.png</normaloff>:/Resources/Icons/add.png</iconset>
+   </property>
+   <property name="text">
+    <string>Afficher</string>
+   </property>
+  </action>
+  <action name="actionRaceViewRemoveLap">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Resources/Icons/less.png</normaloff>:/Resources/Icons/less.png</iconset>
+   </property>
+   <property name="text">
+    <string>Retirer</string>
+   </property>
+  </action>
+  <action name="actionRaceViewExportLapDataInCSV">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Resources/Icons/upload.png</normaloff>:/Resources/Icons/upload.png</iconset>
+   </property>
+   <property name="text">
+    <string>Exporter dans un fichier CSV</string>
    </property>
   </action>
  </widget>

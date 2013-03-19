@@ -55,7 +55,6 @@ class MainWindow : public QMainWindow
         void on_raceView_doubleClicked(const QModelIndex& index);
         void on_actionDelimitingSectors_triggered(void);
         void on_raceView_customContextMenuRequested(const QPoint &pos);
-        void on_actionExportTrackDataInCSV_triggered(void);
         void on_actionDisplayRaceTableData_triggered(bool checked);
         void on_actionDisplayRaceTableUnder_triggered();
         void on_actionDisplayRaceTableAbove_triggered();
@@ -77,6 +76,8 @@ class MainWindow : public QMainWindow
         void on_actionLapDataSelectAll_triggered(bool checked);
         void on_actionLapDataDrawSectors_triggered(void);
         void on_actionLapDataDisplayInAllViews_triggered(void);
+        void on_menuEditRaceView_aboutToShow(void);
+        void on_actionRaceViewDisplayLap_triggered(void);
 
         // Personal slots
         void loadCompetition(int index);
@@ -87,7 +88,6 @@ class MainWindow : public QMainWindow
         void displayLapInformation(float timeValue, const QVariant& trackId);
         void displayLapInformation(float lowerTimeValue, float upperTimeValue,
                                    const QVariant &trackId);
-
     private:
 
         void centerOnScreen(void);
