@@ -13,13 +13,13 @@ PlotView::PlotView(QGraphicsScene* scene, QWidget* parent) :
     this->setScene(scene);
 }
 
-PlotView::~PlotView()
+PlotView::~PlotView(void)
 {
 }
 
-void PlotView::updateSceneRect(const QRectF &rect)
+void PlotView::updateSceneRect(const QRectF& rect)
 {
-    //this->fitInView(rect, Qt::KeepAspectRatio);
+    this->setSceneRect(rect);
     this->fitInView(rect, Qt::IgnoreAspectRatio);
     emit rectChange(globalRect());
 }
@@ -31,7 +31,6 @@ void PlotView::selectionChanged(void)
         QRectF newScene = scene()->selectionArea().boundingRect();
         sceneStack.push(sceneRect());
 
-        setSceneRect(newScene);
         this->updateSceneRect(newScene);
     }
 }
@@ -39,14 +38,10 @@ void PlotView::selectionChanged(void)
 void PlotView::zoomOut(void)
 {
     if (!this->sceneStack.isEmpty())
-    {
-        setSceneRect(sceneStack.top());
         this->updateSceneRect(sceneStack.pop());
-    }
-    else
-    {
-        setSceneRect(scene()->sceneRect());
-    }
+    // Ce qui suit est totalement inutile !
+//    else
+//        setSceneRect(scene()->sceneRect());
 }
 
 void PlotView::setVerticalLineVisible(bool visible)
@@ -61,6 +56,13 @@ void PlotView::setVerticalLineVisible(bool visible)
         this->setDragMode(QGraphicsView::RubberBandDrag);
         this->viewport()->update();
     }
+}
+
+void PlotView::restoreSceneRect(void)
+{
+    // Defines the extent of the scene
+    this->updateSceneRect(this->scene()->itemsBoundingRect());
+    this->sceneStack.clear();
 }
 
 void PlotView::scalingTime(qreal x)

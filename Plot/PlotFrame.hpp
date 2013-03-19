@@ -44,7 +44,7 @@ class PlotFrame : public QFrame
         void on_printToolButton_clicked(void);
         void on_eraseSelectionToolButton_clicked(void);
         void on_ScrollHandDragButton_clicked(void);
-        void on_restoreDefaultSizeToolButton_clicked(void);
+        void on_restoreDefaultPlotSizeToolButton_clicked(void);
 
         // Personal slots
         void adaptScales(const QRectF& newRect);

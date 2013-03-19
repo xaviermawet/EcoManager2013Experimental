@@ -19,18 +19,15 @@ void PlotScene::addCurve(PlotCurve *curve)
     this->curves.append(curve);
     this->addItem(curve);
 
-    // Defines the extent of the scene
-    this->setSceneRect(this->itemsBoundingRect());
-
     // Apply the visibility options
     curve->setPointsVisible(this->pointsVisible);
     curve->setCurveVisible(this->curvesVisible);
 
     // Create a label associated to the new curve
-    QLabel* curveLabel = new QLabel(this->widgetParent); // Passer un QWidget en paramètre ---------
+    QLabel* curveLabel = new QLabel(this->widgetParent);
     curveLabel->setVisible(this->curveLabelsVisible);
     this->curveLabels.append(curveLabel);
-    //this->addWidget(curveLabel); // Est-ce vraiment utile ?
+    //this->addWidget(curveLabel);
 }
 
 PlotCurve* PlotScene::addCurve(const QList<QPointF>& points,

@@ -28,6 +28,7 @@ class PlotView : public QGraphicsView
        void selectionChanged(void);
        void zoomOut(void);
        void setVerticalLineVisible(bool visible);
+       void restoreSceneRect(void);
 
     protected slots:
 

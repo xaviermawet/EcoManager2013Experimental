@@ -264,10 +264,11 @@ void PlotFrame::on_ScrollHandDragButton_clicked(void)
     this->plotView->setDragMode(QGraphicsView::ScrollHandDrag);
 }
 
-void PlotFrame::on_restoreDefaultSizeToolButton_clicked(void)
+void PlotFrame::on_restoreDefaultPlotSizeToolButton_clicked(void)
 {
-    QMessageBox::information(this, "Réinitialiser la taille",
-                             "Ne pas oublier de vider le stack");
+    this->plotView->restoreSceneRect();
+
+    //this->plotScene->setSceneRect(this->plotScene->itemsBoundingRect());
 }
 
 void PlotFrame::adaptScales(const QRectF& newRect)
