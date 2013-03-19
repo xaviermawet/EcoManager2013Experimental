@@ -19,6 +19,7 @@ class PlotScene : public QGraphicsScene
                             const QVariant& curveId = QVariant());
         PlotCurve* addCurve(const QList<IndexedPosition>& points,
                             const QVariant& curveId = QVariant());
+        bool removeCurves(const QVariant& idTrack);
 
         CoordinateItem* nearestCoordinateitemOfX(qreal x) const; // Return NULL if no curve available
 

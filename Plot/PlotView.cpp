@@ -239,24 +239,6 @@ void PlotView::wheelEvent(QWheelEvent* event)
         connect(anim, SIGNAL(finished()), SLOT(animFinished()));
         anim->start();
     }
-
-/*
-    // zoom only when CTRL key pressed
-    if (event->modifiers().testFlag(Qt::ControlModifier))
-    {
-        int numSteps = event->delta() / 15 / 8;
-
-        if (numSteps == 0)
-        {
-            event->ignore();
-            return;
-        }
-
-        qreal sc = pow(1.025, numSteps); // I use scale factor 1.025
-        this->zoom(sc, mapToScene(event->pos()));
-        event->accept();
-    }
-*/
 }
 
 void PlotView::keyPressEvent(QKeyEvent* event)

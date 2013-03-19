@@ -48,8 +48,6 @@ MapScene* MapFrame::scene(void) const
 // updateScale
 void MapFrame::on_zoomSlider_valueChanged(int value)
 {
-    qDebug() << "Mapping : valeur du slider change à " << value;
-
     qreal scaleFactor =  qPow(2, (value - 50) / 10.0); //qreal scaleFactor =  qPow(2, (this->ui->zoomSlider->value() - 50) / 10.0);
 
     this->mapView->resetMatrix();

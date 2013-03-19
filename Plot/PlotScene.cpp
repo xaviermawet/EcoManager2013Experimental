@@ -54,6 +54,25 @@ PlotCurve* PlotScene::addCurve(const QList<IndexedPosition>& points,
     return curve;
 }
 
+bool PlotScene::removeCurves(const QVariant& idTrack)
+{
+    PlotCurve* targetCurve;
+    for (int i(0); i < this->curves.count(); ++i)
+    {
+        targetCurve = this->curves.at(i);
+
+        if(targetCurve->id() == idTrack)
+        {
+            this->curves.removeAt(i);
+            this->removeItem(targetCurve);
+            delete targetCurve;
+            return true;
+        }
+    }
+
+    return false;
+}
+
 CoordinateItem* PlotScene::nearestCoordinateitemOfX(qreal x) const // NOTE : p-e passe un QPointF à la place ?
 {
     if (this->curves.isEmpty()) // NOTE : ajouter || !this->curvesAreVisible() ?

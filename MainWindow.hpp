@@ -78,6 +78,7 @@ class MainWindow : public QMainWindow
         void on_actionLapDataDisplayInAllViews_triggered(void);
         void on_menuEditRaceView_aboutToShow(void);
         void on_actionRaceViewDisplayLap_triggered(void);
+        void on_actionRaceViewRemoveLap_triggered(void);
 
         // Personal slots
         void loadCompetition(int index);
@@ -87,7 +88,7 @@ class MainWindow : public QMainWindow
 
         void displayLapInformation(float timeValue, const QVariant& trackId);
         void displayLapInformation(float lowerTimeValue, float upperTimeValue,
-                                   const QVariant &trackId);
+                                   const QVariant &trackId);  
     private:
 
         void centerOnScreen(void);

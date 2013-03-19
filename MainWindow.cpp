@@ -175,21 +175,19 @@ void MainWindow::on_actionExportData_triggered(void)
  */
 void MainWindow::on_raceView_doubleClicked(const QModelIndex& index)
 {
-    QModelIndex parent = index.parent();
-    int depth(0);
+    Q_UNUSED(index);
 
-    while (parent.isValid())
+    // Check if a valid row has been double clicked
+    QModelIndexList rowsSelected = this->ui->raceView->selectionModel()->selectedRows();
+    if (rowsSelected.count() <= 0)
     {
-        parent = parent.parent();
-        depth++;
-    }
-
-    // check if a lap has been selected
-    if (depth == 2)
-        this->displayDataLap();
-    else
         QMessageBox::information(this, tr("Erreur"),
                                  tr("Vous devez double-cliquer sur un tour"));
+    }
+    else
+    {
+        this->displayDataLap();
+    }
 }
 
 // chooseSampleLap
@@ -543,28 +541,60 @@ void MainWindow::on_menuEditRaceView_aboutToShow(void)
         this->ui->actionRaceViewDisplayLap->setVisible(false);
         this->ui->actionRaceViewRemoveLap->setVisible(false);
         this->ui->actionRaceViewExportLapDataInCSV->setVisible(false);
-        return;
     }
+    else
+    {
+        // Create trak identifier
+        int ref_race = competitionModel->data(
+                    competitionModel->index(curIndex.row(), 1,
+                                            curIndex.parent())).toInt();
+        int ref_lap = competitionModel->data(
+                    competitionModel->index(curIndex.row(), 2,
+                                            curIndex.parent())).toInt();
 
-    // Create trak identifier
-    int ref_race = competitionModel->data(competitionModel->index(curIndex.row(), 1, curIndex.parent())).toInt();
-    int ref_lap = competitionModel->data(competitionModel->index(curIndex.row(), 2, curIndex.parent())).toInt();
+        QMap<QString, QVariant> trackIdentifier;
+        trackIdentifier["race"] = ref_race;
+        trackIdentifier["lap"] = ref_lap;
 
-    QMap<QString, QVariant> trackIdentifier;
-    trackIdentifier["race"] = ref_race;
-    trackIdentifier["lap"] = ref_lap;
+        bool lapAlreadyDisplayed = this->currentTracksDisplayed.contains(
+                    trackIdentifier);
 
-    bool lapAlreadyDisplayed = this->currentTracksDisplayed.contains(
-                trackIdentifier);
-
-    this->ui->actionRaceViewDisplayLap->setVisible(!lapAlreadyDisplayed);
-    this->ui->actionRaceViewRemoveLap->setVisible(lapAlreadyDisplayed);
-    this->ui->actionRaceViewExportLapDataInCSV->setVisible(true);
+        this->ui->actionRaceViewDisplayLap->setVisible(!lapAlreadyDisplayed);
+        this->ui->actionRaceViewRemoveLap->setVisible(lapAlreadyDisplayed);
+        this->ui->actionRaceViewExportLapDataInCSV->setVisible(true);
+    }
 }
 
 void MainWindow::on_actionRaceViewDisplayLap_triggered(void)
 {
     this->displayDataLap();
+}
+
+void MainWindow::on_actionRaceViewRemoveLap_triggered(void)
+{
+    // Vérifier si l'élément sur lequel le clique est effectué est bien un tour
+    QModelIndex curIndex = this->ui->raceView->selectionModel()->currentIndex();
+
+    // Create trak identifier
+    int ref_race = competitionModel->data(
+                competitionModel->index(curIndex.row(), 1,
+                                        curIndex.parent())).toInt();
+    int ref_lap = competitionModel->data(
+                competitionModel->index(curIndex.row(), 2,
+                                        curIndex.parent())).toInt();
+
+    QMap<QString, QVariant> trackIdentifier;
+    trackIdentifier["race"] = ref_race;
+    trackIdentifier["lap"] = ref_lap;
+
+    // Remove the lap from all the view
+    this->currentTracksDisplayed.removeOne(trackIdentifier);
+    if (this->mapFrame->scene()->removeTrack(trackIdentifier))
+        qDebug() << "mapping Supprimé !!!";
+    if (this->distancePlotFrame->scene()->removeCurves(trackIdentifier))
+        qDebug() << "distance supprimé !!!";
+    if (this->timePlotFrame->scene()->removeCurves(trackIdentifier))
+        qDebug() << "time supprimé !!!";
 }
 
 void MainWindow::loadCompetition(int index)

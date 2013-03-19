@@ -143,6 +143,25 @@ void MapScene::addTrack(const QVector<QPointF>& points,
     this->setSceneRect(this->itemsBoundingRect());
 }
 
+bool MapScene::removeTrack(const QVariant& idTrack)
+{
+    TrackItem* targetTrack;
+    for (int i(0); i < this->_tracks.count(); ++i)
+    {
+        targetTrack = this->_tracks.at(i);
+
+        if (targetTrack->id() == idTrack)
+        {
+            this->_tracks.removeAt(i);
+            this->removeItem(targetTrack);
+            delete targetTrack;
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void MapScene::fixSymbol(float timeValue, QColor color, QVariant trackId)
 {
     //FIXME !!
