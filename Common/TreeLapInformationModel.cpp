@@ -92,6 +92,8 @@ int TreeLapInformationModel::columnCount(const QModelIndex& parent) const
     return parentItem->columnCount();
     */
 
+    Q_UNUSED(parent);
+
     return this->rootItem->columnCount();
 }
 

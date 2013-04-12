@@ -534,35 +534,40 @@ void MainWindow::on_actionLapDataDisplayInAllViews_triggered(void)
 
 void MainWindow::on_menuEditRaceView_aboutToShow(void)
 {
-    // Vérifier si l'élément sur lequel le clique est effectué est bien un tour
-    QModelIndex curIndex = this->ui->raceView->selectionModel()->currentIndex();
-    if (!curIndex.parent().parent().isValid())
+    // Si au moins un tour est sélectionné
+    if (this->ui->raceView->selectionModel())
     {
-        this->ui->actionRaceViewDisplayLap->setVisible(false);
-        this->ui->actionRaceViewRemoveLap->setVisible(false);
-        this->ui->actionRaceViewExportLapDataInCSV->setVisible(false);
+        QModelIndex curIndex =
+                this->ui->raceView->selectionModel()->currentIndex();
+
+        // Si on a bien sélectionné un tour
+        if (curIndex.parent().parent().isValid())
+        {
+            // Create trak identifier
+            int ref_race = competitionModel->data(
+                        competitionModel->index(curIndex.row(), 1,
+                                                curIndex.parent())).toInt();
+            int ref_lap = competitionModel->data(
+                        competitionModel->index(curIndex.row(), 2,
+                                                curIndex.parent())).toInt();
+
+            QMap<QString, QVariant> trackIdentifier;
+            trackIdentifier["race"] = ref_race;
+            trackIdentifier["lap"] = ref_lap;
+
+            bool lapAlreadyDisplayed = this->currentTracksDisplayed.contains(
+                        trackIdentifier);
+
+            this->ui->actionRaceViewDisplayLap->setVisible(!lapAlreadyDisplayed);
+            this->ui->actionRaceViewRemoveLap->setVisible(lapAlreadyDisplayed);
+            this->ui->actionRaceViewExportLapDataInCSV->setVisible(true);
+            return;
+        }
     }
-    else
-    {
-        // Create trak identifier
-        int ref_race = competitionModel->data(
-                    competitionModel->index(curIndex.row(), 1,
-                                            curIndex.parent())).toInt();
-        int ref_lap = competitionModel->data(
-                    competitionModel->index(curIndex.row(), 2,
-                                            curIndex.parent())).toInt();
 
-        QMap<QString, QVariant> trackIdentifier;
-        trackIdentifier["race"] = ref_race;
-        trackIdentifier["lap"] = ref_lap;
-
-        bool lapAlreadyDisplayed = this->currentTracksDisplayed.contains(
-                    trackIdentifier);
-
-        this->ui->actionRaceViewDisplayLap->setVisible(!lapAlreadyDisplayed);
-        this->ui->actionRaceViewRemoveLap->setVisible(lapAlreadyDisplayed);
-        this->ui->actionRaceViewExportLapDataInCSV->setVisible(true);
-    }
+    this->ui->actionRaceViewDisplayLap->setVisible(false);
+    this->ui->actionRaceViewRemoveLap->setVisible(false);
+    this->ui->actionRaceViewExportLapDataInCSV->setVisible(false);
 }
 
 void MainWindow::on_actionRaceViewDisplayLap_triggered(void)
@@ -1015,18 +1020,6 @@ void MainWindow::createRaceTable(void)
 
 void MainWindow::readSettings(const QString& settingsGroup)
 {
-//    QList<int> sizeList;
-
-//    // The map zone and the plot zone have the same size
-//    sizeList << this->ui->MapPlotSplitter->height() / 2  /* Map zone size */
-//             << this->ui->MapPlotSplitter->height() / 2; /* Plots zone size */
-//    this->ui->MapPlotSplitter->setSizes(sizeList);
-
-//    // Hide the table of lap information
-//    sizeList.clear();
-//    sizeList << this->ui->MapPlotAndRaceSplitter->width() << 0;
-//    this->ui->MapPlotAndRaceSplitter->setSizes(sizeList);
-
     QSettings settings;
 
     settings.beginGroup(settingsGroup);
