@@ -10,7 +10,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = EcoManager2013
 TEMPLATE = app
-
+CONFIG += qwt
+LIBS += /usr/lib/libgsl.so
+LIBS += /usr/lib/libgslcblas.so
 
 SOURCES += main.cpp\
         MainWindow.cpp \
@@ -60,7 +62,15 @@ SOURCES += main.cpp\
     Common/LapInformationTreeModel.cpp \
     Common/TreeElement.cpp \
     LapDataCompartor.cpp \
-    Plot/PlotPrintDialog.cpp
+    Plot/PlotPrintDialog.cpp \
+    Plots/Zoomer.cpp \
+    Plots/PlotMagnifier.cpp \
+    Plots/Plot.cpp \
+    Plots/DoubleYAxisPlot.cpp \
+    Plots/DoubleXAxisPlot.cpp \
+    Plots/AbstractDoubleAxisPlot.cpp \
+    Plots/PlotCurve2.cpp \
+    polifitgsl.cpp
 
 HEADERS  += MainWindow.hpp \
     ResourceInstaller.hpp \
@@ -109,7 +119,15 @@ HEADERS  += MainWindow.hpp \
     Common/LapInformationTreeModel.hpp \
     Common/TreeElement.hpp \
     LapDataCompartor.hpp \
-    Plot/PlotPrintDialog.hpp
+    Plot/PlotPrintDialog.hpp \
+    Plots/Zoomer.hpp \
+    Plots/PlotMagnifier.hpp \
+    Plots/Plot.hpp \
+    Plots/DoubleYAxisPlot.hpp \
+    Plots/DoubleXAxisPlot.hpp \
+    Plots/AbstractDoubleAxisPlot.hpp \
+    Plots/PlotCurve2.hpp \
+    polifitgsl.hpp
 
 FORMS    += MainWindow.ui \
     CompetitionEntryDialog.ui \

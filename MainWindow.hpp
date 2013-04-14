@@ -25,6 +25,13 @@
 #include "Common/LapInformationTreeModel.hpp"
 #include "LapDataCompartor.hpp"
 
+// ------------ Remplacement des graphs par ceux de Qwt ----------------
+#include "Plots/Plot.hpp"
+#include "Plots/PlotCurve2.hpp"
+#include "polifitgsl.hpp"
+#include <qwt_plot_item.h>
+// ------------ Remplacement des graphs par ceux de Qwt ----------------
+
 #include <QtGui>
 #include <QtSql>
 
@@ -88,8 +95,24 @@ class MainWindow : public QMainWindow
 
         void displayLapInformation(float timeValue, const QVariant& trackId);
         void displayLapInformation(float lowerTimeValue, float upperTimeValue,
-                                   const QVariant &trackId);  
-    private:
+                                   const QVariant &trackId);
+
+        // ------------- Remplacement des graphs -------------------------------
+        // Legend actions management
+        void eraseCurve(void);
+        void centerOnCurve(void);
+        void changeCurveColor(void);
+        void createPolynomialTrendline(void);
+        void setPlotCurveVisibile(QwtPlotItem* item, bool visible);
+        void showLegendContextMenu(const QwtPlotItem* item, const QPoint& pos);
+        // ------------- Remplacement des graphs -------------------------------
+
+
+        void on_showLineToolButton_toggled(bool checked);
+
+        void on_showCrossToolButton_toggled(bool checked);
+
+private:
 
         void centerOnScreen(void);
         void createRaceView(void);
@@ -105,6 +128,12 @@ class MainWindow : public QMainWindow
         void reloadRaceView(void);
         void loadSectors(const QString& competitionName);
         void highlightPointInAllView(const QModelIndex& index);
+
+        // ------------ Remplacement des graphs par ceux de Qwt ----------------
+        Plot* currentPlot(void) const;
+        void  createPlotLegendContextMenu(void);
+        void createPlotsZone(void);
+        // ------------ Remplacement des graphs par ceux de Qwt ----------------
 
     protected:
 
@@ -131,6 +160,15 @@ class MainWindow : public QMainWindow
         // Personal Models
         GroupingTreeModel* competitionModel;
         LapInformationTreeModel* raceInformationTableModel; //TreeLapInformationModel* raceInformationTableModel;
+
+        // ------------ Remplacement des graphs par ceux de Qwt ----------------
+        // Plot context Menu
+        QMenu*     legendContextMenu;
+        PlotCurve2* curveAssociatedToLegendItem;
+
+        Plot* distanceSpeedPlot;
+        Plot* timeSpeedPlot;
+        // ------------ Remplacement des graphs par ceux de Qwt ----------------
 };
 
 #endif /* __MAINWINDOW_HPP__ */

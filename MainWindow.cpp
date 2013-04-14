@@ -2,7 +2,9 @@
 #include "ui_MainWindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent), ui(new Ui::MainWindow)
+    QMainWindow(parent), ui(new Ui::MainWindow),
+    legendContextMenu(NULL), curveAssociatedToLegendItem(NULL),
+    distanceSpeedPlot(NULL), timeSpeedPlot(NULL)
 {
     // GUI Configuration
     this->ui->setupUi(this);
@@ -23,6 +25,11 @@ MainWindow::MainWindow(QWidget *parent) :
     // Connect all the signals
     this->connectSignals();
 
+    // ------------ Remplacement des graphs par ceux de Qwt ----------------
+    this->createPlotLegendContextMenu();
+    this->createPlotsZone();
+    // ------------ Remplacement des graphs par ceux de Qwt ----------------
+
     // Display Configuration
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
     QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
@@ -33,6 +40,12 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow(void)
 {
     delete this->ui;
+
+    // ------------ Remplacement des graphs par ceux de Qwt ----------------
+    delete this->legendContextMenu;
+    delete this->distanceSpeedPlot;
+    delete this->timeSpeedPlot;
+    // ------------ Remplacement des graphs par ceux de Qwt ----------------
 }
 
 /* Interception des events clavier emis sur la sectorView afin de pouvoir repercuter
@@ -861,6 +874,118 @@ void MainWindow::displayLapInformation(float lowerTimeValue,
     this->ui->raceTable->expandAll();
 }
 
+void MainWindow::eraseCurve(void)
+{
+    // if no curve associated to the legend item. This shouldn't happen!
+    if (this->curveAssociatedToLegendItem == NULL)
+        return;
+
+    // Delete the curve associated to the legend item
+    this->curveAssociatedToLegendItem->detach();
+    delete this->curveAssociatedToLegendItem;
+    this->curveAssociatedToLegendItem = NULL;
+
+    // update the plot
+    this->currentPlot()->replot();
+}
+
+void MainWindow::centerOnCurve(void)
+{
+    // if no curve associated to the legend item. This shouldn't happen!
+    if (this->curveAssociatedToLegendItem == NULL)
+        return;
+
+    this->currentPlot()->zoom(this->curveAssociatedToLegendItem);
+}
+
+void MainWindow::changeCurveColor(void)
+{
+    // if no curve associated to the legend item. This shouldn't happen!
+    if (this->curveAssociatedToLegendItem == NULL)
+        return;
+
+    // Select a new color
+    QColor newColor = QColorDialog::getColor(
+                this->curveAssociatedToLegendItem->pen().color(), this,
+                tr("Choisir une nouvelle couleur pour la courbe"));
+
+    // If the user cancels the dialog, an invalid color is returned
+    if (newColor.isValid())
+        this->curveAssociatedToLegendItem->setPen(QPen(newColor));
+}
+
+void MainWindow::createPolynomialTrendline(void)
+{
+    // if no curve associated to the legend item. This shouldn't happen!
+    if (this->curveAssociatedToLegendItem == NULL)
+        return;
+
+    bool ok(false);
+    int degree = QInputDialog::getInt(
+                this, tr("Courbe de tendance polynomiale"),
+                tr("Ordre de complexité ?"), 2, 2, 100, 1, &ok);
+
+    if (!ok) // User canceled
+        return;
+
+    // Récupération de la série des points de la courbe
+    QwtPointSeriesData* curveSeriesData =
+            (QwtPointSeriesData*)this->curveAssociatedToLegendItem->data();
+    if (!curveSeriesData)
+        return;
+
+    // Récupération de la liste des points de la courbe
+    QVector<QPointF> curvePoints(curveSeriesData->samples());
+
+    // Calcul de tous les coefficients de l'équation
+    QVector<double> coefficients(polynomialfit(curvePoints, degree));
+
+    // Création de la liste des points de la courbe de tendance
+    for(int i(0); i < curvePoints.count(); ++i)
+    {
+        // Calcul de la nouvelle valeur de y
+        double y(0);
+        for(int j(0); j < coefficients.count(); ++j)
+            y += coefficients.at(j) * qPow(curvePoints.at(i).x(), j);
+
+        curvePoints[i].setY(y);
+    }
+
+    // Création de la courbe
+    QwtPointSeriesData* trendlineSeriesData = new QwtPointSeriesData(curvePoints);
+    PlotCurve2* trendlineCurve = new PlotCurve2(
+                this->curveAssociatedToLegendItem->title().text() +
+                tr(" Poly(") + QString::number(degree) + ")",
+                this->curveAssociatedToLegendItem->pen());
+    trendlineCurve->setAxes(this->curveAssociatedToLegendItem->xAxis(),
+                            this->curveAssociatedToLegendItem->yAxis());
+    trendlineCurve->setData(trendlineSeriesData);
+    trendlineCurve->attach(this->curveAssociatedToLegendItem->plot());
+    this->setPlotCurveVisibile(trendlineCurve, true);
+}
+
+void MainWindow::setPlotCurveVisibile(QwtPlotItem* item, bool visible)
+{
+    item->setVisible(visible);
+    QWidget* w = item->plot()->legend()->find(item);
+    if ( w && w->inherits("QwtLegendItem") )
+        ((QwtLegendItem *)w)->setChecked(visible);
+
+    item->plot()->replot();
+}
+
+void MainWindow::showLegendContextMenu(const QwtPlotItem* item,
+                                       const QPoint& pos)
+{
+    // Save the plot curve associated to the legend item
+    this->curveAssociatedToLegendItem = (PlotCurve2*) item;
+    if(!this->curveAssociatedToLegendItem)
+        return;
+
+    // Display custom contextual menu
+    this->legendContextMenu->exec(pos);
+}
+
 void MainWindow::centerOnScreen(void)
 {
     QDesktopWidget screen;
@@ -1127,6 +1252,9 @@ void MainWindow::displayDataLap(void)
             QList<IndexedPosition> timeSpeedPoints; // Liste des points de la vitesse par rapport au temps
             QList<IndexedPosition> dAccPoints;      // Liste des points de l'accélération par rapport à la distance
             QList<IndexedPosition> tAccPoints;      // Liste des points de l'accélération par rapport au temps
+
+            QVector<QPointF> distanceSpeedPoints;
+
             QPointF lastSpeed(0,0); // Modifié
             int count = 0;
             double lastPos = 1.5;
@@ -1167,6 +1295,9 @@ void MainWindow::displayDataLap(void)
 
                         dAccPoints << IndexedPosition((pos + lastPos) / 2, acc, time);
                         tAccPoints << IndexedPosition((lastSpeed.x() + time) / 2, acc, time);
+
+                        distanceSpeedPoints << QPointF(pos, speed);
+
 //                    }
 //                    else
 //                    {
@@ -1279,6 +1410,17 @@ void MainWindow::displayDataLap(void)
 //            }
 
 //            this->ui->raceTable->expandAll();
+
+            // ------------ Remplacement des graphs par ceux de Qwt ------------
+            // Create power curve
+            QwtPointSeriesData* distanceSpeedSerieData = new QwtPointSeriesData(distanceSpeedPoints);
+            PlotCurve2* distanceSpeedCurve = new PlotCurve2(
+                        tr("Course ") + trackIdentifier["race"].toString() +
+                        tr("tour ") + trackIdentifier["lap"].toString(),
+                        QPen(Qt::darkRed));
+            distanceSpeedCurve->setData(distanceSpeedSerieData);
+            distanceSpeedCurve->attach(this->distanceSpeedPlot);
+            // ------------ Remplacement des graphs par ceux de Qwt ------------
         }
 
     }
@@ -1467,10 +1609,93 @@ void MainWindow::highlightPointInAllView(const QModelIndex &index)
     this->distancePlotFrame->scene()->highlightPoint(time, trackId);
 }
 
+Plot* MainWindow::currentPlot(void) const
+{
+    switch (this->ui->plotTabWidget->currentIndex())
+    {
+    case 4:
+
+        return this->timeSpeedPlot;
+    default:
+        return this->distanceSpeedPlot;
+    }
+}
+
+void MainWindow::createPlotLegendContextMenu(void)
+{
+    // Legend actions
+    this->legendContextMenu = new QMenu(this);
+    this->legendContextMenu->addAction(
+                tr("Effacer"),this, SLOT(eraseCurve()));
+    this->legendContextMenu->addAction(
+                tr("Centrer sur"), this, SLOT(centerOnCurve()));
+    this->legendContextMenu->addAction(
+                tr("Changer la couleur"), this, SLOT(changeCurveColor()));
+    this->legendContextMenu->addAction(
+                tr("Ajouter une courbe de tendance polynomiale"), this,
+                SLOT(createPolynomialTrendline()));
+}
+
+void MainWindow::createPlotsZone(void)
+{
+    // Création du graphique Distance(x) - Vitesse(y)
+    this->distanceSpeedPlot = new Plot(tr("Distance - Vitesse"), this);
+    this->distanceSpeedPlot->setAxisTitle(Plot::xBottom, tr("Distance (m)"));
+    this->distanceSpeedPlot->setAxisTitle(Plot::yLeft, tr("Vitesse (km/h)"));
+    this->ui->distanceSpeedVerticalLayout->addWidget(this->distanceSpeedPlot);
+
+    connect(this->distanceSpeedPlot, SIGNAL(legendChecked(QwtPlotItem*,bool)),
+            this, SLOT(setPlotCurveVisibile(QwtPlotItem*,bool)));
+    connect(this->distanceSpeedPlot, SIGNAL(legendRightClicked(const QwtPlotItem*,QPoint)),
+            this, SLOT(showLegendContextMenu(const QwtPlotItem*,QPoint)));
+
+    // Création du graphique Temps(x) - Vitesse(y)
+    this->timeSpeedPlot = new Plot(tr("Temps - Vitesse"), this);
+    this->timeSpeedPlot->setAxisTitle(Plot::xBottom, tr("Temps (s)"));
+    this->timeSpeedPlot->setAxisTitle(Plot::yLeft, tr("Vitesse (km/h)"));
+    this->ui->timeSpeedVerticalLayout->addWidget(this->timeSpeedPlot);
+
+    connect(this->timeSpeedPlot, SIGNAL(legendChecked(QwtPlotItem*,bool)),
+            this, SLOT(setPlotCurveVisibile(QwtPlotItem*,bool)));
+    connect(this->timeSpeedPlot, SIGNAL(legendRightClicked(const QwtPlotItem*,QPoint)),
+            this, SLOT(showLegendContextMenu(const QwtPlotItem*,QPoint)));
+}
+
 void MainWindow::closeEvent(QCloseEvent* event)
 {
     // Save the state of the mainWindow and its widgets
     this->writeSettings("MainWindow");
 
     QMainWindow::closeEvent(event);
+}
+
+void MainWindow::on_showLineToolButton_toggled(bool checked)
+{
+    // Récupérer la liste de toutes les courbes dans le graphique courant
+    QwtPlotItemList curvesList = this->currentPlot()->itemList();
+
+    qDebug() << "Nombre d'éléments dans le graphique : " << curvesList.count();
+
+    foreach (QwtPlotItem* item, curvesList)
+    {
+        if (!(item->rtti() == QwtPlotItem::Rtti_PlotCurve))
+            continue;
+
+        PlotCurve2* curve = (PlotCurve2*) item;
+
+        if(curve == NULL)
+            continue;
+
+        qDebug() << "Avant ...";
+        if (checked)
+            curve->setStyle(QwtPlotCurve::Lines);
+        else
+            curve->setStyle(PlotCurve2::Dots);
+        qDebug() << "Après ...";
+    }
+}
+
+void MainWindow::on_showCrossToolButton_toggled(bool checked)
+{
+    this->currentPlot()->setCrossLineVisible(checked);
 }
